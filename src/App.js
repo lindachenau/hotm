@@ -30,7 +30,7 @@ class App extends Component {
     return (
       <div>
         <ThemeProvider theme={theme}>
-          <Routes />
+          <Routes theme={theme}/>
         </ThemeProvider>
       </div>
     );

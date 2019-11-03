@@ -47,11 +47,11 @@ class Topbar extends Component {
 
   state = { drawerOpen: false }
 
-  toggleDrawerOpen = () => {
+  toggleDrawerOpen = (e) => {
     this.setState({ drawerOpen: !this.state.drawerOpen })
   }
 
-  closeDrawer = () => {
+  closeDrawer = (e) => {
     this.setState({ drawerOpen: false })
   }
 

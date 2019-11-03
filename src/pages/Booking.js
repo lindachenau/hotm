@@ -10,15 +10,15 @@ const Booking = (props) => {
   const [activeStep, setActiveStep] = React.useState(0);
  
   const currentPath = props.location.pathname
-  const { services } = props
+  const { services, artists, theme } = props
 
   return (
     <React.Fragment>
       <CssBaseline />
       <Topbar currentPath={currentPath}/>
       <BookingSteps activeStep={activeStep}/>
-      {activeStep == 0 ? <ServiceSelection onSubmit={setActiveStep} services={services} /> : null}
-      {activeStep == 1 ? <ArtistSelection onSelect={setActiveStep} /> : null}
+      {activeStep == 0 ? <ServiceSelection onSubmit={setActiveStep} services={services} theme={theme}/> : null}
+      {activeStep == 1 ? <ArtistSelection onSelect={setActiveStep} artists={artists}/> : null}
     </React.Fragment>
   )
 }

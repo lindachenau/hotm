@@ -13,9 +13,9 @@ const ServiceSelection = (props) => {
   }
 
   return (
-    <Container maxWidth="md" style={{paddingTop: 20}}>
-      {cats.map( cat => <ServiceMenu items={items} cat={cat} />)}
-      <Button variant='contained' color='primary' onClick={handleSubmit}>
+    <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 50}}>
+      {cats.map( cat => <ServiceMenu items={items} cat={cat} theme={props.theme}/>)}
+      <Button variant='text' color='primary' onClick={handleSubmit}>
           Submit
       </Button>
     </Container>

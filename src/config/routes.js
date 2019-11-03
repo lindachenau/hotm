@@ -16,14 +16,15 @@ const Routes = (props) => {
   const [clients] = useState(getClients())
   const [services] = useState(getServices())
   const [events, setEvents] = useState(getBookings(artists, clients, services.items, 300))
+  const { theme } = props
 
   return (
     <HashRouter>
       <ScrollToTop>
         <Switch>
-          <Route exact path='/' render={(props) => <Booking services={services} />} />
-          <Route path='/account' render={(props) => <Account events={events} />} />
-          <Route path='/calendar' render={(props) => <Calendar events={events} />} />
+          <Route exact path='/' render={() => <Booking theme={theme} services={services} artists={artists}/>} />
+          <Route path='/account' render={() => <Account events={events} />} />
+          <Route path='/calendar' render={() => <Calendar events={events} />} />
         </Switch>
       </ScrollToTop>
     </HashRouter>

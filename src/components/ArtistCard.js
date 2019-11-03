@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import withStyles from '@material-ui/styles/withStyles';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Avatar from '@material-ui/core/Avatar';
+import React, { Component } from 'react'
+import withStyles from '@material-ui/styles/withStyles'
+import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
+import Grid from '@material-ui/core/Grid'
+import Avatar from '@material-ui/core/Avatar'
 
 
 const styles = theme => ({
