@@ -39,7 +39,7 @@ export default function BookingSteps(props) {
           </Step>
         ))}
       </Stepper>
-      <Typography variant='h5' align='center' gutterBottom>{getStepContent(activeStep)}</Typography>
+      <Typography variant='h6' align='center' gutterBottom>{getStepContent(activeStep)}</Typography>
     </Container>
   );
 }
