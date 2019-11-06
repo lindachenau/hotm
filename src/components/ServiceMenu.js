@@ -26,6 +26,18 @@ const useStyles = makeStyles(theme => ({
   },
   background: {
     backgroundColor: '#f18383'
+  },
+  priceField: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'inline',
+    }
+  },
+  priceEmbedded: {
+    display: 'inline',
+    [theme.breakpoints.up('sm')]: {
+      display: 'none',
+    }
   }
 }))
 
@@ -75,14 +87,16 @@ export default function ServiceMenu(props) {
       <Table size="small" aria-label="a dense table">
         <TableHead className={classes.background}>
           <TableRow>
-            <TableCell align="left" style={{width: "80%"}}>
+            <TableCell align="left" style={{width: "60%"}}>
               {cat.name}
               <IconButton onClick={toggleListOpen} edge='start'>
                 {listOpen ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}
               </IconButton>
             </TableCell>
-            <TableCell align="right" style={{width: "10%"}}>
-              <AttachMoneyIcon fontSize="small" color="inherit"/>
+            <TableCell align="right" style={{width: "30%", padding: 0}}>
+              <div className={classes.priceField}>
+                <AttachMoneyIcon fontSize="small" color="inherit"/>
+              </div>
             </TableCell>
             <TableCell align="right" style={{width: "10%"}}>
               <IconButton color="inherit">
@@ -97,15 +111,22 @@ export default function ServiceMenu(props) {
           <TableBody>
             {cat.list.map(id => (
               <TableRow key={items[id]}>
-                <TableCell align="left" style={{width: "80%"}}>{items[id].description}</TableCell>
-                <TableCell align="right" style={{width: "10%"}}>
-                  {((organic ? items[id].organic_price : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                <TableCell align="left" style={{width: "60%"}}>
+                  {items[id].description}
+                  <div className={classes.priceEmbedded}>
+                    {' - $' + ((organic ? items[id].organic_price : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                  </div>
+                </TableCell>
+                <TableCell align="right" style={{width: "30%", padding: 0}}>
+                  <div className={classes.priceField}>
+                    {((organic ? items[id].organic_price : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                  </div>
                 </TableCell>
                 <TableCell align="right" style={{width: "10%"}}>
                   <ButtonGroup>
                     <Button 
                       variant="text" 
-                      endIcon={<AddIcon fontSize="small"/>}
+                      startIcon={<AddIcon fontSize="small"/>}
                       onClick={() => handleIncrement(id, quantity)}
                     >
                       {quantity[id]}
