@@ -1,14 +1,10 @@
 import React from 'react'
-import { getArtists, getBookings, getClients, getServices } from '../utils/load'
-// import { getArtists, getBookings, getClients, getServices } from '../fakeload'
 import { MonthEvent, DayEvent } from './Event'
 import { Calendar, Views } from 'react-big-calendar'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css"
 import { FaCalendarAlt, FaCalendarDay, FaChevronLeft, FaChevronRight } from "react-icons/fa"
 import { GoTasklist } from "react-icons/go"
-import { tsThisType } from '@babel/types'
-
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
 

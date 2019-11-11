@@ -64,4 +64,4 @@ class CardItem extends Component {
   }
 }
 
-export default withStyles(styles)(CardItem);
+export default withStyles(styles)(CardItem)

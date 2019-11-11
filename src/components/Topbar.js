@@ -17,9 +17,9 @@ import EventIcon from '@material-ui/icons/Event'
 import LinkIcon from '@material-ui/icons/Link'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
-import Badge from '@material-ui/core/Badge'
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
+import FilterListIcon from '@material-ui/icons/FilterList'
 
-import MoreIcon from '@material-ui/icons/MoreVert'
 
 const logo = require('../images/logo192.png');
 
@@ -34,16 +34,8 @@ const useStyles = makeStyles(theme => ({
     },
   },
   sectionDesktop: {
-    display: 'none',
-    [theme.breakpoints.up('md')]: {
-      display: 'flex',
-    },
-  },
-  sectionMobile: {
     display: 'flex',
-    [theme.breakpoints.up('md')]: {
-      display: 'none',
-    },
+    alignItems: 'center'
   },
 }))
 
@@ -56,12 +48,17 @@ const Menu = [
   {
     label: "Manage bookings",
     pathname: "/manage",
-    icon: <AccountBoxIcon />
+    icon: <LibraryBooksIcon />
   },
   {
     label: "Booking calendar",
     pathname: "/calendar",
     icon: <EventIcon />
+  },
+  {
+    label: "Manage account",
+    pathname: "/account",
+    icon: <AccountBoxIcon />
   },
   {
     label: "Go to Hair on the Move",
@@ -72,10 +69,12 @@ const Menu = [
 
 ];
 
-function Topbar (props) {
+function Topbar ({location, bookingValue}) {
   const classes = useStyles()
   const [drawerOpen, setDrawerOpen ] = useState(false)
-  const currentPath = props.location.pathname
+  const currentPath = location.pathname
+  const bookingPage = currentPath === '/'
+  const eventsPage = currentPath === '/manage' || currentPath === '/calendar'
 
   const toggleDrawer = (open) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -94,6 +93,9 @@ function Topbar (props) {
     case '/manage':
       title = 'Manage bookings'
       break
+    case '/account':
+      title = 'Manage account'
+      break
     default:
       title = 'Add a booking'
   }
@@ -107,9 +109,9 @@ function Topbar (props) {
             <IconButton onClick={toggleDrawer(true)} color="inherit" aria-label="Menu">
               <MenuIcon />
             </IconButton>
-            <Typography variant='h6'>
-              { title }
-            </Typography>
+            <div className={classes.title}>
+              <Typography variant='h6'>{ title }</Typography>
+            </div>
             <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
               <div
                 role="presentation"
@@ -121,7 +123,7 @@ function Topbar (props) {
                     <ListItem 
                       component={item.external ? MaterialLink : Link} 
                       href={item.external ? item.pathname : null} 
-                      to={item.external ? null : {pathname: item.pathname, search: props.location.search}} 
+                      to={item.external ? null : {pathname: item.pathname, search: location.search}} 
                       button key={item.label}
                       target={item.external ? "_blank" : null}
                     >
@@ -135,23 +137,23 @@ function Topbar (props) {
           </React.Fragment>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <IconButton color="inherit">
-              <Badge max={10000} badgeContent={2000} color="primary">
-                <AccountBalanceWalletIcon />
-              </Badge>
-            </IconButton>
+            {bookingPage && 
+            <React.Fragment>
+              <AccountBalanceWalletIcon fontSize='small'/>
+              <span>{' $' + bookingValue}</span>
+            </React.Fragment>}
+            {eventsPage && 
+            <IconButton
+            edge="end"
+            color="inherit"
+            >
+              <FilterListIcon/>
+            </IconButton>}
             <IconButton
               edge="end"
               color="inherit"
             >
               <AccountCircleIcon color='primary'/>
-            </IconButton>
-          </div>
-          <div className={classes.sectionMobile}>
-            <IconButton
-              color="inherit"
-            >
-              <MoreIcon />
             </IconButton>
           </div>
         </Toolbar>

@@ -23,4 +23,4 @@ const Calendar = (props) => {
   )
 }
 
-export default withRouter(Calendar);
+export default withRouter(Calendar)

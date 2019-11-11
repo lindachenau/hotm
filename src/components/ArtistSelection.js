@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import ArtistCard from './ArtistCard'
 import Container from '@material-ui/core/Container'
 import MobileStepper from '@material-ui/core/MobileStepper'
@@ -6,13 +7,20 @@ import Button from '@material-ui/core/Button'
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 
+const useStyles = makeStyles(theme => ({
+  flex: {
+    display: 'flex',
+    marginTop: 10
+  },
+  grow: {
+    flexGrow: 1,
+  }
+}))
 
-export default function ArtistSelection (props) {
-
-  const [activeStep, setActiveStep] = useState(0)
-  const [maxSteps] = useState(Math.ceil(Math.random() * 5))
-  const [artistArr] = useState(Object.values(props.artists).slice(maxSteps))
-  const [idArr] = useState(Object.keys(props.artists).slice(maxSteps))
+export default function ArtistSelection ({changeBookingStage, availArtists, selectedArtist, changeSelectedArtist}) {
+  const classes = useStyles()
+  const [activeStep, setActiveStep] = useState(selectedArtist)
+  const [maxSteps] = useState(availArtists.length)
 
 
   const handleNext = () => {
@@ -23,17 +31,18 @@ export default function ArtistSelection (props) {
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
 
-  const handleSelect = event => {
-    props.onSelect(2)
+  const handleSelect = () => {
+    changeSelectedArtist(activeStep)
+    changeBookingStage(2)
   }
 
   return (
-    <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 50}}>
+    <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
       <ArtistCard
-        avatar={ artistArr[activeStep].avatar} 
-        name={ artistArr[activeStep].name} 
-        skill={ artistArr[activeStep].skill }
-        profile={ artistArr[activeStep].profile} 
+        avatar={ availArtists[activeStep].avatar} 
+        name={ availArtists[activeStep].name} 
+        skill={ availArtists[activeStep].skill }
+        profile={ availArtists[activeStep].profile} 
       />
       <MobileStepper
         steps={maxSteps}
@@ -53,9 +62,15 @@ export default function ArtistSelection (props) {
           </Button>
         }
       />
-      <Button variant="text" color="primary" size='large' onClick={handleSelect}>
-        select this artist
-      </Button>
+      <div className={classes.flex}>
+        <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(0)}>
+          back
+        </Button>
+        <div className={classes.grow} />
+        <Button variant="text" color="primary" size='large' onClick={handleSelect}>
+          select this artist
+        </Button>
+      </div>
     </Container>
   )
 }

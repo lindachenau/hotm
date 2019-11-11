@@ -1,20 +1,25 @@
 import React from "react"
 import { withRouter } from 'react-router-dom'
-import ArtistSelection from '../components/ArtistSelection'
+import ArtistSelection from '../config/ArtistSelectionContainer'
 import BookingSteps from '../components/BookingSteps'
-import ServiceSelection from '../components/ServiceSelection'
+import ServiceSelection from '../config/ServiceSelectionContainer'
+import Confirmation from '../config/ConfirmationContainer'
+import Payment from '../components/Payment'
 
-const Booking = (props) => {
-  const [activeStep, setActiveStep] = React.useState(0);
- 
-  const currentPath = props.location.pathname
-  const { services, artists, theme } = props
-
+const Booking = ({ bookingStage, changeBookingStage, services, theme, bookingValue, packageBooking }) => {
   return (
     <React.Fragment>
-      <BookingSteps activeStep={activeStep}/>
-      {activeStep == 0 ? <ServiceSelection onSubmit={setActiveStep} services={services} theme={theme}/> : null}
-      {activeStep == 1 ? <ArtistSelection onSelect={setActiveStep} artists={artists}/> : null}
+      <BookingSteps activeStep={bookingStage}/>
+      {bookingStage === 0 ? <ServiceSelection onSubmit={changeBookingStage} services={services} theme={theme}/> : null}
+      {bookingStage === 1 ? <ArtistSelection changeBookingStage={changeBookingStage} theme={theme}/> : null}
+      {bookingStage === 2 ? <Confirmation changeBookingStage={changeBookingStage} theme={theme} bookingValue={bookingValue}/> : null}
+      {bookingStage === 3 ? <Payment 
+        changeBookingStage={changeBookingStage} 
+        theme={theme} 
+        bookingValue={bookingValue} 
+        packageBooking={packageBooking}/> 
+        : null
+      }
     </React.Fragment>
   )
 }

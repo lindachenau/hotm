@@ -1,4 +1,5 @@
 import React, { useState } from "react"
+import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -11,50 +12,87 @@ import {
   KeyboardDatePicker,
 } from '@material-ui/pickers'
 
-import ServiceMenu from './ServiceMenu'
+import ServiceMenu from '../config/ServiceMenuContainer'
 
 import LocationSearchInput from './LocationSearchInput'
 
-const ServiceSelection = (props) => {
-  const items = props.services.items
-  const cats = props.services.cats
-  const [ organic, setOrganic ] = useState(false)
-  const [ pensioner, setPensioner ] = useState(false)
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const handleSubmit = event => {
-    props.onSubmit(1)
+const useStyles = makeStyles(theme => ({
+  flex: {
+    display: 'flex',
+  },
+  grow: {
+    flexGrow: 1,
   }
+}))
 
-  const togglePensioner = event => {setPensioner(!pensioner)}
 
-  const toggleOrganic = event => {setOrganic(!organic)}
+const ServiceSelection = ({ 
+  theme, 
+  services,
+  itemQty, 
+  onSubmit, 
+  organic, 
+  pensionerRate, 
+  bookingDate, 
+  bookingAddr, 
+  toggleOrganic, 
+  togglePensionerRate, 
+  submitBooking,
+  getAvailArtist,
+  changeSelectedArtist }) => {
+  
+  const classes = useStyles()
+  const items = services.items
+  const cats = services.cats
+  const [selectedDate, setSelectedDate] = useState(bookingDate)
+  const [address, setAddress] = useState(bookingAddr)
+  
+  const missingFields = () => {
+    let qty = 0
+    for (let id of Object.keys(itemQty)) {
+      qty += itemQty[id]
+    }
+    
+    return !(qty > 0 && address && selectedDate)
+  }
 
   const handleDateChange = date => {
     setSelectedDate(date);
-  };
+  }
+
+  const handleAddrChange = address => {
+    setAddress(address)
+  }
+
+  const handleSubmit = event => {
+    submitBooking(selectedDate, address)
+    getAvailArtist(itemQty, bookingDate, bookingAddr)
+    changeSelectedArtist(0)
+    onSubmit(1)
+  }
 
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 50}}>
       <FormControlLabel
         control={
-          <Switch checked={pensioner} onChange={togglePensioner} value="pensioner" color="primary"/>
+          <Switch checked={pensionerRate} onChange={() => togglePensionerRate()} value="pensionerRate" color="primary"/>
         }
         label="Pensioner rate (less 20%)"
       />
       <FormControlLabel
         control={
-          <Switch checked={organic} onChange={toggleOrganic} value="organic" color="primary"/>
+          <Switch checked={organic} onChange={() => toggleOrganic()} value="organic" color="primary"/>
         }
         label="Use organic products"
       />
       {cats.map( cat => 
         <ServiceMenu 
-          items={items} 
+          items={items}
+          key={cat}
           cat={cat} 
-          theme={props.theme}
+          theme={theme}
           organic={organic}
-          pensioner={pensioner}
+          pensioner={pensionerRate}
         />
       )}
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -84,12 +122,16 @@ const ServiceSelection = (props) => {
           />
         </Grid>
       </MuiPickersUtilsProvider>
-      <LocationSearchInput/>
-      <Button variant='text' color='primary' onClick={handleSubmit} size="large">
-          Submit
-      </Button>
+      <LocationSearchInput address={address} changeAddr={handleAddrChange}/>
+      <div className={classes.flex}>
+        <div className={classes.grow} />
+        <Button variant='text' color='primary' onClick={handleSubmit} size="large" disabled={missingFields()}>
+            Submit
+        </Button>
+      </div>
     </Container>
   );
 }
 
 export default ServiceSelection
+

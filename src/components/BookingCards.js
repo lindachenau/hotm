@@ -16,10 +16,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3),
     color: theme.palette.text.secondary,
     background: '#e8e5e5'
-  },
-  heroButtons: {
-    marginTop: theme.spacing(4),
-  },
+  }
 }));
 
 function Card ({ event }) {
@@ -51,25 +48,6 @@ function Card ({ event }) {
           <ul>
             {event.serviceItems.map( item => <li>{ item }</li> )}
           </ul>
-        </div>
-        <div className={classes.heroButtons}>
-          <Grid container spacing={2} justify="center">
-            <Grid item>
-              <Button variant="contained" color="primary">
-                Edit
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant="contained" color="primary">
-                Delete
-              </Button>
-            </Grid>
-            <Grid item>
-              <Button variant="contained" color="primary">
-                Checkout
-              </Button>
-            </Grid>
-          </Grid>
         </div>
       </Paper>
     </Container>

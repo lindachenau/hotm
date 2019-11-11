@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     overflowX: 'auto',
   },
   background: {
-    backgroundColor: '#f18383'
+    backgroundColor: theme.palette.primary.main
   },
   priceField: {
     display: 'none',
@@ -41,47 +41,20 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-
-const quantityInit = list => {
-  let qty = {}
-
-  for (let i = 0; i < list.length; i++ ) {
-    qty[list[i]] = 0
-  }
-
-  return qty
-}
-
-export default function ServiceMenu(props) {
-  const { items, cat, organic, pensioner } = props
+export default function ServiceMenu({ items, cat, organic, pensioner, itemQty, incItemQty, decItemQty }) {
   const classes = useStyles();
   const [ listOpen, setListOpen ] = useState(false)
-  const [ quantity, setQuantity ] = useState(quantityInit(cat.list))
-  const [ totalItems, setTotalItems ] = useState(0)
 
   const toggleListOpen = (e) => { setListOpen(!listOpen) }
 
-  const handleIncrement = (id, prevQuantity) => setQuantity(() => {
-    let copy = Object.assign({}, prevQuantity)
-    copy[id] = copy[id] + 1;
-    setTotalItems(totalItems+ 1)
-
-    return copy
-  })
- 
-  const handleDecrement = (id, prevQuantity) => setQuantity(() => {
-    if (prevQuantity[id] > 0) {
-      let copy = Object.assign({}, prevQuantity)
-      copy[id] = copy[id] - 1;
-      setTotalItems(totalItems - 1)
-
-      return copy
+  const totalItems = (cat, itemQty) => {
+    let total = 0
+    for (let id of cat.list) {
+      total += (itemQty[id] ? itemQty[id] : 0)
     }
-    else {
-      return prevQuantity
-    }
-  })
-  
+    return total
+  }
+
   return (
     <Paper className={classes.paper}>
       <Table size="small" aria-label="a dense table">
@@ -100,7 +73,7 @@ export default function ServiceMenu(props) {
             </TableCell>
             <TableCell align="right" style={{width: "10%"}}>
               <IconButton color="inherit">
-                <Badge badgeContent={totalItems} color="inherit" showZero>
+                <Badge badgeContent={totalItems(cat, itemQty)} color="inherit" showZero>
                   <ShoppingCartIcon/>
                 </Badge>
               </IconButton>
@@ -114,12 +87,12 @@ export default function ServiceMenu(props) {
                 <TableCell align="left" style={{width: "60%"}}>
                   {items[id].description}
                   <div className={classes.priceEmbedded}>
-                    {' - $' + ((organic ? items[id].organic_price : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                    {' - $' + ((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
                   </div>
                 </TableCell>
                 <TableCell align="right" style={{width: "30%", padding: 0}}>
                   <div className={classes.priceField}>
-                    {((organic ? items[id].organic_price : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                    {((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
                   </div>
                 </TableCell>
                 <TableCell align="right" style={{width: "10%"}}>
@@ -127,11 +100,11 @@ export default function ServiceMenu(props) {
                     <Button 
                       variant="text" 
                       startIcon={<AddIcon fontSize="small"/>}
-                      onClick={() => handleIncrement(id, quantity)}
+                      onClick={() => incItemQty(id)}
                     >
-                      {quantity[id]}
+                      {itemQty[id] ? itemQty[id] : 0} 
                     </Button>
-                    <IconButton onClick={() => handleDecrement(id, quantity)}>
+                    <IconButton onClick={() => decItemQty(id)}>
                       <RemoveIcon fontSize="small"/>
                     </IconButton>
                   </ButtonGroup>
