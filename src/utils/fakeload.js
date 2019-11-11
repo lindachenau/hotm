@@ -8,7 +8,8 @@ export function getArtists(n=0)
   let num = n && n < data.artists.length ? n : data.artists.length;
   
   for (let i = 0; i < num; i++ ) {
-    artists[data.artists[i].id] = {
+    artists[parseInt(data.artists[i].id)] = {
+      id: data.artists[i].id,
       name: data.artists[i].name,
       avatar: data.artists[i].avatar,
       skill: data.artists[i].skill,
@@ -25,7 +26,8 @@ export function getClients(n=0)
   let num = n && n < data.clients.length ? n : data.clients.length;
   
   for (let i = 0; i < num; i++ ) {
-    clients[data.clients[i].id] = {
+    clients[parseInt(data.clients[i].id)] = {
+      id: data.clients[i].id,
       name: data.clients[i].name,
       phone: data.clients[i].phone
     }
@@ -43,13 +45,14 @@ export function getServices()
     let items = Object.values(data.services[i].data)
     let list = []
     for (let j = 0; j < items.length; j++ ) {
-      list.push(items[j].id)
-      services[items[j].id] = {
+      let id = parseInt(items[j].id)
+      list.push(id)
+      services[id] = {
         cat: i,
         description: items[j].description,
         price: items[j].sale_price,
-        organic_price: items[j].organic_add_price,
-        time_on_site: items[j].time_on_site
+        organicPrice: items[j].organic_add_price,
+        timeOnsite: items[j].time_on_site
       }
     }
     cats.push({
@@ -63,13 +66,16 @@ export function getServices()
   }
 }
 
-export function getBookings(artists, clients, services, n=10)
+export function getBookings()
 {
-  let bookings = []
-  let num = n && n < data.bookings.length ? n : data.bookings.length;
+  return data.bookings
+}
 
-  for (let i = 0; i < num; i++ ) {
-    let booking = data.bookings[i]
+export function getEvents(bookings, artists, clients, services)
+{
+  let events = []
+
+  for (let booking of bookings) {
     let serviceItems = []
     let total = 0
     for (let j = 0; j < booking.items.length; j++) {
@@ -80,7 +86,7 @@ export function getBookings(artists, clients, services, n=10)
       }
     }
 
-    bookings.push({
+    events.push({
       id: booking.id,
       start: new Date(booking.start),
       end: new Date(booking.end),
@@ -92,5 +98,5 @@ export function getBookings(artists, clients, services, n=10)
     })
   }
 
-  return bookings
+  return events
 }
