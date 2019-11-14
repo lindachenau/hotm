@@ -1,7 +1,9 @@
 import { connect } from 'react-redux'
 import Routes from './Routes'
 import { changeBookingStage } from '../actions/bookingCreator'
-import { filter } from 'dom-helpers'
+import { fetchServices } from '../actions/asyncCreator'
+// import { fetchServices } from '../actions/testCreator'
+
 
 const getBookingValue = (items, priceFactors, itemQty) => {
   let total = 0
@@ -20,8 +22,9 @@ const checkPackageBooking = (itemQty) => {
   //Only keep non-zero items
   let filteredIds = Object.keys(itemQty).map(key => (itemQty[key] > 0 ? key : null))
 
-  return filteredIds.filter(id => id >= 44) != null
+  return filteredIds.filter(id => parseInt(id) >= 44).length > 0
 }
+
 
 const mapStateToProps = state => {
   return {
@@ -37,7 +40,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    changeBookingStage: stage => dispatch(changeBookingStage(stage))
+    changeBookingStage: stage => dispatch(changeBookingStage(stage)),
+    fetchServices: () => dispatch(fetchServices())
   }
 }
 

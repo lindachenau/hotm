@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function ServiceMenu({ items, cat, organic, pensioner, itemQty, incItemQty, decItemQty }) {
+export default function ServiceMenu({ theme, items, cat, organic, pensioner, itemQty, incItemQty, decItemQty }) {
   const classes = useStyles();
   const [ listOpen, setListOpen ] = useState(false)
 
@@ -83,7 +83,7 @@ export default function ServiceMenu({ items, cat, organic, pensioner, itemQty, i
         {listOpen ?
           <TableBody>
             {cat.list.map(id => (
-              <TableRow key={items[id]}>
+              <TableRow key={id}>
                 <TableCell align="left" style={{width: "60%"}}>
                   {items[id].description}
                   <div className={classes.priceEmbedded}>

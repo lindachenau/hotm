@@ -33,7 +33,7 @@ export function priceFactors(state = initPriceFactors, action) {
 
 const initDateAddr = {
   bookingDate: null,
-  bookingAddr: null
+  bookingAddr: ''
 }
 
 export function bookingDateAddr(state = initDateAddr, action) {

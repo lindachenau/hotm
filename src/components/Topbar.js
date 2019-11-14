@@ -144,14 +144,14 @@ function Topbar ({location, bookingValue}) {
             </React.Fragment>}
             {eventsPage && 
             <IconButton
-            edge="end"
-            color="inherit"
+              edge="end"
+              color="inherit"
             >
               <FilterListIcon/>
             </IconButton>}
             <IconButton
               edge="end"
-              color="inherit"
+              color="default"
             >
               <AccountCircleIcon color='primary'/>
             </IconButton>

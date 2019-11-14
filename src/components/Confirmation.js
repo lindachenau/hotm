@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(3),
     color: theme.palette.text.secondary,
-    background: '#e8e5e5',
+    background: "linear-gradient(#f0e8e8, #e0d8d8)",
     width: '100%',
     overflowX: 'auto'
   },

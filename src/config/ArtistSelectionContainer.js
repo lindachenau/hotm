@@ -6,7 +6,7 @@ import ArtistSelection from '../components/ArtistSelection'
 const fillArtists = (artists, ids) => {
   let availArtists = []
   for (let id of ids) {
-    availArtists.push(artists[parseInt(id)])
+    availArtists.push(artists[id.toString()])
   }
 
   return availArtists

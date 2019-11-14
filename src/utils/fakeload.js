@@ -1,69 +1,21 @@
-import generateData from "./generateData";
+import generateData from "./generateData"
+import { createArtists, createClients, createServices } from './dataFormatter'
 
 const data = generateData()
 
-export function getArtists(n=0)
+export function getArtists()
 {
-  let artists = {}
-  let num = n && n < data.artists.length ? n : data.artists.length;
-  
-  for (let i = 0; i < num; i++ ) {
-    artists[parseInt(data.artists[i].id)] = {
-      id: data.artists[i].id,
-      name: data.artists[i].name,
-      avatar: data.artists[i].avatar,
-      skill: data.artists[i].skill,
-      profile: data.artists[i].profile
-    }
-  }
-  
-  return artists
+  return createArtists(data.artists)
 }
 
-export function getClients(n=0)
+export function getClients()
 {
-  let clients = {}
-  let num = n && n < data.clients.length ? n : data.clients.length;
-  
-  for (let i = 0; i < num; i++ ) {
-    clients[parseInt(data.clients[i].id)] = {
-      id: data.clients[i].id,
-      name: data.clients[i].name,
-      phone: data.clients[i].phone
-    }
-  }
-
-  return clients
+  return createClients(data.clients)
 }
 
 export function getServices()
 {
-  let services = {}
-  let cats = []
-  
-  for (let i = 0; i < data.services.length; i++ ) {
-    let items = Object.values(data.services[i].data)
-    let list = []
-    for (let j = 0; j < items.length; j++ ) {
-      let id = parseInt(items[j].id)
-      list.push(id)
-      services[id] = {
-        cat: i,
-        description: items[j].description,
-        price: items[j].sale_price,
-        organicPrice: items[j].organic_add_price,
-        timeOnsite: items[j].time_on_site
-      }
-    }
-    cats.push({
-      "name": data.services[i].cat,
-      "list": list
-    })
-  }
-  return { 
-    "items": services, 
-    "cats": cats
-  }
+  return createServices(data.services)
 }
 
 export function getBookings()

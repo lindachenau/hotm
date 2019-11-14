@@ -86,9 +86,10 @@ const ServiceSelection = ({
         label="Use organic products"
       />
       {cats.map( cat => 
-        <ServiceMenu 
+        <ServiceMenu
+          theme={theme}
           items={items}
-          key={cat}
+          key={cat.name}
           cat={cat} 
           theme={theme}
           organic={organic}

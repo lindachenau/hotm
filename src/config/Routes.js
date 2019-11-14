@@ -1,5 +1,5 @@
 //import 'bootstrap/dist/css/bootstrap.min.css'
-import React, {useState} from "react"
+import React, { useState, useEffect } from "react"
 import { Route, Switch, HashRouter } from "react-router-dom"
 import Booking from '../pages/Booking'
 import Calendar from '../pages/Calendar'
@@ -10,18 +10,24 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import Topbar from '../components/Topbar'
 import { getEvents } from '../utils/fakeload'
 
-
 /**
  * For deploy testing frontend without backend
  */
-const Routes = ({ theme, services, artists, clients, bookings, bookingStage, changeBookingStage, bookingValue, packageBooking }) => {
-  const [events] = useState(getEvents(bookings, artists, clients, services.items))
+const Routes = ({ theme, services, artists, clients, bookings, bookingStage, changeBookingStage, bookingValue, packageBooking, fetchServices }) => {
+  // const [events] = useState(getEvents(bookings, artists, clients, services.items))
+  const [events, setEvents] = useState([])
+  let servicesFetched = Object.entries(services).length > 0
 
+  useEffect(() => {
+    fetchServices()
+    }, [])
+  
   return (
     <HashRouter>
       <ScrollToTop>
         <CssBaseline />
         <Topbar bookingValue={bookingValue}/>
+        {servicesFetched &&
         <Switch>
           <Route exact path='/' render={() => 
             <Booking 
@@ -35,7 +41,7 @@ const Routes = ({ theme, services, artists, clients, bookings, bookingStage, cha
           <Route path='/manage' render={() => <Manage events={events} />} />
           <Route path='/calendar' render={() => <Calendar events={events} />} />
           <Route path='/account' render={() => <Account/>} />
-        </Switch>
+        </Switch>}
       </ScrollToTop>
     </HashRouter>
   )
