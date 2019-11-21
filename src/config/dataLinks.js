@@ -1,0 +1,6 @@
+// export const services_url = 'http://localhost/hotm_booking/api/get_services.php'
+export const services_url = 'http://localhost:4000/services'
+export const artists_url = 'http://localhost:4000/artists'
+export const clients_url = 'http://localhost:4000/clients'
+export const bookings_url = 'http://localhost:4000/bookings'
+export const available_artists_url = 'http://localhost/hotm_booking/api/get_available_artists.php'

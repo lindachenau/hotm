@@ -1,26 +1,32 @@
 import { combineReducers } from 'redux'
-import services from './services'
-import artists from './artists'
-import clients from './clients'
-import bookings from './bookings'
 import {
   priceFactors,
   bookingDateAddr,
   bookingStage,
   selectedArtist,
   availArtists,
-  itemQty
+  itemQty,
+  storeActivation
 } from './bookingInfo'
 
-export default combineReducers({
-  services,
-  artists,
-  clients,
-  bookings,
+import { RESET_BOOKING } from '../actions/bookingCreator'
+
+const appReducer = combineReducers({
   priceFactors,
   bookingDateAddr,
   bookingStage,
   selectedArtist,
   availArtists,
-  itemQty
+  itemQty,
+  storeActivation
 })
+
+const rootReducer = (state, action) => {
+  if (action.type === RESET_BOOKING) {
+    state = undefined
+  }
+
+  return appReducer(state, action)
+}
+
+export default rootReducer

@@ -1,4 +1,4 @@
-import React, { useState }  from 'react'
+import React, { useState, useEffect }  from 'react'
 import moment from 'moment'
 import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign } from "react-icons/fa"
 import Typography from '@material-ui/core/Typography'
@@ -60,12 +60,15 @@ function Card ({ event }) {
 }
 
 
-const BookingCards = ({events}) => {
+const BookingCards = ({events, eventsFetched}) => {
   const classes = useStyles()
 
   const [activeStep, setActiveStep] = useState(0)
-  const [maxSteps] = useState(events.length)
+  const [maxSteps, setMaxSteps] = useState(0)
 
+  useEffect(() => {
+    setMaxSteps(events.length)
+  }, [eventsFetched])
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)

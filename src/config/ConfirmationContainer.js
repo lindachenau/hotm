@@ -3,9 +3,9 @@ import Confirmation from '../components/Confirmation'
 
 const mapStateToProps = state => {
   return {
-    artistName: state.artists[state.availArtists.ids[state.selectedArtist.order]].name,
-    items: state.services.items,
+    artistId: state.availArtists.ids[state.selectedArtist.order],
     bookingDate: state.bookingDateAddr.bookingDate,
+    bookingEnd: state.bookingDateAddr.bookingEnd,
     bookingAddr: state.bookingDateAddr.bookingAddr,
     itemQty: state.itemQty,
     organic: state.priceFactors.organic,

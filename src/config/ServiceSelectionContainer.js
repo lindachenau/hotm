@@ -16,8 +16,8 @@ const mapDispatchToProps = dispatch => {
     return {
       toggleOrganic: () => dispatch(toggleOrganic()),
       togglePensionerRate: () => dispatch(togglePensionerRate()),
-      submitBooking: (date, addr) => dispatch(submitBooking(date, addr)),
-      getAvailArtist: (bookingItems, bookingDate, bookingAddr) => dispatch(getAvailArtist((bookingItems, bookingDate, bookingAddr))),
+      submitBooking: (date, bookingEnd, addr) => dispatch(submitBooking(date, bookingEnd, addr)),
+      getAvailArtist: (url) => dispatch(getAvailArtist(url)),
       changeSelectedArtist: id => dispatch(changeSelectedArtist((id)))
     }
 }

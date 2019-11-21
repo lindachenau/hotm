@@ -35,7 +35,7 @@ function generateData () {
   }
 
   let bookings = []
-  for (let id = 1; id <= 300; id++) {
+  for (let id = 1; id <= 10; id++) {
  
     let address = faker.address.streetAddress() + ' ' + faker.address.city() + ', ' + faker.address.stateAbbr() + ' ' + faker.address.zipCode()
     let start = faker.date.between('2019-10-01', '2019-12-31')
@@ -51,6 +51,8 @@ function generateData () {
 
     let artist = Math.ceil(Math.random() * 50)
     let client = Math.ceil(Math.random() * 50)
+    let organic = Math.floor(Math.random() * 2)
+    let pensionerRate = Math.floor(Math.random() * 2)
     /**
      * Generate up to 5 random items out of 63 service items. Each item has up to 3 in quantity. No duplication checking for now
      */
@@ -71,7 +73,11 @@ function generateData () {
       "artist": artist,
       "client": client,
       "items": items,
-      "quantity": quantity
+      "quantity": quantity,
+      "organic": organic,
+      "pensionerRate": pensionerRate,
+      "depositPaid": 0,
+      "balancePaid": 0
     })
   }
 
@@ -561,5 +567,6 @@ function generateData () {
     "services": services
   }
 }
+
 
 module.exports = generateData

@@ -4,20 +4,27 @@ import ArtistSelection from '../config/ArtistSelectionContainer'
 import BookingSteps from '../components/BookingSteps'
 import ServiceSelection from '../config/ServiceSelectionContainer'
 import Confirmation from '../config/ConfirmationContainer'
-import Payment from '../components/Payment'
+import Payment from '../config/PaymentContainer'
 
-const Booking = ({ bookingStage, changeBookingStage, services, theme, bookingValue, packageBooking }) => {
+const Booking = ({ bookingStage, changeBookingStage, services, theme, bookingValue, depositPayable, artists }) => {
   return (
     <React.Fragment>
       <BookingSteps activeStep={bookingStage}/>
       {bookingStage === 0 ? <ServiceSelection onSubmit={changeBookingStage} services={services} theme={theme}/> : null}
       {bookingStage === 1 ? <ArtistSelection changeBookingStage={changeBookingStage} theme={theme}/> : null}
-      {bookingStage === 2 ? <Confirmation changeBookingStage={changeBookingStage} theme={theme} bookingValue={bookingValue}/> : null}
+      {bookingStage === 2 ? 
+        <Confirmation 
+        changeBookingStage={changeBookingStage} 
+        theme={theme} 
+        items={services.items} 
+        bookingValue={bookingValue}
+        artists={artists}/> 
+        : null
+      }
       {bookingStage === 3 ? <Payment 
         changeBookingStage={changeBookingStage} 
         theme={theme} 
-        bookingValue={bookingValue} 
-        packageBooking={packageBooking}/> 
+        depositPayable={depositPayable}/> 
         : null
       }
     </React.Fragment>

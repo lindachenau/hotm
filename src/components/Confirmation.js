@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
       display: 'none',
     }
   },
-  deposit: {
+  acknowledge: {
     display: 'flex',
     marginTop: 20,
     alignItems: 'flexStart'
@@ -54,26 +54,25 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function Confirmation ({ bookingDate, bookingAddr, artistName, items, itemQty, changeBookingStage, organic, pensioner, bookingValue }) {
+function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, itemQty, changeBookingStage, organic, pensioner, bookingValue, artists }) {
   const [checkedDeposit, setCheckedDeposit] = useState(false)
+  const [checkedTerm, setCheckedTerm] = useState(false)
+  const [checkedParking, setCheckedParking] = useState(false)
   const classes = useStyles()
 
-  const getBookingEnd = () => {
-    let duration = 0
-    for (let id of Object.keys(itemQty)) {
-      let qty = itemQty[id]
-      duration += items[id].timeOnsite * qty
-    }
-    //timeOnsite is minutes
-    return bookingDate.getTime() + duration * 60 * 1000
-  }
-
-  //Only keep non-zero items
-  let filteredIds = Object.keys(itemQty).map(key => (itemQty[key] > 0 ? key : null))
-
-  const handleChange = event => {
+  const handleDeposit = event => {
     setCheckedDeposit(!checkedDeposit)
   }
+
+  const handleTerm = event => {
+    setCheckedTerm(!checkedTerm)
+  }
+
+  const handleParking = event => {
+    setCheckedParking(!checkedParking)
+  }
+
+  let ids = Object.keys(itemQty)
 
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 50}}>
@@ -82,7 +81,7 @@ function Confirmation ({ bookingDate, bookingAddr, artistName, items, itemQty, c
           { moment(bookingDate).format("dddd, Do MMMM YYYY") }
         </Typography>
         <Typography variant="subtitle1" align="center" color="textPrimary" gutterBottom>
-          { moment(bookingDate).format('LT') + ' – ' + moment(getBookingEnd()).format('LT')}
+          { moment(bookingDate).format('LT') + ' – ' + moment(bookingEnd).format('LT')}
         </Typography>
         <Table size="small" aria-label="a dense table">
           <TableHead className={classes.background}>
@@ -112,7 +111,7 @@ function Confirmation ({ bookingDate, bookingAddr, artistName, items, itemQty, c
           <TableBody>
             <TableRow>
               <TableCell align="left">
-              {artistName}
+              {artists[artistId].name}
               </TableCell>
             </TableRow>
           </TableBody>
@@ -135,8 +134,8 @@ function Confirmation ({ bookingDate, bookingAddr, artistName, items, itemQty, c
             </TableRow>
           </TableHead>
           <TableBody>
-            {filteredIds.map(id => (
-              <TableRow key={items[id]}>
+            {ids.map(id => (
+              <TableRow key={id}>
                 <TableCell align="left" style={{width: "70%"}}>
                   {items[id].description}
                   <div className={classes.priceEmbedded}>
@@ -159,10 +158,23 @@ function Confirmation ({ bookingDate, bookingAddr, artistName, items, itemQty, c
         <Typography variant="subtitle2" align="right" color="textPrimary">
           {'TOTAL (GST INCL): $' + bookingValue}
         </Typography>
-        <div className={classes.deposit}>
-          <Checkbox checked={checkedDeposit} onChange={handleChange} value="checkedDeposit" className={classes.inline}/>
+        <div className={classes.acknowledge}>
+          <Checkbox checked={checkedDeposit} onChange={handleDeposit} value="checkedDeposit" className={classes.inline}/>
           <Typography variant="body2" align="left" color="textPrimary">
             A deposit is required to secure your booking. I agree to pay 1/2 of requested services for package booking and $50 for all other booking now.
+          </Typography>
+        </div>
+        <div className={classes.acknowledge}>
+          <Checkbox checked={checkedTerm} onChange={handleTerm} value="checkedTerm" className={classes.inline}/>
+          <Typography variant="body2" align="left" color="textPrimary">
+            I have read Terms & Conditions & Cancellation policy.
+          </Typography>
+        </div>
+        <div className={classes.acknowledge}>
+          <Checkbox checked={checkedParking} onChange={handleParking} value="checkedTerm" className={classes.inline}/>
+          <Typography variant="body2" align="left" color="textPrimary">
+            Customers are required to pay parking charges incurred while artists attend your booking. The incurred parking charges 
+            will be added onto the final invoice.
           </Typography>
         </div>
       </Paper>
@@ -171,7 +183,9 @@ function Confirmation ({ bookingDate, bookingAddr, artistName, items, itemQty, c
           back
         </Button>
         <div className={classes.grow} />
-        <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(3)} disabled={!checkedDeposit}>
+        <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(3)} 
+          disabled={!checkedDeposit || !checkedTerm || !checkedParking}
+        >
           confirm booking
         </Button>
       </div>

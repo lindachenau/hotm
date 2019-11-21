@@ -16,6 +16,9 @@ import ServiceMenu from '../config/ServiceMenuContainer'
 
 import LocationSearchInput from './LocationSearchInput'
 
+import { available_artists_url } from '../config/dataLinks'
+import moment from 'moment'
+
 const useStyles = makeStyles(theme => ({
   flex: {
     display: 'flex',
@@ -64,9 +67,28 @@ const ServiceSelection = ({
     setAddress(address)
   }
 
+  const getBookingEnd = () => {
+    let duration = 0
+    for (let id of Object.keys(itemQty)) {
+      let qty = itemQty[id]
+      duration += items[id].timeOnsite * qty
+    }
+    //timeOnsite is minutes
+    return selectedDate.getTime() + duration * 60 * 1000
+  }
+
   const handleSubmit = event => {
-    submitBooking(selectedDate, address)
-    getAvailArtist(itemQty, bookingDate, bookingAddr)
+    submitBooking(selectedDate, new Date(getBookingEnd()), address)
+
+    /*A workaround for redux-thunk error. When passing (itemQty, selectedDate, address) to getAvailArtist action creator,
+    *(itemQty, selectedDate, address) become undefined even though the values are still correct in mapDispatchToProps.
+    */
+    let url = available_artists_url + '?date=' + moment(selectedDate).format("YYYY-MM-DD") + 
+    '&start_time=' + moment(selectedDate).format("HH:mm") + '&services=' + Object.keys(itemQty).join(',') +
+    '&event_addr=' + address
+    
+    getAvailArtist(url)
+
     changeSelectedArtist(0)
     onSubmit(1)
   }

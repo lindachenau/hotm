@@ -1,26 +1,27 @@
-//import 'bootstrap/dist/css/bootstrap.min.css'
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { Route, Switch, HashRouter } from "react-router-dom"
 import Booking from '../pages/Booking'
 import Calendar from '../pages/Calendar'
-import Manage from '../pages/Manage'
+import Manage from '../config/ManageContainer'
 import Account from '../pages/Account'
 import ScrollToTop from '../components/ScrollTop'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Topbar from '../components/Topbar'
-import { getEvents } from '../utils/fakeload'
+import { BookingsStoreContext } from './BookingsStoreProvider'
+import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
 
 /**
  * For deploy testing frontend without backend
  */
-const Routes = ({ theme, services, artists, clients, bookings, bookingStage, changeBookingStage, bookingValue, packageBooking, fetchServices }) => {
-  // const [events] = useState(getEvents(bookings, artists, clients, services.items))
-  const [events, setEvents] = useState([])
-  let servicesFetched = Object.entries(services).length > 0
+const Routes = ({ theme, bookingStage, changeBookingStage, packageBooking, priceFactors, itemQty }) => {
+  const { services, servicesFetched, events, eventsFetched, artists, bookingsData } = useContext(BookingsStoreContext)
+  const [bookingValue, setBookingValue] = useState(0)
+  const [depositPayable, setDepositPayable] = useState(0)
 
   useEffect(() => {
-    fetchServices()
-    }, [])
+    setBookingValue(getBookingValue(services.items, priceFactors, itemQty))
+    setDepositPayable(getDepositPayable(itemQty, bookingValue))
+  }, [services.items, priceFactors, itemQty])
   
   return (
     <HashRouter>
@@ -36,9 +37,10 @@ const Routes = ({ theme, services, artists, clients, bookings, bookingStage, cha
               bookingStage={bookingStage} 
               changeBookingStage={changeBookingStage} 
               bookingValue={bookingValue}
-              packageBooking={packageBooking}/>} 
+              depositPayable={depositPayable}
+              artists={artists}/>} 
             />
-          <Route path='/manage' render={() => <Manage events={events} />} />
+          <Route path='/manage' render={() => <Manage events={events} eventsFetched={eventsFetched}/>} />
           <Route path='/calendar' render={() => <Calendar events={events} />} />
           <Route path='/account' render={() => <Account/>} />
         </Switch>}
