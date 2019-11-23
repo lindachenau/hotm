@@ -74,7 +74,7 @@ class _CardForm extends Component {
           <div className={classes.stripe} role="alert">
             {this.state.errorMessage}
           </div>
-          <Button variant="contained" color="primary" fullWidth={true} type='submit'>Pay</Button>
+          <Button variant="contained" color="primary" fullWidth type='submit'>Pay</Button>
         </form>
       </div>
     )

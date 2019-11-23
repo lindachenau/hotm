@@ -18,8 +18,10 @@ const mapStateToProps = state => {
       organic: state.priceFactors.organic,
       pensionerRate: state.priceFactors.pensionerRate,
       depositPaid: 0,
-      balancePaid: 0
-    }
+      balancePaid: 0,
+      comment: ''
+    },
+    loggedIn: state.userInfo.loggedIn
   }
 }
 const mapDispatchToProps = dispatch => {

@@ -46,6 +46,7 @@ const dataFetchReducer = (state, action) => {
       }
     case "POST_SUCCESS":
       return {
+        ...state,
         isLoading: false,
         isUpdating: false,
         hasErrored: false,

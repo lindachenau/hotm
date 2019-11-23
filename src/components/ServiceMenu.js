@@ -61,7 +61,7 @@ export default function ServiceMenu({ theme, items, cat, organic, pensioner, ite
         <TableHead className={classes.background}>
           <TableRow>
             <TableCell align="left" style={{width: "60%"}}>
-              {cat.name}
+              {cat.name.toUpperCase()}
               <IconButton onClick={toggleListOpen} edge='start'>
                 {listOpen ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}
               </IconButton>

@@ -15,7 +15,8 @@ const mapStateToProps = state => {
     clients: state.clients,
     bookings: state.bookings,
     bookingStage: state.bookingStage.stage,
-    packageBooking: checkPackageBooking(state.itemQty)
+    packageBooking: checkPackageBooking(state.itemQty),
+    loggedIn: state.userInfo.loggedIn
   }
 }
 

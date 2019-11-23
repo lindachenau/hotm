@@ -17,11 +17,14 @@ import EventIcon from '@material-ui/icons/Event'
 import LinkIcon from '@material-ui/icons/Link'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import LockIcon from '@material-ui/icons/Lock'
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
 import FilterListIcon from '@material-ui/icons/FilterList'
 
+import SigninForm from '../config/SigninFormContainer'
+import SignoutForm from '../config/SignoutFormContainer'
 
-const logo = require('../images/logo192.png');
+const logo = require('../images/logo192.png')
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -69,19 +72,27 @@ const Menu = [
 
 ];
 
-function Topbar ({location, bookingValue}) {
+function Topbar ({location, bookingValue, loggedIn}) {
   const classes = useStyles()
-  const [drawerOpen, setDrawerOpen ] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [userDiagOpen, setUserDiagOpen] = useState(false)
+  const [triggerSignin, setTriggerSignin] = useState(false)
   const currentPath = location.pathname
   const bookingPage = currentPath === '/'
   const eventsPage = currentPath === '/manage' || currentPath === '/calendar'
-
+  
   const toggleDrawer = (open) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
       return
     }
 
     setDrawerOpen(open)
+  }
+
+  const handleUser = evt => {
+    evt.preventDefault()
+    setUserDiagOpen(true)
+    setTriggerSignin(!triggerSignin)
   }
 
   let title
@@ -152,11 +163,13 @@ function Topbar ({location, bookingValue}) {
             <IconButton
               edge="end"
               color="default"
+              onClick={handleUser}
             >
-              <AccountCircleIcon color='primary'/>
+              {loggedIn ? <AccountCircleIcon color='primary'/> : <LockIcon style={{color: 'white'}}/>}
             </IconButton>
           </div>
         </Toolbar>
+        {userDiagOpen && (loggedIn ? <SignoutForm triggerOpen={triggerSignin}/> : <SigninForm triggerOpen={triggerSignin}/>)}
       </AppBar>
     </div>
   )

@@ -13,7 +13,7 @@ import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
 /**
  * For deploy testing frontend without backend
  */
-const Routes = ({ theme, bookingStage, changeBookingStage, packageBooking, priceFactors, itemQty }) => {
+const Routes = ({ theme, bookingStage, changeBookingStage, packageBooking, priceFactors, itemQty, loggedIn }) => {
   const { services, servicesFetched, events, eventsFetched, artists, bookingsData } = useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
@@ -27,7 +27,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, packageBooking, price
     <HashRouter>
       <ScrollToTop>
         <CssBaseline />
-        <Topbar bookingValue={bookingValue}/>
+        <Topbar bookingValue={bookingValue} loggedIn={loggedIn}/>
         {servicesFetched &&
         <Switch>
           <Route exact path='/' render={() => 
