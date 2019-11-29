@@ -25,7 +25,7 @@ export function getBookings()
   return data.bookings
 }
 
-export function getEvents(bookings, artists, clients, services)
+export function getEvents(bookings, artists, clients, servicesMenu)
 {
   let events = []
 
@@ -35,26 +35,26 @@ export function getEvents(bookings, artists, clients, services)
     let booking = bookings[id]
     let itemQty = {}
     let priceFactors = {
-      organic: booking.organic,
-      pensionerRate: booking.pensionerRate
+      organic: booking.with_organic,
+      pensionerRate: booking.with_pensioner_rate
     }
-    for (let j = 0; j < booking.items.length; j++) {
+    for (let j = 0; j < booking.services.length; j++) {
       //Don't know why services contain invalid id. The random id is constrained to a valid range.
-      if (services[booking.items[j]]) {
-        serviceItems.push(services[booking.items[j]].description + ' Qty ' + booking.quantity[j])
-        itemQty[booking.items[j]] = booking.quantity[j]
+      if (servicesMenu[booking.services[j]]) {
+        serviceItems.push(servicesMenu[booking.services[j]].description + ' Qty ' + booking.quantities[j])
+        itemQty[booking.services[j]] = booking.quantities[j]
       }
     }
 
-    total = getBookingValue(services, priceFactors, itemQty)
+    total = getBookingValue(servicesMenu, priceFactors, itemQty)
     
     events.push({
       id: booking.id,
-      start: new Date(booking.start),
-      end: new Date(booking.end),
-      address: booking.address,
-      artist: artists[booking.artist],
-      client: clients[booking.client],
+      start: new Date(booking.booking_date + 'T' + booking.booking_time + 'Z'),
+      end: new Date(booking.booking_date + 'T' + booking.booking_end_time + 'Z'),
+      address: booking.event_address,
+      artist: artists[booking.artist_id],
+      client: clients[booking.client_id],
       serviceItems: serviceItems,
       total: total
     })

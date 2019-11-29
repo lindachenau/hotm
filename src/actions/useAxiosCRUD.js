@@ -118,15 +118,21 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe) => 
 
       const config = {
         method: 'post',
+        headers: {"Content-Type": "application/json"},
         url: url,
         data: data
       }
 
       try {
         let result = await axios(config)
+        let bookingId = result.data.booking_id
+
         if (!didCancel) {
-          dispatch({ type: "POST_SUCCESS", payload: data })
-          callMe()
+          if (bookingId > 0) {
+            let payload = {...data, booking_id: bookingId}
+            dispatch({ type: "POST_SUCCESS", payload: payload })
+            callMe()
+          }
         }
       } catch (err) {
         if (!didCancel) {

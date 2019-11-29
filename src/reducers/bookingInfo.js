@@ -11,7 +11,8 @@ import {
   ERROR_AVAIL_ARTISTS,
   ACTIVATE_CLIENTS,
   ACTIVATE_BOOKINGS,
-  ADD_BOOKING
+  ADD_BOOKING,
+  RESET_BOOKING
 } from '../actions/bookingCreator'
 
 const initPriceFactors = {
@@ -31,6 +32,9 @@ export function priceFactors(state = initPriceFactors, action) {
         pensionerRate: !state.pensionerRate
       })
     }
+    case RESET_BOOKING: {
+      return initPriceFactors
+    }
     default:
       return state
   }
@@ -43,36 +47,50 @@ const initDateAddr = {
 }
 
 export function bookingDateAddr(state = initDateAddr, action) {
-  if (action.type === SUBMIT_BOOKING) {
-    return {
-      bookingDate: action.bookingDate,
-      bookingEnd: action.bookingEnd,
-      bookingAddr: action.bookingAddr
+  switch (action.type) {
+    case SUBMIT_BOOKING: {
+      return {
+        bookingDate: action.bookingDate,
+        bookingEnd: action.bookingEnd,
+        bookingAddr: action.bookingAddr
+      }
     }
-  }
-  else {
-    return state
+    case RESET_BOOKING: {
+      return initDateAddr
+    }
+    default:
+      return state
   }
 }
 
 export function bookingStage(state = {stage: 0}, action) {
-  if (action.type === CHANGE_BOOKING_STAGE) {
-    return Object.assign({}, state, {
-      stage: action.stage
-    })
-  }
-  else {
-    return state
+  switch (action.type) {
+    case CHANGE_BOOKING_STAGE: {
+      return Object.assign({}, state, {
+        stage: action.stage
+      })
+    }
+    case RESET_BOOKING: {
+      return {stage: 0}
+    }
+    default:
+      return state
   }
 }
 
 export function selectedArtist(state = {order: 0}, action) {
-  if (action.type === SET_SELECTED_ARTIST) 
-  return Object.assign({}, state, {
-    order: action.order
-  })
-else
-    return state
+  switch (action.type) {
+    case SET_SELECTED_ARTIST: { 
+      return Object.assign({}, state, {
+        order: action.order
+      })
+    }
+    case RESET_BOOKING: {
+      return {order: 0}
+    }
+    default:
+      return state
+  }
 }
 
 const initAvailArtists = {
@@ -94,7 +112,7 @@ export function availArtists(state = initAvailArtists, action) {
     case RECEIVE_AVAIL_ARTISTS: {
       let list = []
       let recs = action.payload
-  
+
       for (let rec of recs) {
         list.push(rec.artist_id)
       }
@@ -113,6 +131,9 @@ export function availArtists(state = initAvailArtists, action) {
         isLoading: false,
         hasErr: true
       })
+    }
+    case RESET_BOOKING: {
+      return initAvailArtists
     }
     default:
       return state
@@ -149,6 +170,9 @@ export function itemQty(state = {}, action) {
         return Object.assign({}, temp)
       }
     }
+    case RESET_BOOKING: {
+      return {}
+    }
     default:
       return state
   }
@@ -184,6 +208,9 @@ export function storeActivation(state = initActivation, action) {
         data: action.payload,
         callMe: action.callMe
       })
+    }
+    case RESET_BOOKING: {
+      return initActivation
     }
     default:
       return state

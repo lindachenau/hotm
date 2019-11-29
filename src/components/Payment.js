@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function Payment ({theme, changeBookingStage, depositPayable, resetBooking, addBooking, bookingInfo, loggedIn}) {
+function Payment ({theme, changeBookingStage, depositPayable, resetBooking, addBooking, bookingInfo, loggedIn, priceFactors, bookingValue, client_id}) {
   const {bookingsData} = useContext(BookingsStoreContext)
   const [value, setValue] = React.useState('');
 
@@ -48,7 +48,16 @@ function Payment ({theme, changeBookingStage, depositPayable, resetBooking, addB
       })
     });
   
-    let bookingData = {...bookingInfo, depositPaid: depositPayable, comment: value}
+    let bookingData = {
+      ...bookingInfo, 
+      client_id: client_id,
+      with_organic: priceFactors.organic ? 1 : 0,
+      with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
+      total_amount: bookingValue, 
+      paid_amount: depositPayable, 
+      paid_type: 'deposit', 
+      comment: value
+    }
 
     if (response.ok) 
       addBooking(bookingData, successNotification, depositPayable)
@@ -62,7 +71,7 @@ function Payment ({theme, changeBookingStage, depositPayable, resetBooking, addB
         <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
           Deposit payable: $ {depositPayable.toString()}
         </Typography>
-        <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} />
+        <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={loggedIn}/>
         <TextField
           id="outlined-textarea"
           label="Additional instructions"
@@ -79,7 +88,7 @@ function Payment ({theme, changeBookingStage, depositPayable, resetBooking, addB
       <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(2)}>
         back
       </Button>
-      {!loggedIn && <SigninForm/>}
+      <SigninForm initOpen={!loggedIn}/>
     </Container>
   )
 }

@@ -24,6 +24,7 @@ const Booking = ({ bookingStage, changeBookingStage, services, theme, bookingVal
       {bookingStage === 3 ? <Payment 
         changeBookingStage={changeBookingStage} 
         theme={theme} 
+        bookingValue={bookingValue}
         depositPayable={depositPayable}/> 
         : null
       }

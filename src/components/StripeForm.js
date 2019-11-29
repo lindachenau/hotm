@@ -1,5 +1,5 @@
-import React, {Component} from 'react'
-import withStyles from '@material-ui/styles/withStyles'
+import React, {useState} from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import {
   CardElement,
@@ -8,12 +8,12 @@ import {
   Elements,
 } from 'react-stripe-elements'
 
-const styles = () => ({
+const useStyles = makeStyles(() => ({
   stripe: {
     marginTop: 20,
     marginBottom: 20
   }
-})
+}))
 
 const createOptions = () => {
   return {
@@ -32,24 +32,23 @@ const createOptions = () => {
   }
 }
 
-class _CardForm extends Component {
-  state = {
-    errorMessage: '',
-  }
+function CardForm ({loggedIn, stripe, handleCharge}) {
+  const [errorMessage, setErrorMessage] = useState('')
+  const classes = useStyles()
 
-  handleChange = ({error}) => {
+  const handleChange = ({error}) => {
     if (error) {
-      this.setState({errorMessage: error.message})
+      setErrorMessage(error.message)
     }
   }
 
-  handleSubmit = async (evt) => {
+  const handleSubmit = async (evt) => {
     evt.preventDefault()
-    if (this.props.stripe) {
-      let result = await this.props.stripe.createToken()
+    if (stripe) {
+      let result = await stripe.createToken()
       if (result.token) {
         // alert("Payment token was created successfully")
-        this.props.handleCharge(result.token)
+        handleCharge(result.token)
       }
       else {
         alert("Payment token creation failed")
@@ -59,40 +58,33 @@ class _CardForm extends Component {
     }
   }
 
-  render() {
-    const { classes } = this.props
-    return (
-      <div className={classes.stripe}>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Card details
-            <CardElement
-              onChange={this.handleChange}
-              {...createOptions()}
-            />
-          </label>
-          <div className={classes.stripe} role="alert">
-            {this.state.errorMessage}
-          </div>
-          <Button variant="contained" color="primary" fullWidth type='submit'>Pay</Button>
-        </form>
-      </div>
-    )
-  }
+  return (
+    <div className={classes.stripe}>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Card details
+          <CardElement
+            onChange={handleChange}
+            {...createOptions()}
+          />
+        </label>
+        <div className={classes.stripe} role="alert">
+          {errorMessage}
+        </div>
+        <Button variant="contained" color="primary" fullWidth type='submit' disabled={!loggedIn}>Pay</Button>
+      </form>
+    </div>
+  )
 }
 
-const CardForm = withStyles(styles)(_CardForm)
 const InjectedCardForm = injectStripe(CardForm)
 
-
-export default class StripeForm extends Component {
-  render() {
-    return (
-      <StripeProvider apiKey={this.props.stripePublicKey}>
-        <Elements>
-          <InjectedCardForm handleCharge={this.props.handleCharge} />
-        </Elements>
-      </StripeProvider>
-    )
-  }
+export default function StripeForm({stripePublicKey, handleCharge, loggedIn}) {
+  return (
+    <StripeProvider apiKey={stripePublicKey}>
+      <Elements>
+        <InjectedCardForm handleCharge={handleCharge} loggedIn={loggedIn}/>
+      </Elements>
+    </StripeProvider>
+  )
 }

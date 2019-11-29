@@ -1,5 +1,7 @@
 let faker = require('faker')
 let dates = require('date-arithmetic')
+let moment = require('moment')
+
 
 faker.locale = "en_AU"
 function generateData () {
@@ -19,18 +21,35 @@ function generateData () {
   }
 
   let artists = []
-  for (let id = 1; id <= 50; id++) {
+  for (let id = 1; id <= 300; id++) {
     let name = faker.name.firstName() + ' ' + faker.name.lastName()
-    let address = faker.address.streetAddress() + ' ' + faker.address.city() + ', ' + faker.address.stateAbbr() + ' ' + faker.address.zipCode()
+    let address = faker.address.city() + ', ' + faker.address.stateAbbr() + ' ' + faker.address.zipCode()
+    let state = faker.address.stateAbbr()
+    let max_travel_distance = Math.ceil(Math.random() * 5) + Math.ceil(Math.random() * 25)
+    
+    let noItems = Math.ceil(Math.random() * 7)
+    let items = []
+
+    for (let i = 0; i < noItems; i++) {
+      let item = Math.ceil(Math.random() * 7)
+      if (!items.includes(item))
+        items.push(item)
+    }
+
     artists.push({
       "id": id,
       "name": name,
-      "address": address,
-      "email": faker.internet.email(),
+      "instagram_handle": "@nadineterens",
+      "state" : state,
+      "hashtag": "#hotm2unadine",
       "phone": faker.phone.phoneNumber(),
-      "avatar": faker.image.avatar(),
-      "skill": faker.lorem.words(),
-      "profile": faker.lorem.paragraph()
+      "email": faker.internet.email(),
+      "address": address,
+      "bio": faker.lorem.paragraph(),
+      "title": faker.lorem.words(),
+      "photo": faker.image.avatar(),
+      "max_travel_distance": max_travel_distance,
+      "services": items.sort()
     })
   }
 
@@ -41,6 +60,9 @@ function generateData () {
     let start = faker.date.between('2019-10-01', '2019-12-31')
     let duration = Math.ceil(Math.random() * 5)
     let end = dates.add(start, duration, 'hours')
+    let booking_date = moment(start).format("YYYY-MM-DD")
+    let booking_time = moment(start).format("HH:mm")
+    let booking_end_time = moment(end).format("HH:mm")
 
     /**
      * Abandon this pair of (start, end) because they are on different date.
@@ -49,7 +71,7 @@ function generateData () {
      {continue;}
       
 
-    let artist = Math.ceil(Math.random() * 50)
+    let artist = Math.ceil(Math.random() * 300)
     let client = Math.ceil(Math.random() * 50)
     let organic = Math.floor(Math.random() * 2)
     let pensionerRate = Math.floor(Math.random() * 2)
@@ -67,17 +89,19 @@ function generateData () {
 
     bookings.push({
       "id": id,
-      "start": start,
-      "end": end,
-      "address": address,
-      "artist": artist,
-      "client": client,
-      "items": items,
-      "quantity": quantity,
-      "organic": organic,
-      "pensionerRate": pensionerRate,
-      "depositPaid": 0,
-      "balancePaid": 0
+      "booking_date": booking_date,
+      "booking_time": booking_time,
+      "booking_end_time": booking_end_time,
+      "event_address": address,
+      "artist_id": artist,
+      "client_id": client,
+      "services": items,
+      "quantities": quantity,
+      "with_organic": organic,
+      "with_pensioner_rate": pensionerRate,
+      "total_amount": 0,
+      "paid_amount": 0,
+      "comment": ""
     })
   }
 

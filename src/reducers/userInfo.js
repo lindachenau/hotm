@@ -15,10 +15,10 @@ export function userInfo(state = initUser, action) {
     case SIGN_IN: {
       return Object.assign({}, state, {
         firstName: action.payload.firstName,
-        lastName: action.payload.firstName,
-        nickName: action.payload.firstName,
-        email: action.payload.firstName,
-        id: action.payload.firstName,
+        lastName: action.payload.lastName,
+        nickName: action.payload.nickName,
+        email: action.payload.email,
+        id: action.payload.id,
         loggedIn: true
       })
     }

@@ -62,10 +62,10 @@ export default function ArtistSelection ({theme, changeBookingStage, availArtist
       {artistsFound &&
       <React.Fragment>
         <ArtistCard
-          avatar={artists[ids[activeStep]].avatar} 
+          avatar={artists[ids[activeStep]].photo} 
           name={artists[ids[activeStep]].name} 
-          skill={artists[ids[activeStep]].skill }
-          profile={artists[ids[activeStep]].profile} 
+          title={artists[ids[activeStep]].title }
+          bio={artists[ids[activeStep]].bio} 
         />
         <MobileStepper
           steps={maxSteps}

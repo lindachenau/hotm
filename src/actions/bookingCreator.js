@@ -59,7 +59,7 @@ export function getAvailArtist(url) {
     .then(data => {
       dispatch({
         type: RECEIVE_AVAIL_ARTISTS,
-        payload: data.artists
+        payload: data
       })
     })
   }

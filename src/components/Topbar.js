@@ -23,6 +23,7 @@ import FilterListIcon from '@material-ui/icons/FilterList'
 
 import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
+import { home_url } from '../config/dataLinks'
 
 const logo = require('../images/logo192.png')
 
@@ -58,14 +59,14 @@ const Menu = [
     pathname: "/calendar",
     icon: <EventIcon />
   },
-  {
-    label: "Manage account",
-    pathname: "/account",
-    icon: <AccountBoxIcon />
-  },
+  // {
+  //   label: "Manage account",
+  //   pathname: "/account",
+  //   icon: <AccountBoxIcon />
+  // },
   {
     label: "Go to Hair on the Move",
-    pathname: "https://haironthemove2u.com.au",
+    pathname: home_url,
     external: true,
     icon: <LinkIcon />
   }
@@ -75,8 +76,8 @@ const Menu = [
 function Topbar ({location, bookingValue, loggedIn}) {
   const classes = useStyles()
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [userDiagOpen, setUserDiagOpen] = useState(false)
   const [triggerSignin, setTriggerSignin] = useState(false)
+  const [triggerSignout, setTriggerSignout] = useState(false)
   const currentPath = location.pathname
   const bookingPage = currentPath === '/'
   const eventsPage = currentPath === '/manage' || currentPath === '/calendar'
@@ -91,8 +92,10 @@ function Topbar ({location, bookingValue, loggedIn}) {
 
   const handleUser = evt => {
     evt.preventDefault()
-    setUserDiagOpen(true)
-    setTriggerSignin(!triggerSignin)
+    if (loggedIn)
+      setTriggerSignout(!triggerSignout)
+    else
+      setTriggerSignin(!triggerSignin)
   }
 
   let title
@@ -169,7 +172,8 @@ function Topbar ({location, bookingValue, loggedIn}) {
             </IconButton>
           </div>
         </Toolbar>
-        {userDiagOpen && (loggedIn ? <SignoutForm triggerOpen={triggerSignin}/> : <SigninForm triggerOpen={triggerSignin}/>)}
+        <SignoutForm triggerOpen={triggerSignout}/> 
+        <SigninForm triggerOpen={triggerSignin} initOpen={false}/>
       </AppBar>
     </div>
   )

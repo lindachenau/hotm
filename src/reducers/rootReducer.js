@@ -9,24 +9,17 @@ import {
   storeActivation
 } from './bookingInfo'
 
-import { RESET_BOOKING } from '../actions/bookingCreator'
+import { userInfo } from './userInfo'
 
-const appReducer = combineReducers({
+const rootReducer = combineReducers({
   priceFactors,
   bookingDateAddr,
   bookingStage,
   selectedArtist,
   availArtists,
   itemQty,
-  storeActivation
+  storeActivation,
+  userInfo
 })
-
-const rootReducer = (state, action) => {
-  if (action.type === RESET_BOOKING) {
-    state = undefined
-  }
-
-  return appReducer(state, action)
-}
 
 export default rootReducer

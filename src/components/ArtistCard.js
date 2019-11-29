@@ -37,7 +37,7 @@ const styles = theme => ({
 
 class CardItem extends Component { 
   render() {
-    const { classes, avatar, name, profile, skill } = this.props
+    const { classes, avatar, name, bio, title } = this.props
 
     return (
       <Paper className={classes.paper}>
@@ -51,10 +51,10 @@ class CardItem extends Component {
                 { name }
               </Typography>
               <Typography gutterBottom>
-                { profile }
+                { bio }
               </Typography>
               <Typography variant="h6" gutterBottom>
-                { skill }
+                { title }
               </Typography>
             </div>
           </Grid>

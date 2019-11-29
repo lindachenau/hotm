@@ -2,25 +2,11 @@ import { connect } from 'react-redux'
 import { resetBooking, addBooking, setActivateBookings } from '../actions/bookingCreator'
 import Payment from '../components/Payment'
 
-let bookingId = 100
-
 const mapStateToProps = state => {
   return {
-    bookingInfo: {
-      id: bookingId++,
-      start: state.bookingDateAddr.bookingDate,
-      end: state.bookingDateAddr.bookingEnd,
-      address: state.bookingDateAddr.bookingAddr,
-      artist: state.availArtists.ids[state.selectedArtist.order],
-      client: 2,
-      items: Object.keys(state.itemQty),
-      quantity: Object.values(state.itemQty),
-      organic: state.priceFactors.organic,
-      pensionerRate: state.priceFactors.pensionerRate,
-      depositPaid: 0,
-      balancePaid: 0,
-      comment: ''
-    },
+    bookingInfo: state.availArtists.recs[state.selectedArtist.order],
+    priceFactors: state.priceFactors,
+    client_id: state.userInfo.id,
     loggedIn: state.userInfo.loggedIn
   }
 }

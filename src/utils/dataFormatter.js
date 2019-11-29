@@ -6,9 +6,9 @@ export function normaliseArtists(artistArr)
     artists[artistArr[i].id.toString()] = {
       id: artistArr[i].id,
       name: artistArr[i].name,
-      avatar: artistArr[i].avatar,
-      skill: artistArr[i].skill,
-      profile: artistArr[i].profile
+      photo: artistArr[i].photo,
+      title: artistArr[i].title,
+      bio: artistArr[i].bio
     }
   }
   

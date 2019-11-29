@@ -42,7 +42,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, packageBooking, price
             />
           <Route path='/manage' render={() => <Manage events={events} eventsFetched={eventsFetched}/>} />
           <Route path='/calendar' render={() => <Calendar events={events} />} />
-          <Route path='/account' render={() => <Account/>} />
+          {/* <Route path='/account' render={() => <Account/>} /> */}
         </Switch>}
       </ScrollToTop>
     </HashRouter>

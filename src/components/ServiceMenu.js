@@ -73,7 +73,7 @@ export default function ServiceMenu({ theme, items, cat, organic, pensioner, ite
             </TableCell>
             <TableCell align="right" style={{width: "10%"}}>
               <IconButton color="inherit">
-                <Badge badgeContent={totalItems(cat, itemQty)} color="inherit" showZero>
+                <Badge badgeContent={totalItems(cat, itemQty)} showZero>
                   <ShoppingCartIcon/>
                 </Badge>
               </IconButton>

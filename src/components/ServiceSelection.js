@@ -85,7 +85,7 @@ const ServiceSelection = ({
     */
     let url = available_artists_url + '?date=' + moment(selectedDate).format("YYYY-MM-DD") + 
     '&start_time=' + moment(selectedDate).format("HH:mm") + '&services=' + Object.keys(itemQty).join(',') +
-    '&event_addr=' + address
+    '&quantities=' + Object.values(itemQty).join(',') + '&event_addr=' + address
     
     getAvailArtist(url)
 
