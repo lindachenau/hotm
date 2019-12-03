@@ -4,15 +4,15 @@ import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import { makeStyles } from '@material-ui/core/styles'
 import { auth_url } from '../config/dataLinks'
 import axios from 'axios'
 import ForgetPWForm from './ForgetPWForm'
+import RegisterForm from './RegisterForm'
 
 const logo = require('../images/logo.png')
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   container1: {
     display: 'flex',
     margin: 20
@@ -33,16 +33,26 @@ const useStyles = makeStyles(() => ({
     marginRight: 15,
     marginTop: 20,
     marginBottom: 20
+  },
+  logo: {
+    maxWidth: '50%',
+    width: 'auto',
+    height: 'auto',
+    [theme.breakpoints.down('sm')]: {
+      maxHeight: 120,
+    }
   }
 }))
 
-export default function SigninForm({triggerOpen, signinUser, initOpen}) {
+export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const[username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [triggerForgetPW, setTriggerForgetPW] = useState(false)
-  const classes = useStyles()
+  const [triggerRegister, setTriggerRegister] = useState(false)
+
+  const classes = useStyles(theme)
 
   useEffect(() => {
     if (didMountRef.current) {
@@ -86,27 +96,28 @@ export default function SigninForm({triggerOpen, signinUser, initOpen}) {
   }
 
   const handleForget = () => {
+    setOpen(false)
     setTriggerForgetPW(!triggerForgetPW)
   }
 
-  const handleRegister = () => {}
+  const handleRegister = () => {
+    setOpen(false)
+    setTriggerRegister(!triggerRegister)
+  }
 
   return (
     <div>
       <Dialog open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container1}>
           <div className={classes.grow} />
-          <img width={120} src={logo} alt="Hair on the move logo" />
+          <img className={classes.logo} src={logo} alt="Hair on the move logo" />
           <div className={classes.grow} />
         </div>
         <DialogContent>
-          <DialogContentText>
-            To continue booking or manage your bookings, please sign in or registertriggerForgetPW.
-          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"
-            label="username"
+            label="username or email"
             type="username"
             fullWidth
             onChange={onChangeUsername}
@@ -143,6 +154,7 @@ export default function SigninForm({triggerOpen, signinUser, initOpen}) {
         </DialogActions>
       </Dialog>
       <ForgetPWForm triggerOpen={triggerForgetPW}/>
+      <RegisterForm triggerOpen={triggerRegister} signinUser={signinUser}/>
     </div>
   )
 }

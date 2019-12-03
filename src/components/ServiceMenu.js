@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function ServiceMenu({ theme, items, cat, organic, pensioner, itemQty, incItemQty, decItemQty }) {
-  const classes = useStyles();
+  const classes = useStyles(theme)
   const [ listOpen, setListOpen ] = useState(false)
 
   const toggleListOpen = (e) => { setListOpen(!listOpen) }
