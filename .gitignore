@@ -6,3 +6,5 @@
 # production
 /build*
 
+yarn.lock
+yarn-error.log
