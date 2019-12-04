@@ -75,7 +75,7 @@ export default function ForgetPWForm({triggerOpen}) {
   }
 
   return (
-    <div>
+    <>
       <Dialog open={open}>
       <DialogContent>
           <DialogContentText>
@@ -99,6 +99,6 @@ export default function ForgetPWForm({triggerOpen}) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   )
 }

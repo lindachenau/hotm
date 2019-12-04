@@ -100,10 +100,10 @@ class MyCalendar extends React.Component {
           previous: <FaChevronLeft />,
           next: <FaChevronRight />,
           showMore: total => (
-            <div>
+            <>
               {`+${total} `}
               <GoTasklist />
-            </div>
+            </>
           ),
           noEventsInRange: 'There are no bookings in this range.'
         }}

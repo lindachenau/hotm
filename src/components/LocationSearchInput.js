@@ -58,7 +58,7 @@ export default function LocationSearchInput ({ address, changeAddr}) {
               {suggestions.map(suggestion => {
                 const className = suggestion.active
                   ? 'suggestion-item--active'
-                  : 'suggestion-item';
+                  : 'suggestion-item'
                 // inline style for demonstration purpose
                 const style = suggestion.active
                   ? { backgroundColor: '#f0e0e0', cursor: 'pointer' }

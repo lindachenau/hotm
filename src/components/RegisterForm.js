@@ -151,7 +151,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   }
 
   return (
-    <div>
+    <>
       <Dialog open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container1}>
           <div className={classes.grow} />
@@ -268,6 +268,6 @@ export default function RegisterForm({triggerOpen, signinUser}) {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   )
 }

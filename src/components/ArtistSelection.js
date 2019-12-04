@@ -66,6 +66,7 @@ export default function ArtistSelection ({theme, changeBookingStage, availArtist
           name={artists[ids[activeStep]].name} 
           title={artists[ids[activeStep]].title }
           bio={artists[ids[activeStep]].bio} 
+          hashtag={artists[ids[activeStep]].hashtag}
         />
         <MobileStepper
           steps={maxSteps}

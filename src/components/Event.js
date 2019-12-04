@@ -19,21 +19,21 @@ export function MonthEvent ({ event, localizer }) {
 export function DayEvent ({ event }) {
   return (
     <div className='rbc-event-label'>
-      <div>
+      <>
         <FaMapMarkerAlt/><span>{ event.address }</span>
-      </div>
-      <div>
+      </>
+      <>
         <FaUserAlt/> 
         <span>{ event.client.name + ' ' }</span> 
         <FaPhoneSquare/>
         <span>{ event.client.phone + ' ' }</span>
-      </div>
-      <div>
+      </>
+      <>
         <FaDollarSign/>
         <span>{ event.total + ' '}</span>
         <span>{ event.artist.name}</span>
         {event.serviceItems.map( item => <div>{ item }</div> )}
-      </div> 
+      </> 
     </div>
   )
 }

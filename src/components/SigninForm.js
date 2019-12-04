@@ -106,7 +106,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
   }
 
   return (
-    <div>
+    <>
       <Dialog open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container1}>
           <div className={classes.grow} />
@@ -155,6 +155,6 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
       </Dialog>
       <ForgetPWForm triggerOpen={triggerForgetPW}/>
       <RegisterForm triggerOpen={triggerRegister} signinUser={signinUser}/>
-    </div>
+    </>
   )
 }

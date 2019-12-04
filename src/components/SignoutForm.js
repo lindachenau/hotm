@@ -54,7 +54,7 @@ export default function SignoutForm({firstName, lastName, email, triggerOpen, si
   }
 
   return (
-    <div>
+    <>
       <Dialog maxWidth='xs' fullWidth open={open}>
         <div className={classes.container1}>
           <div className={classes.grow} />
@@ -78,6 +78,6 @@ export default function SignoutForm({firstName, lastName, email, triggerOpen, si
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   )
 }

@@ -8,7 +8,8 @@ export function normaliseArtists(artistArr)
       name: artistArr[i].name,
       photo: artistArr[i].photo,
       title: artistArr[i].title,
-      bio: artistArr[i].bio
+      bio: artistArr[i].bio,
+      hashtag: artistArr[i].hashtag ? artistArr[i].hashtag.replace('#', '') : "haironthemove2u"
     }
   }
   

@@ -4,10 +4,12 @@ import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import Avatar from '@material-ui/core/Avatar'
-
+import Link from '@material-ui/core/Link'
+import { instagram_url } from '../config/dataLinks'
 
 const styles = theme => ({
   paper: {
+    position: 'relative',
     padding: theme.spacing(3),
     color: theme.palette.text.secondary,
     background: "linear-gradient(#f0e8e8, #e0d8d8)",
@@ -18,7 +20,11 @@ const styles = theme => ({
   },
   avatar: {
     width: 100,
-    height: 100
+    height: 100,
+    [theme.breakpoints.up('sm')]: {
+      width: 160,
+      height: 160
+    }
   },
   flex: {
     display: 'flex',
@@ -32,12 +38,18 @@ const styles = theme => ({
     [theme.breakpoints.down('md')]: {
       alignItems: 'center'
     }
+  },
+  instagram: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20
   }
 })
 
 class CardItem extends Component { 
   render() {
-    const { classes, avatar, name, bio, title } = this.props
+    const { classes, avatar, name, bio, title, hashtag } = this.props
+    const url = instagram_url + hashtag
 
     return (
       <Paper className={classes.paper}>
@@ -59,6 +71,9 @@ class CardItem extends Component {
             </div>
           </Grid>
         </Grid>
+        <Link target="_blank" href={url} className={classes.instagram} rel="noopener">
+          RECENT WORK
+        </Link>
       </Paper>
     )
   }
