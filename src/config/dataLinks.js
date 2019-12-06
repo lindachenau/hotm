@@ -1,5 +1,5 @@
-// const HOTM_BOOKING_API = "http://procomhost.com/hotm_booking/api/v0.3/"
-const HOTM_BOOKING_API = "http://procomhost.com/wp-content/themes/belleza-pro/inc/hotm_booking/api/v0.3/"
+const HOTM_BOOKING_API = "https://procomhost.com/hotm_booking/api/v0.3/"
+// const HOTM_BOOKING_API = "https://procomhost.com/wp-content/themes/belleza-pro/inc/hotm_booking/api/v0.3/"
 export const services_url = HOTM_BOOKING_API + "services"
 export const artists_url = HOTM_BOOKING_API + "artists"
 export const bookings_url = HOTM_BOOKING_API + "bookings"
