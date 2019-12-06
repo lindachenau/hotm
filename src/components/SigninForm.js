@@ -73,9 +73,18 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
   }
 
   const handleSignin = async () => {
-    const url = auth_url + '/?username=' + username + '&password=' + password
+    let signinFormData = new FormData()
+    signinFormData.set('username', username)
+    signinFormData.set('password', password)
 
-    let response = await axios(url)
+    const config = {
+      method: 'post',
+      headers: {"Content-Type": 'multipart/form-data'},
+      url: auth_url,
+      data: signinFormData
+    }
+
+    let response = await axios(config)
 
     if (response.status == 200 && response.data.user) {
       let user = response.data.user

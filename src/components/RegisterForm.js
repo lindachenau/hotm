@@ -109,20 +109,46 @@ export default function RegisterForm({triggerOpen, signinUser}) {
 
     if (nonceResponse.status == 200 && nonceResponse.data.status == 'ok') {
       const nonce = nonceResponse.data.nonce
-      const url = register_url + '/?username=' + username + '&user_pass=' + password + '&email=' + email +
-      '&display_name=' + firstName + ' ' + lastName + '&nonce=' + nonce
 
-      let regResponse = await axios(url)
+      let userFormData = new FormData()
+      userFormData.set('username', username)
+      userFormData.set('user_pass', password)
+      userFormData.set('email', email)
+      userFormData.set('display_name', firstName + ' ' + lastName)
+      userFormData.set('nonce', nonce)
+
+      const config = {
+        method: 'post',
+        headers: {"Content-Type": 'multipart/form-data'},
+        url: register_url,
+        data: userFormData
+      }
+
+      let regResponse = await axios(config)
 
       if (regResponse.status == 200 && regResponse.data.status == 'ok') {
         const cookie = regResponse.data.cookie
         const user_id = regResponse.data.user_id
-        const meta_url = update_user_meta_url + '/?cookie=' + cookie + '&billing_firstname=' + firstName +
-          '&billing_lastname=' + lastName + '&billing_company=' + company + '&billing_address_1=' + address +
-          '&billing_city=' + city + '&billing_state=' + stateAbbr + '&billing_postcode=' + 
-          '&billing_phone=' + phone
 
-        let metaResponse = await axios(meta_url)
+        let metaFormData = new FormData()
+        metaFormData.set('cookie', cookie)
+        metaFormData.set('billing_firstname', firstName)
+        metaFormData.set('billing_lastname', lastName)
+        metaFormData.set('billing_company', company)
+        metaFormData.set('billing_address_1', address)
+        metaFormData.set('billing_city', city)
+        metaFormData.set('billing_state', stateAbbr)
+        metaFormData.set('billing_postcode', postcode)
+        metaFormData.set('billing_phone', phone)
+
+        const metaConfig = {
+          method: 'post',
+          headers: {"Content-Type": 'multipart/form-data'},
+          url: update_user_meta_url,
+          data: metaFormData
+        }
+    
+        let metaResponse = await axios(metaConfig)
 
         if (metaResponse.status == 200 && metaResponse.data.status == 'ok') {
           const payload = {
