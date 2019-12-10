@@ -7,6 +7,7 @@ const mapStateToProps = state => {
     bookingInfo: state.availArtists.recs[state.selectedArtist.order],
     priceFactors: state.priceFactors,
     client_id: state.userInfo.id,
+    clientName: state.userInfo.firstName + ' ' + state.userInfo.lastName,
     loggedIn: state.userInfo.loggedIn
   }
 }
