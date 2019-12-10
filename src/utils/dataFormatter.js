@@ -47,7 +47,8 @@ export function normaliseServices(serviceArr)
         description: items[j].description,
         price: items[j].sale_price,
         organicPrice: items[j].organic_add_price,
-        timeOnsite: items[j].time_on_site
+        timeOnsite: items[j].time_on_site,
+        onlineBooking: items[j].is_not_package == '1' ? true : false
       }
     }
     cats.push({
