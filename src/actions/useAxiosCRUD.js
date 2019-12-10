@@ -133,6 +133,9 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe) => 
             dispatch({ type: "POST_SUCCESS", payload: payload })
             callMe()
           }
+          else {
+            alert(result.data.error + ' Please call to resolve this issue.')
+          }
         }
       } catch (err) {
         if (!didCancel) {

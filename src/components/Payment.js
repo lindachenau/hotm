@@ -23,7 +23,19 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function Payment ({theme, changeBookingStage, depositPayable, resetBooking, addBooking, bookingInfo, loggedIn, priceFactors, bookingValue, client_id}) {
+function Payment (
+  { theme, 
+    changeBookingStage, 
+    depositPayable, 
+    resetBooking, 
+    addBooking, 
+    bookingInfo, 
+    loggedIn, 
+    priceFactors, 
+    bookingValue, 
+    client_id, 
+    clientName
+  }) {
   const {bookingsData} = useContext(BookingsStoreContext)
   const [value, setValue] = React.useState('');
 
@@ -44,6 +56,7 @@ function Payment ({theme, changeBookingStage, depositPayable, resetBooking, addB
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         id: token.id,
+        description: clientName + "'s deposit for booking",
         amount: depositPayable * 100
       })
     });
