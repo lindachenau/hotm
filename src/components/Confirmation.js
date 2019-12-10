@@ -11,6 +11,8 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import Checkbox from '@material-ui/core/Checkbox'
+import Link from '@material-ui/core/Link'
+import { term_url } from '../config/dataLinks'
 
 
 const useStyles = makeStyles(theme => ({
@@ -167,14 +169,17 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
         <div className={classes.acknowledge}>
           <Checkbox checked={checkedTerm} onChange={handleTerm} value="checkedTerm" className={classes.inline}/>
           <Typography variant="body2" align="left" color="textPrimary">
-            I have read Terms & Conditions & Cancellation policy.
+            Please read and accept our &nbsp;
           </Typography>
+          <Link target="_blank" href={term_url} rel="noopener">
+            Terms & Conditions.
+          </Link>
         </div>
         <div className={classes.acknowledge}>
           <Checkbox checked={checkedParking} onChange={handleParking} value="checkedTerm" className={classes.inline}/>
           <Typography variant="body2" align="left" color="textPrimary">
             Customers are required to pay parking charges incurred while artists attend your booking. The incurred parking charges 
-            will be added onto the final invoice.
+            will be added onto the final invoice. Please advise nearby free street parking if applicable.
           </Typography>
         </div>
       </Paper>
