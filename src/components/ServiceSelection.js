@@ -99,7 +99,7 @@ const ServiceSelection = ({
         control={
           <Switch checked={pensionerRate} onChange={() => togglePensionerRate()} value="pensionerRate" color="primary"/>
         }
-        label="Pensioner rate (less 20%)"
+        label="Monday pensioner rate (less 20%)"
       />
       <FormControlLabel
         control={

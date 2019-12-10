@@ -13,6 +13,7 @@ import AttachMoneyIcon from '@material-ui/icons/AttachMoney'
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
+import PhoneEnabledIcon from '@material-ui/icons/PhoneEnabled'
 
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
@@ -95,20 +96,26 @@ export default function ServiceMenu({ theme, items, cat, organic, pensioner, ite
                     {((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
                   </div>
                 </TableCell>
-                <TableCell align="right" style={{width: "10%"}}>
-                  <ButtonGroup>
-                    <Button 
-                      variant="text" 
-                      startIcon={<AddIcon fontSize="small"/>}
-                      onClick={() => incItemQty(id)}
-                    >
-                      {itemQty[id] ? itemQty[id] : 0} 
-                    </Button>
-                    <IconButton onClick={() => decItemQty(id)}>
-                      <RemoveIcon fontSize="small"/>
-                    </IconButton>
-                  </ButtonGroup>
-                </TableCell>
+                {items[id].onlineBooking ?
+                  <TableCell align="right" style={{width: "10%"}}>
+                    <ButtonGroup>
+                      <Button 
+                        variant="text" 
+                        startIcon={<AddIcon fontSize="small"/>}
+                        onClick={() => incItemQty(id)}
+                      >
+                        {itemQty[id] ? itemQty[id] : 0} 
+                      </Button>
+                      <IconButton onClick={() => decItemQty(id)}>
+                        <RemoveIcon fontSize="small"/>
+                      </IconButton>
+                    </ButtonGroup>
+                  </TableCell>
+                  : 
+                  <TableCell align="center" style={{width: "10%"}}>
+                    <PhoneEnabledIcon/>
+                  </TableCell>
+                }
               </TableRow>
             ))}
           </TableBody>
