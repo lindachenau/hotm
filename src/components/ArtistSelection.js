@@ -7,8 +7,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
-import { BookingsStoreContext } from '../config/BookingsStoreProvider'
-import moment from 'moment'
+import { BookingsStoreContext } from './BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 const useStyles = makeStyles(theme => ({
@@ -32,7 +31,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function ArtistSelection ({theme, changeBookingStage, availArtists, selectedArtist, changeSelectedArtist, bookingDateAddr}) {
-  const { artists, artistsFetched } = useContext(BookingsStoreContext)
+  const { artists } = useContext(BookingsStoreContext)
   const classes = useStyles()
   const [activeStep, setActiveStep] = useState(selectedArtist)
   const [maxSteps, setMaxSteps] = useState(0)

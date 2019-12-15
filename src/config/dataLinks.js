@@ -1,17 +1,46 @@
-const HOTM_BOOKING_API = "https://procomhost.com/hotm_booking/api/v0.3/"
-// const HOTM_BOOKING_API = "https://procomhost.com/wp-content/themes/belleza-pro/inc/hotm_booking/api/v0.3/"
-export const services_url = HOTM_BOOKING_API + "services"
-export const artists_url = HOTM_BOOKING_API + "artists"
-export const bookings_url = HOTM_BOOKING_API + "bookings"
-export const available_artists_url = HOTM_BOOKING_API + 'get_available_artists.php'
+/*
+ * Hair On the Move 2 U Home page
+ */
+export const home_url = "https://procomhost.com"
+
+/*
+ * The active custom booking api
+ */
+const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.3"
+// const HOTM_BOOKING_API = home_url + "/wp-content/themes/belleza-pro/inc/hotm_booking/api/v0.3/"
+export const services_url = HOTM_BOOKING_API + "/services"
+export const artists_url = HOTM_BOOKING_API + "/artists"
+export const bookings_url = HOTM_BOOKING_API + "/bookings"
+export const available_artists_url = HOTM_BOOKING_API + '/get_available_artists.php'
+
+/*
+ * Simulated data for testing
+ */
 // export const artists_url = 'http://localhost:5000/artists'
 // export const bookings_url = 'http://localhost:5000/bookings'
 export const clients_url = 'http://localhost:5000/clients'
-export const register_nonce_url = "https://procomhost.com/api/get_nonce/?controller=user&method=register"
-export const register_url = "https://procomhost.com/api/user/register"
-export const update_user_meta_url = "https://procomhost.com/api/user/update_user_meta_vars"
-export const auth_url = "https://procomhost.com/api/auth/generate_auth_cookie"
-export const reset_pw_url = "https://procomhost.com/api/user/retrieve_password/?user_login="
-export const home_url = "https://procomhost.com"
+
+/*
+ * JSON API Auth & JSON API User Plugin
+ */
+export const register_nonce_url = home_url + "/api/get_nonce/?controller=user&method=register"
+export const register_url = home_url + "/api/user/register"
+export const update_user_meta_url = home_url + "/api/user/update_user_meta_vars"
+export const auth_url = home_url + "/api/auth/generate_auth_cookie"
+export const reset_pw_url = home_url + "/api/user/retrieve_password/?user_login="
+
+/*
+ * miniOrange API Authentication
+ */
+export const user_url = home_url + "/wp-json/wp/v2/users"
+export const access_token = "Basic YmxhY2tjYXQ6QEdhdmluJlMwMHR5"
+
+/*
+ * Instagram root for artists
+ */
 export const instagram_url = "https://www.instagram.com/explore/tags/"
-export const term_url = "https://haironthemove2u.com.au/terms-conditions/"
+
+/*
+ * Hair On the Move 2 U Terms & Conditions
+ */
+export const term_url = home_url + "/terms-conditions/"

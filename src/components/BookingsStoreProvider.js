@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext } from "react"
 import useAxiosFetch from '../actions/useAxiosFetch'
 import useAxiosCRUD from '../actions/useAxiosCRUD'
 import { normaliseArtists, normaliseClients, normaliseServices } from '../utils/dataFormatter'
-import { bookings_url, artists_url, clients_url, services_url } from './dataLinks'
+import { bookings_url, artists_url, clients_url, services_url } from '../config/dataLinks'
 import { getEvents } from '../utils/fakeload'
 
 const BookingsStoreContext = createContext()

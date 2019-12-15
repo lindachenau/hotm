@@ -12,7 +12,8 @@ import {
   ACTIVATE_CLIENTS,
   ACTIVATE_BOOKINGS,
   ADD_BOOKING,
-  RESET_BOOKING
+  RESET_BOOKING,
+  ASSIGN_ARTISTS
 } from '../actions/bookingCreator'
 
 const initPriceFactors = {
@@ -78,6 +79,31 @@ export function bookingStage(state = {stage: 0}, action) {
   }
 }
 
+/*
+ * A list of artists assigned to a job. Only use non-mutating array methods.
+ */
+export function assignedArtists(state = [], action) {
+  switch (action.type) {
+    case ASSIGN_ARTISTS: {
+      let ids = [...state]
+      action.artistIds.forEach(id => {
+        if (!ids.includes(id))
+          ids.push(id) 
+      })
+
+      return ids
+    }
+    case RESET_BOOKING: {
+      return []
+    }
+    default:
+      return state
+  }
+}
+
+/*
+ * Client selected single artist
+ */
 export function selectedArtist(state = {order: 0}, action) {
   switch (action.type) {
     case SET_SELECTED_ARTIST: { 
@@ -157,8 +183,8 @@ export function itemQty(state = {}, action) {
     case DEC_ITEM_QTY: {
       if (qty > 0) {
         qty -= 1
-      }
-
+      }      
+      
       if (qty > 0) {
         return Object.assign({}, state, {
           [id]: qty

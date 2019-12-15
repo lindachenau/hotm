@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react"
+import { useState, useEffect, useReducer } from "react"
 import axios from "axios"
 
 const convertArrayToObject = (array, key) => {
@@ -154,6 +154,8 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe) => 
           createData(data)
           break
         }
+        default:
+          throw new Error()
       }
     }
 

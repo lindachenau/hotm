@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { BookingsStoreProvider } from './BookingsStoreProvider'
+import { BookingsStoreProvider } from '../components/BookingsStoreProvider'
 
 const mapStateToProps = state => {
   return {

@@ -11,7 +11,6 @@ export const getBookingValue = (items, priceFactors, itemQty) => {
   return total.toFixed(2)
 }
 
-export const getDepositPayable = (itemQty, totalBookingValue) => {
-  const isPackageBooking = Object.keys(itemQty).filter(id => parseInt(id) >= 44).length > 0
-  return isPackageBooking ? totalBookingValue/2 : 50
+export const getDepositPayable = (totalBookingValue) => {
+  return (totalBookingValue * 0.3).toFixed(2)
 }

@@ -9,7 +9,7 @@ const mapStateToProps = state => {
     bookingAddr: state.bookingDateAddr.bookingAddr,
     itemQty: state.itemQty,
     organic: state.priceFactors.organic,
-    pensionerRate: state.priceFactors.pensionerRate
+    pensioner: state.priceFactors.pensionerRate
   }
 }
 

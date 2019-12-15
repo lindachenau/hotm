@@ -42,7 +42,8 @@ const ServiceSelection = ({
   togglePensionerRate, 
   submitBooking,
   getAvailArtist,
-  changeSelectedArtist }) => {
+  changeSelectedArtist,
+  artistBooking }) => {
   
   const classes = useStyles()
   const items = services.items
@@ -93,6 +94,11 @@ const ServiceSelection = ({
     onSubmit(1)
   }
 
+  const handleNext = event => {
+    submitBooking(selectedDate, new Date(getBookingEnd()), address)
+    onSubmit(1)
+  }
+
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 50}}>
       <FormControlLabel
@@ -113,9 +119,9 @@ const ServiceSelection = ({
           items={items}
           key={cat.name}
           cat={cat} 
-          theme={theme}
           organic={organic}
           pensioner={pensionerRate}
+          artistBooking={artistBooking}
         />
       )}
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -148,8 +154,8 @@ const ServiceSelection = ({
       <LocationSearchInput address={address} changeAddr={handleAddrChange}/>
       <div className={classes.flex}>
         <div className={classes.grow} />
-        <Button variant='text' color='primary' onClick={handleSubmit} size="large" disabled={missingFields()}>
-            Submit
+        <Button variant='text' color='primary' onClick={artistBooking ? handleNext : handleSubmit} size="large" disabled={missingFields()}>
+          {artistBooking ? 'Next' : 'Submit'}
         </Button>
       </div>
     </Container>

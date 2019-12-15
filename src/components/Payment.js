@@ -1,13 +1,11 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import StripeForm from './StripeForm'
 import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
-import Checkbox from '@material-ui/core/Checkbox'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import { BookingsStoreContext } from '../config/BookingsStoreProvider'
 import SigninForm from '../config/SigninFormContainer'
 
 const useStyles = makeStyles(theme => ({
@@ -36,8 +34,7 @@ function Payment (
     client_id, 
     clientName
   }) {
-  const {bookingsData} = useContext(BookingsStoreContext)
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = useState('');
 
   const classes = useStyles()
 
@@ -90,7 +87,7 @@ function Payment (
           label="Additional instructions"
           placeholder="Let us know about any allergies, preferences, entrances,
           or any details about your room number if you are
-          staying in a hotel."
+          staying in a hotel. If there's free street parking near the event, please advise."
           multiline
           className={classes.textField}
           margin="normal"

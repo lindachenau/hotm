@@ -1,11 +1,6 @@
 import { connect } from 'react-redux'
-import Routes from './Routes'
+import Routes from '../components/Routes'
 import { changeBookingStage } from '../actions/bookingCreator'
-
-const checkPackageBooking = (itemQty) => {
-  return Object.keys(itemQty).filter(id => parseInt(id) >= 44).length > 0
-}
-
 
 const mapStateToProps = state => {
   return {
@@ -15,7 +10,6 @@ const mapStateToProps = state => {
     clients: state.clients,
     bookings: state.bookings,
     bookingStage: state.bookingStage.stage,
-    packageBooking: checkPackageBooking(state.itemQty),
     loggedIn: state.userInfo.loggedIn
   }
 }

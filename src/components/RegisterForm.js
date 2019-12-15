@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { register_nonce_url, register_url, update_user_meta_url } from '../config/dataLinks'
 import axios from 'axios'
@@ -38,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 export default function RegisterForm({triggerOpen, signinUser}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
-  const[username, setUsername] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
@@ -51,6 +52,14 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   const [phone, setPhone] = useState('')
   const [triggerRegister, setTriggerRegister] = useState(false)
   const classes = useStyles()
+  const [disableSubmit, setDisableSubmit] = useState(true)
+
+  useEffect(() => {
+    if (username == '' || password == '' || email == '' || firstName == '' || lastName == '' || phone == '')
+      setDisableSubmit(true)
+    else
+      setDisableSubmit(false)
+  },[username, password, email, firstName, lastName, phone])
 
   useEffect(() => {
     if (didMountRef.current)
@@ -189,6 +198,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
             <Grid item xs={6}>
               <TextField
                 autoFocus
+                required
                 margin="dense"
                 label="username"
                 type="username"
@@ -198,6 +208,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 label="password"
                 type="password"
@@ -207,6 +218,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                required
                 margin="dense"
                 label="email"
                 type="email"
@@ -216,6 +228,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 label="first name"
                 type="firstname"
@@ -225,6 +238,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
             </Grid>  
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 label="last name"
                 type="lastname"
@@ -279,17 +293,18 @@ export default function RegisterForm({triggerOpen, signinUser}) {
             </Grid>
             <Grid item xs={6}>
               <TextField
+                required
                 margin="dense"
                 label="phone"
                 type="phone"
                 fullWidth
                 onChange={onChangePhone}
               />
-            </Grid>
+            </Grid>  
           </Grid>
         </DialogContent>
         <DialogActions className={classes.button1}>
-          <Button variant="contained" onClick={handleRegister} color="primary" fullWidth>
+          <Button variant="contained" onClick={handleRegister} color="primary" fullWidth disabled={disableSubmit}>
             Submit
           </Button>
         </DialogActions>

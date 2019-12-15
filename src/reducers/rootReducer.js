@@ -4,6 +4,7 @@ import {
   bookingDateAddr,
   bookingStage,
   selectedArtist,
+  assignedArtists,
   availArtists,
   itemQty,
   storeActivation
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   bookingDateAddr,
   bookingStage,
   selectedArtist,
+  assignedArtists,
   availArtists,
   itemQty,
   storeActivation,

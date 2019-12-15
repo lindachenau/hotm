@@ -14,11 +14,11 @@ const Booking = ({ bookingStage, changeBookingStage, services, theme, bookingVal
       {bookingStage === 1 ? <ArtistSelection changeBookingStage={changeBookingStage} theme={theme}/> : null}
       {bookingStage === 2 ? 
         <Confirmation 
-        changeBookingStage={changeBookingStage} 
-        theme={theme} 
-        items={services.items} 
-        bookingValue={bookingValue}
-        artists={artists}/> 
+          changeBookingStage={changeBookingStage} 
+          theme={theme} 
+          items={services.items} 
+          bookingValue={bookingValue}
+          artists={artists}/> 
         : null
       }
       {bookingStage === 3 ? <Payment 

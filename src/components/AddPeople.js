@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from "react"
 import moment from 'moment'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -10,12 +10,10 @@ import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
-import Checkbox from '@material-ui/core/Checkbox'
-import Link from '@material-ui/core/Link'
 import Chip from '@material-ui/core/Chip'
 import DoneIcon from '@material-ui/icons/Done'
-import { term_url } from '../config/dataLinks'
-
+import Autocomplete from '@material-ui/lab/Autocomplete'
+import TextField from '@material-ui/core/TextField'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -58,25 +56,60 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, itemQty, changeBookingStage, organic, pensioner, bookingValue, artists }) {
-  const [checkedDeposit, setCheckedDeposit] = useState(false)
-  const [checkedTerm, setCheckedTerm] = useState(false)
-  const [checkedParking, setCheckedParking] = useState(false)
+function AddPeople ({ 
+  artistId, 
+  assignedArtists, 
+  assignArtists,
+  bookingDate, 
+  bookingEnd, 
+  bookingAddr, 
+  items, 
+  itemQty, 
+  changeBookingStage, 
+  organic, 
+  pensioner, 
+  bookingValue, 
+  artists }) {
+
+  const [tags, setTags] = useState(assignedArtists.map(id => artists[id]))
   const classes = useStyles()
+  const [disableNext, setDisableNext] = useState(true)
+  const artistOptions = Object.values(artists).sort((a, b) => {
+    if (a.name < b.name)
+      return -1
+    else if (a.name > b.name)
+      return 1
+    else
+      return 0
+  })
 
-  const handleDeposit = event => {
-    setCheckedDeposit(!checkedDeposit)
+  useEffect(() => {
+    if (tags.length > 0)
+      setDisableNext(false)
+    else
+      setDisableNext(true)
+  }, [tags])
+  
+  const ids = Object.keys(itemQty)
+
+  const handleBack = () => {
+    assignArtists(tags.map(tag => tag.id))
+    changeBookingStage(0)
   }
 
-  const handleTerm = event => {
-    setCheckedTerm(!checkedTerm)
+  const handleNext = () => {
+    assignArtists(tags.map(tag => tag.id))
+    changeBookingStage(2)
   }
 
-  const handleParking = event => {
-    setCheckedParking(!checkedParking)
+  /*
+   * This is a workaround. For some reason, state (Tags) is always behind the update cycle while
+   * assigning to a var (assignedArtists) happens in the same update cycle. It's like combinatorial
+   * vs synchronous in digital circuit. Very strange!
+   */
+  const onChangeArtists = (event, value) => {
+    setTags(value)
   }
-
-  let ids = Object.keys(itemQty)
 
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 50}}>
@@ -104,22 +137,25 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
           </TableBody>
         </Table>
         <br/>
-        <Table size="small" aria-label="a dense table">
-          <TableHead className={classes.background}>
-            <TableRow>
-              <TableCell align="left" style={{width: "70%"}}>
-                <b>Selected artist</b>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <TableRow>
-              <TableCell align="left">
-              {artists[artistId].name}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <Autocomplete
+          multiple
+          id="artist-list"
+          disableClearable
+          filterSelectedOptions
+          options={artistOptions}
+          getOptionLabel={option => option.name}
+          value={tags}
+          onChange={onChangeArtists}
+          renderInput={params => (
+            <TextField
+              {...params}
+              variant="outlined"
+              placeholder="Artist name"
+              label="Add artists"
+              fullWidth
+            />
+          )}
+        />
         <br/>
         <Table size="small" aria-label="a dense table">
           <TableHead className={classes.background}>
@@ -164,36 +200,14 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
         <Typography variant="subtitle2" align="right" color="textPrimary">
           {'TOTAL (GST INCL): $' + bookingValue}
         </Typography>
-        <div className={classes.acknowledge}>
-          <Checkbox checked={checkedDeposit} onChange={handleDeposit} value="checkedDeposit" className={classes.inline}/>
-          <Typography variant="body2" align="left" color="textPrimary">
-            Please pay 30% of the requested services to secure your booking now.
-          </Typography>
-        </div>
-        <div className={classes.acknowledge}>
-          <Checkbox checked={checkedTerm} onChange={handleTerm} value="checkedTerm" className={classes.inline}/>
-          <Typography variant="body2" align="left" color="textPrimary">
-            Please read and accept our &nbsp;
-          </Typography>
-          <Link target="_blank" href={term_url} rel="noopener">
-            Terms & Conditions.
-          </Link>
-        </div>
-        <div className={classes.acknowledge}>
-          <Checkbox checked={checkedParking} onChange={handleParking} value="checkedTerm" className={classes.inline}/>
-          <Typography variant="body2" align="left" color="textPrimary">
-            Customers are required to pay parking charges incurred while artists attend your booking. 
-            The incurred parking charges will be added onto the final invoice. 
-          </Typography>
-        </div>
       </Paper>
       <div className={classes.flex}>
-        <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(1)}>
+        <Button variant="text" color="primary" size='large' onClick={handleBack}>
           back
         </Button>
         <div className={classes.grow} />
-        <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(3)} 
-          disabled={!checkedDeposit || !checkedTerm || !checkedParking}
+        <Button variant="text" color="primary" size='large' onClick={handleNext} 
+          disabled={disableNext}
         >
           confirm booking
         </Button>
@@ -202,4 +216,4 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
   )
 }
 
-export default Confirmation
+export default AddPeople

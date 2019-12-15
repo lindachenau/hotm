@@ -15,9 +15,6 @@ const components = {
 }
 
 class MyCalendar extends React.Component {
-  constructor(props) {
-    super(props)
-  }    
 
   // moveEvent = ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
   //   const { events } = this.state

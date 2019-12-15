@@ -13,6 +13,7 @@ export const MAKE_BOOKING = 'MAKE_BOOKING'
 export const ACTIVATE_CLIENTS = 'ACTIVATE_CLIENTS'
 export const ACTIVATE_BOOKINGS = 'ACTIVATE_BOOKINGS'
 export const ADD_BOOKING = 'ADD_BOOKING'
+export const ASSIGN_ARTISTS = 'ASSIGN_ARTISTS'
 
 export const toggleOrganic = () => ({
   type: CHANGE_ORGANIC
@@ -93,4 +94,9 @@ export const addBooking = (bookingInfo, callMe) => ({
   type: ADD_BOOKING,
   payload: bookingInfo,
   callMe
+})
+
+export const assignArtists = (artistIds) => ({
+  type : ASSIGN_ARTISTS,
+  artistIds
 })

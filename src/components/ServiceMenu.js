@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function ServiceMenu({ theme, items, cat, organic, pensioner, itemQty, incItemQty, decItemQty }) {
+export default function ServiceMenu({ theme, items, cat, organic, pensioner, itemQty, incItemQty, decItemQty, artistBooking }) {
   const classes = useStyles(theme)
   const [ listOpen, setListOpen ] = useState(false)
 
@@ -96,7 +96,7 @@ export default function ServiceMenu({ theme, items, cat, organic, pensioner, ite
                     {((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
                   </div>
                 </TableCell>
-                {items[id].onlineBooking ?
+                {items[id].onlineBooking || artistBooking ?
                   <TableCell align="right" style={{width: "10%"}}>
                     <ButtonGroup>
                       <Button 

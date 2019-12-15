@@ -12,9 +12,9 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Drawer from '@material-ui/core/Drawer'
 import { Link as MaterialLink, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import AccountBoxIcon from '@material-ui/icons/AccountBox'
 import EventIcon from '@material-ui/icons/Event'
 import LinkIcon from '@material-ui/icons/Link'
+import CreateIcon from '@material-ui/icons/Create'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import LockIcon from '@material-ui/icons/Lock'
@@ -50,6 +50,11 @@ const Menu = [
     icon: <AddIcon />
   },
   {
+    label: "Artist add a booking",
+    pathname: "/artist",
+    icon: <CreateIcon />
+  },
+  {
     label: "Manage bookings",
     pathname: "/manage",
     icon: <LibraryBooksIcon />
@@ -79,7 +84,7 @@ function Topbar ({location, bookingValue, loggedIn}) {
   const [triggerSignin, setTriggerSignin] = useState(false)
   const [triggerSignout, setTriggerSignout] = useState(false)
   const currentPath = location.pathname
-  const bookingPage = currentPath === '/'
+  const bookingPage = currentPath === '/' || currentPath === '/artist'
   const eventsPage = currentPath === '/manage' || currentPath === '/calendar'
   
   const toggleDrawer = (open) => event => {
@@ -107,8 +112,8 @@ function Topbar ({location, bookingValue, loggedIn}) {
     case '/manage':
       title = 'Manage bookings'
       break
-    case '/account':
-      title = 'Manage account'
+    case '/artist':
+      title = 'Artist add a booking'
       break
     default:
       title = 'Add a booking'

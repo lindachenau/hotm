@@ -8,25 +8,23 @@ import Container from '@material-ui/core/Container'
 
 
 function getSteps() {
-  return ['Select service', 'Select an artist', 'Confirm booking', 'Pay deposit']
+  return ['Select service', 'Add people', 'Payment']
 }
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return 'Select service items, time and location to find available artists'
+      return 'Select service items, time and location'
     case 1:
-      return 'Select an artist for your booking'
+      return 'Add artists and client to the booking'
     case 2:
-      return 'Confirm your booking details'
-    case 3:
-      return 'Pay the deposit to secure your booking'
+      return 'Payment'
     default:
       return 'Unknown stepIndex'
   }
 }
 
-export default function BookingSteps(props) {
+export default function ArtistBookingSteps(props) {
   const steps = getSteps()
   const { activeStep } = props
 
