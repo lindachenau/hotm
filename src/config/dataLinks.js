@@ -6,7 +6,7 @@ export const home_url = "https://procomhost.com"
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.3"
+const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.5"
 // const HOTM_BOOKING_API = home_url + "/wp-content/themes/belleza-pro/inc/hotm_booking/api/v0.3/"
 export const services_url = HOTM_BOOKING_API + "/services"
 export const artists_url = HOTM_BOOKING_API + "/artists"
@@ -32,7 +32,9 @@ export const reset_pw_url = home_url + "/api/user/retrieve_password/?user_login=
 /*
  * miniOrange API Authentication
  */
-export const user_url = home_url + "/wp-json/wp/v2/users"
+// export const user_url = home_url + "/wp-json/wp/v2/users"
+// Use relative path in development mode to make use of proxy
+export const user_url = "/wp-json/wp/v2/users"
 export const access_token = "Basic YmxhY2tjYXQ6QEdhdmluJlMwMHR5"
 
 /*

@@ -68,7 +68,7 @@ const BookingCards = ({events, eventsFetched}) => {
 
   useEffect(() => {
     setMaxSteps(events.length)
-  }, [eventsFetched])
+  }, [eventsFetched, events.length])
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)

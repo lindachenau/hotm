@@ -4,7 +4,6 @@ import Booking from '../pages/Booking'
 import ArtistBooking from '../pages/ArtistBooking'
 import Calendar from '../pages/Calendar'
 import Manage from '../config/ManageContainer'
-import Account from '../pages/Account'
 import ScrollToTop from './ScrollTop'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Topbar from './Topbar'
@@ -15,14 +14,14 @@ import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
  * For deploy testing frontend without backend
  */
 const Routes = ({ theme, bookingStage, changeBookingStage, priceFactors, itemQty, loggedIn }) => {
-  const { services, servicesFetched, events, eventsFetched, artists, bookingsData } = useContext(BookingsStoreContext)
+  const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
 
   useEffect(() => {
     setBookingValue(getBookingValue(services.items, priceFactors, itemQty))
     setDepositPayable(getDepositPayable(bookingValue))
-  }, [services.items, priceFactors, itemQty])
+  }, [services.items, priceFactors, itemQty, bookingValue])
   
   return (
     <HashRouter>

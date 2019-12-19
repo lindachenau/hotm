@@ -62,7 +62,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
       didMountRef.current = true
       setOpen(initOpen)
     }
-  }, [triggerOpen])
+  }, [triggerOpen, initOpen])
 
   const onChangeUsername = event => {
     setUsername(event.target.value)
@@ -86,7 +86,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
 
     let response = await axios(config)
 
-    if (response.status == 200 && response.data.user) {
+    if (response.status === 200 && response.data.user) {
       let user = response.data.user
       const payload = {
         firstName: user.firstname,

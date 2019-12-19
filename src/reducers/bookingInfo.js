@@ -9,9 +9,9 @@ import {
   GET_AVAIL_ARTISTS,
   RECEIVE_AVAIL_ARTISTS,
   ERROR_AVAIL_ARTISTS,
-  ACTIVATE_CLIENTS,
   ACTIVATE_BOOKINGS,
   ADD_BOOKING,
+  SAVE_BOOKING,
   RESET_BOOKING,
   ASSIGN_ARTISTS
 } from '../actions/bookingCreator'
@@ -140,7 +140,7 @@ export function availArtists(state = initAvailArtists, action) {
       let recs = action.payload
 
       for (let rec of recs) {
-        list.push(rec.artist_id)
+        list.push(rec.artist_id_list[0])
       }
   
       return Object.assign({}, state, {
@@ -207,20 +207,16 @@ export function itemQty(state = {}, action) {
 const initActivation = {
   servicesActive: true,
   artistsActive: true,
-  clientsActive: false,
   bookingsActive: false,
+  bookingTrigger: false,
   requestMethod: 'get',
   data: {},
-  callMe: null
+  callMe: null,
+  bookingData: {}
 }
 
 export function storeActivation(state = initActivation, action) {
   switch (action.type) {
-    case ACTIVATE_CLIENTS: {
-      return Object.assign({}, state, {
-        clientsActive: action.val
-      })
-    }
     case ACTIVATE_BOOKINGS: {
       return Object.assign({}, state, {
         bookingsActive: action.val,
@@ -232,7 +228,13 @@ export function storeActivation(state = initActivation, action) {
         bookingsActive: true,
         requestMethod: 'post',
         data: action.payload,
+        bookingTrigger: !state.bookingAddr,
         callMe: action.callMe
+      })
+    }
+    case SAVE_BOOKING: {
+      return Object.assign({}, state, {
+        bookingData: action.payload
       })
     }
     case RESET_BOOKING: {

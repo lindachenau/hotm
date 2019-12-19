@@ -32,7 +32,7 @@ const createOptions = () => {
   }
 }
 
-function CardForm ({loggedIn, stripe, handleCharge}) {
+function CardForm ({loggedIn, stripe, handleCharge, payMessage}) {
   const [errorMessage, setErrorMessage] = useState('')
   const classes = useStyles()
 
@@ -71,7 +71,7 @@ function CardForm ({loggedIn, stripe, handleCharge}) {
         <div className={classes.stripe} role="alert">
           {errorMessage}
         </div>
-        <Button variant="contained" color="primary" fullWidth type='submit' disabled={!loggedIn}>Pay</Button>
+        <Button variant="contained" color="primary" fullWidth type='submit' disabled={!loggedIn}>{payMessage}</Button>
       </form>
     </div>
   )
@@ -79,11 +79,11 @@ function CardForm ({loggedIn, stripe, handleCharge}) {
 
 const InjectedCardForm = injectStripe(CardForm)
 
-export default function StripeForm({stripePublicKey, handleCharge, loggedIn}) {
+export default function StripeForm({stripePublicKey, handleCharge, loggedIn, payMessage}) {
   return (
     <StripeProvider apiKey={stripePublicKey}>
       <Elements>
-        <InjectedCardForm handleCharge={handleCharge} loggedIn={loggedIn}/>
+        <InjectedCardForm handleCharge={handleCharge} loggedIn={loggedIn} payMessage={payMessage}/>
       </Elements>
     </StripeProvider>
   )

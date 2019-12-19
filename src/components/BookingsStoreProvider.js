@@ -2,13 +2,13 @@ import React, { useState, useEffect, createContext } from "react"
 import useAxiosFetch from '../actions/useAxiosFetch'
 import useAxiosCRUD from '../actions/useAxiosCRUD'
 import { normaliseArtists, normaliseClients, normaliseServices } from '../utils/dataFormatter'
-import { bookings_url, artists_url, clients_url, services_url } from '../config/dataLinks'
+import { bookings_url, artists_url, services_url } from '../config/dataLinks'
 import { getEvents } from '../utils/fakeload'
 
 const BookingsStoreContext = createContext()
 
 const BookingsStoreProvider = ({children, storeCtrl}) => {
-  const {servicesActive, artistsActive, clientsActive, bookingsActive, requestMethod, data, callMe} = storeCtrl
+  const {servicesActive, artistsActive, clientsActive, bookingsActive, requestMethod, data, callMe, bookingTrigger, fetchTrigger, clientQuery} = storeCtrl
   const [services, setServices] = useState({})
   const [servicesFetched, setServicesFetched] = useState(false)
   const [artists, setArtists] = useState({})
@@ -21,34 +21,34 @@ const BookingsStoreProvider = ({children, storeCtrl}) => {
   let servicesData = useAxiosFetch(services_url, [], servicesActive);
 
   useEffect(() => {
-    if (servicesData.data.length != 0) {
+    if (servicesData.data.length !== 0) {
       setServices(normaliseServices(servicesData.data))
       setServicesFetched(true)
     }
-  }, [servicesData.isLoading])
+  }, [servicesData.isLoading, servicesData.data])
 
   let artistsData = useAxiosFetch(artists_url, [], artistsActive);
 
   useEffect(() => {
-    if (artistsData.data.length != 0) {
+    if (artistsData.data.length !== 0) {
       setArtists(normaliseArtists(artistsData.data))
       setArtistsFetched(true)
     }
-  }, [artistsData.isLoading])
+  }, [artistsData.isLoading, artistsData.data])
 
-  let clientsData = useAxiosFetch(clients_url, [], clientsActive);
+  let bookingsData = useAxiosCRUD(bookings_url, {}, bookingsActive, requestMethod, data, callMe, bookingTrigger);
+
+  let clientsData = useAxiosFetch(clientQuery, [], clientsActive, fetchTrigger);
 
   useEffect(() => {
-    if (clientsData.data.length != 0) {
+    if (clientsData.data.length !== 0) {
       setClients(normaliseClients(clientsData.data))
       setClientsFetched(true)
     }
-  }, [clientsData.isLoading])
-
-  let bookingsData = useAxiosCRUD(bookings_url, {}, bookingsActive, requestMethod, data, callMe);
+  }, [clientsData.isLoading, clientsData.data])
 
   useEffect(() => {
-    if (Object.keys(bookingsData.data).length != 0 && !bookingsData.isLoading && !bookingsData.isUpdating && artistsFetched && clientsFetched && servicesFetched) {
+    if (Object.keys(bookingsData.data).length !== 0 && !bookingsData.isLoading && !bookingsData.isUpdating && artistsFetched && clientsFetched && servicesFetched) {
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
       setEventsFetched(true)
     }

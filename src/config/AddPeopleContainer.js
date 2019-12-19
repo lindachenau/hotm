@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { assignArtists } from '../actions/bookingCreator'
+import { assignArtists, saveBooking } from '../actions/bookingCreator'
 import AddPeople from '../components/AddPeople'
 
 const mapStateToProps = state => {
@@ -18,7 +18,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    assignArtists: artistsIds => dispatch(assignArtists(artistsIds))
+    assignArtists: artistsIds => dispatch(assignArtists(artistsIds)),
+    saveBooking: (bookingData) => dispatch(saveBooking(bookingData)),
   }
 }
 

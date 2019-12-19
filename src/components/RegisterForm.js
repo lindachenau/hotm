@@ -5,7 +5,6 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
-import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { register_nonce_url, register_url, update_user_meta_url } from '../config/dataLinks'
 import axios from 'axios'
@@ -50,12 +49,11 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   const [stateAbbr, setStateAbbr] = useState('')
   const [postcode, setPostcode] = useState('')
   const [phone, setPhone] = useState('')
-  const [triggerRegister, setTriggerRegister] = useState(false)
   const classes = useStyles()
   const [disableSubmit, setDisableSubmit] = useState(true)
 
   useEffect(() => {
-    if (username == '' || password == '' || email == '' || firstName == '' || lastName == '' || phone == '')
+    if (username === '' || password === '' || email === '' || firstName === '' || lastName === '' || phone === '')
       setDisableSubmit(true)
     else
       setDisableSubmit(false)
@@ -116,7 +114,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
 
     let nonceResponse = await axios(register_nonce_url)
 
-    if (nonceResponse.status == 200 && nonceResponse.data.status == 'ok') {
+    if (nonceResponse.status === 200 && nonceResponse.data.status === 'ok') {
       const nonce = nonceResponse.data.nonce
 
       let userFormData = new FormData()
@@ -135,7 +133,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
 
       let regResponse = await axios(config)
 
-      if (regResponse.status == 200 && regResponse.data.status == 'ok') {
+      if (regResponse.status === 200 && regResponse.data.status === 'ok') {
         const cookie = regResponse.data.cookie
         const user_id = regResponse.data.user_id
 
@@ -159,7 +157,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     
         let metaResponse = await axios(metaConfig)
 
-        if (metaResponse.status == 200 && metaResponse.data.status == 'ok') {
+        if (metaResponse.status === 200 && metaResponse.data.status === 'ok') {
           const payload = {
             firstName,
             lastName,

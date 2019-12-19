@@ -58,10 +58,10 @@ export default function ForgetPWForm({triggerOpen}) {
 
     let response = await axios(url)
 
-    if (response.status == 200) {
+    if (response.status === 200) {
       let data = response.data
 
-      if (data.status == 'ok') {
+      if (data.status === 'ok') {
         alert('An email to reset your password has been sent to you.')
         setOpen(false)
       }

@@ -4,7 +4,6 @@ import Manage from '../pages/Manage'
 
 const mapDispatchToProps = dispatch => {
     return {
-      setActivateClients: (val) => dispatch(setActivateClients(val)),
       setActivateBookings: (val) => dispatch(setActivateBookings(val))
     }
 }

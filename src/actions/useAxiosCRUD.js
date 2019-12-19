@@ -84,7 +84,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe) => {
+const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe, bookingTrigger) => {
   const [url] = useState(initialUrl)
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
@@ -126,7 +126,7 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe) => 
       try {
         let result = await axios(config)
         let bookingId = result.data.booking_id
-
+        console.log(bookingId)
         if (!didCancel) {
           if (bookingId > 0) {
             let payload = {...data, booking_id: bookingId}
@@ -162,7 +162,7 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe) => 
     return () => {
       didCancel = true
     }
-  }, [url, active, method, data])
+  }, [url, active, method, data, bookingTrigger])
 
   return { ...state }
 }

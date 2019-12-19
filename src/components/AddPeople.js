@@ -14,6 +14,7 @@ import Chip from '@material-ui/core/Chip'
 import DoneIcon from '@material-ui/icons/Done'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import TextField from '@material-ui/core/TextField'
+import AddClient from './AddClient'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -58,6 +59,7 @@ const useStyles = makeStyles(theme => ({
 
 function AddPeople ({ 
   artistId, 
+  saveBooking,
   assignedArtists, 
   assignArtists,
   bookingDate, 
@@ -69,11 +71,13 @@ function AddPeople ({
   organic, 
   pensioner, 
   bookingValue, 
+  depositPayable,
   artists }) {
 
   const [tags, setTags] = useState(assignedArtists.map(id => artists[id]))
   const classes = useStyles()
   const [disableNext, setDisableNext] = useState(true)
+  const [clientId, setClientId] = useState('')
   const artistOptions = Object.values(artists).sort((a, b) => {
     if (a.name < b.name)
       return -1
@@ -99,14 +103,40 @@ function AddPeople ({
 
   const handleNext = () => {
     assignArtists(tags.map(tag => tag.id))
+
+    const start_time = moment(bookingDate).format("HH:mm")
+    const bookingData = {
+      artist_id_list: tags.map(tag => tag.id),
+      booking_date: moment(bookingDate).format("YYYY-MM-DD"),
+      booking_time: start_time,
+      booking_end_time: moment(bookingEnd).format("HH:mm"),
+      artist_start_time: start_time,
+      booking_id: null,
+      created_datetime: null,
+      event_address: bookingAddr,
+      quantities: Object.values(itemQty),
+      services: Object.keys(itemQty),
+      unit_prices: Object.keys(itemQty).map(id => items[id].price),
+      status: null,
+      time_on_site: 0,
+      travel_distance: 0,
+      travel_duration: 0,
+      client_id: clientId,
+      with_organic: organic ? 1 : 0,
+      with_pensioner_rate: pensioner ? 1 : 0,
+      paid_balance_total: null,
+      paid_deposit_total: null,
+      total_amount: bookingValue, 
+      paid_amount: depositPayable, 
+      paid_type: 'deposit', 
+      comment: '',
+      status: ''
+    }
+  
+    saveBooking(bookingData)
     changeBookingStage(2)
   }
 
-  /*
-   * This is a workaround. For some reason, state (Tags) is always behind the update cycle while
-   * assigning to a var (assignedArtists) happens in the same update cycle. It's like combinatorial
-   * vs synchronous in digital circuit. Very strange!
-   */
   const onChangeArtists = (event, value) => {
     setTags(value)
   }
@@ -155,6 +185,10 @@ function AddPeople ({
               fullWidth
             />
           )}
+        />
+        <br/>
+        <AddClient
+          setClientId={setClientId}
         />
         <br/>
         <Table size="small" aria-label="a dense table">

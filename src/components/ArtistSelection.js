@@ -37,11 +37,11 @@ export default function ArtistSelection ({theme, changeBookingStage, availArtist
   const [maxSteps, setMaxSteps] = useState(0)
   const { ids, isLoading, hasErr } = availArtists
   let artistsFound = !isLoading && ids.length > 0
-  let noArtists = !isLoading && !hasErr && ids.length == 0
+  let noArtists = !isLoading && !hasErr && ids.length === 0
 
   useEffect(() => {
     setMaxSteps(ids.length)
-  }, [isLoading])
+  }, [isLoading, ids.length])
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)

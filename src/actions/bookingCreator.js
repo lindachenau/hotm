@@ -10,9 +10,9 @@ export const RECEIVE_AVAIL_ARTISTS = 'RECEIVE_AVAIL_ARTISTS'
 export const ERROR_AVAIL_ARTISTS = 'ERROR_AVAIL_ARTISTS'
 export const RESET_BOOKING = 'RESET_BOOKING'
 export const MAKE_BOOKING = 'MAKE_BOOKING'
-export const ACTIVATE_CLIENTS = 'ACTIVATE_CLIENTS'
 export const ACTIVATE_BOOKINGS = 'ACTIVATE_BOOKINGS'
 export const ADD_BOOKING = 'ADD_BOOKING'
+export const SAVE_BOOKING = 'SAVE_BOOKING'
 export const ASSIGN_ARTISTS = 'ASSIGN_ARTISTS'
 
 export const toggleOrganic = () => ({
@@ -85,15 +85,15 @@ export const setActivateBookings = val => ({
   val
 })
 
-export const setActivateClients = val => ({
-  type: ACTIVATE_CLIENTS,
-  val
-})
-
 export const addBooking = (bookingInfo, callMe) => ({
   type: ADD_BOOKING,
   payload: bookingInfo,
   callMe
+})
+
+export const saveBooking = (bookingData) => ({
+  type: SAVE_BOOKING,
+  payload: bookingData,
 })
 
 export const assignArtists = (artistIds) => ({

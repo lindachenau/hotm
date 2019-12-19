@@ -3,10 +3,9 @@ import { withRouter } from 'react-router-dom';
 import BookingCards from '../components/BookingCards'
 
 
-const Manage = ({events, eventsFetched, setActivateClients, setActivateBookings}) => {
+const Manage = ({events, eventsFetched, setActivateBookings}) => {
 
   useEffect(() => {
-    setActivateClients(true)
     setActivateBookings(true)
 
     return () => {

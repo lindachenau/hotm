@@ -78,7 +78,20 @@ const ServiceSelection = ({
     return selectedDate.getTime() + duration * 60 * 1000
   }
 
+  const checkBookingRules = () => {
+    if (pensionerRate && selectedDate.getDay() !== 1) {
+      alert('Sorry, pensioner rate is only available on Mondays.')
+      return false
+    }
+
+    return true
+  }
+
   const handleSubmit = event => {
+
+    if (!checkBookingRules())
+      return
+
     submitBooking(selectedDate, new Date(getBookingEnd()), address)
 
     /*A workaround for redux-thunk error. When passing (itemQty, selectedDate, address) to getAvailArtist action creator,
@@ -95,6 +108,9 @@ const ServiceSelection = ({
   }
 
   const handleNext = event => {
+    if (!checkBookingRules())
+    return
+
     submitBooking(selectedDate, new Date(getBookingEnd()), address)
     onSubmit(1)
   }

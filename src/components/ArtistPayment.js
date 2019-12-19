@@ -6,7 +6,6 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import SigninForm from '../config/SigninFormContainer'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -21,20 +20,14 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function Payment (
+function ArtistPayment (
   { theme, 
     changeBookingStage, 
     depositPayable, 
     resetBooking, 
     addBooking, 
-    bookingInfo, 
-    items, 
-    itemQty, 
-    loggedIn, 
-    priceFactors, 
-    bookingValue, 
-    userId, 
-    userName
+    bookingData, 
+    bookingValue
   }) {
   const [value, setValue] = useState('');
 
@@ -55,24 +48,11 @@ function Payment (
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         id: token.id,
-        description: userName + "'s deposit for booking",
+        description: "'s deposit for booking",
         amount: (depositPayable * 100).toFixed(0)
       })
     });
   
-    let bookingData = {
-      ...bookingInfo, 
-      client_id: userId,
-      with_organic: priceFactors.organic ? 1 : 0,
-      with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
-      unit_prices: Object.keys(itemQty).map(id => items[id].price).join(','),
-      total_amount: bookingValue, 
-      paid_amount: depositPayable, 
-      paid_type: 'deposit', 
-      comment: value,
-      status: ''
-    }
-
     if (response.ok) 
       addBooking(bookingData, successNotification, depositPayable)
     else
@@ -85,7 +65,7 @@ function Payment (
         <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
           Deposit payable: $ {depositPayable.toString()}
         </Typography>
-        <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={loggedIn} payMessage="Pay"/>
+        <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={true} payMessage="Client Pay"/>
         <TextField
           id="outlined-textarea"
           label="Additional instructions"
@@ -102,9 +82,8 @@ function Payment (
       <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(2)}>
         back
       </Button>
-      <SigninForm initOpen={!loggedIn}/>
     </Container>
   )
 }
 
-export default Payment
+export default ArtistPayment
