@@ -27,12 +27,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Card ({ event }) {
-  const classes = useStyles();
+  const classes = useStyles()
+  let itemKey = 0
 
   return (
     <Paper className={classes.paper}>
       <Typography variant="h6" align="center" color="textPrimary">
-        { moment(event.start).format("dddd, Do MMMM YYYY") }
+        { moment(event.start).format("dddd, YYYY/MM/DD") }
       </Typography>
       <Typography variant="h6" align="center" color="textPrimary" gutterBottom>
         { moment(event.start).format('LT') + ' – ' + moment(event.end).format('LT')}
@@ -52,7 +53,7 @@ function Card ({ event }) {
         <span>{ event.total + ' '}</span>
         <span>{ event.artist.name}</span>
         <ul>
-          {event.serviceItems.map( item => <li>{ item }</li> )}
+          {event.serviceItems.map( item => <li key={itemKey++}>{ item }</li> )}
         </ul>
       </div>
     </Paper>
@@ -106,7 +107,7 @@ const BookingCards = ({events, eventsFetched}) => {
         </Button>
         <div className={classes.grow} />
         <Button variant="text" color="primary" size='large'>
-          Delete
+          Checkout
         </Button>
       </div>
     </Container>

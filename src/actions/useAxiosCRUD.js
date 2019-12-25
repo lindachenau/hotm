@@ -6,7 +6,7 @@ const convertArrayToObject = (array, key) => {
   return array.reduce((obj, item) => {
     return {
       ...obj,
-      [item[key]]: item,
+      [item[key].toString()]: item,
     };
   }, initialValue)
 }
@@ -27,7 +27,7 @@ const dataFetchReducer = (state, action) => {
         isUpdating: false,
         hasErrored: false,
         errorMessage: "",
-        data: Object.assign({}, state.data, convertArrayToObject(action.payload, 'id'))
+        data: Object.assign({}, state.data, convertArrayToObject(action.payload, 'booking_id'))
       }
     case "FETCH_FAILURE":
       return {
@@ -51,7 +51,7 @@ const dataFetchReducer = (state, action) => {
         isUpdating: false,
         hasErrored: false,
         errorMessage: "",
-        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'id'))
+        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "PUT_SUCCESS":
       return {

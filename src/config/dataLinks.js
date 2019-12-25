@@ -1,12 +1,14 @@
 /*
  * Hair On the Move 2 U Home page
  */
-export const home_url = "https://procomhost.com"
+// export const home_url = "https://procomhost.com"
+export const home_url = "https://appvelation.app"
+
 
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.5"
+const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.6"
 // const HOTM_BOOKING_API = home_url + "/wp-content/themes/belleza-pro/inc/hotm_booking/api/v0.3/"
 export const services_url = HOTM_BOOKING_API + "/services"
 export const artists_url = HOTM_BOOKING_API + "/artists"
@@ -18,7 +20,6 @@ export const available_artists_url = HOTM_BOOKING_API + '/get_available_artists.
  */
 // export const artists_url = 'http://localhost:5000/artists'
 // export const bookings_url = 'http://localhost:5000/bookings'
-export const clients_url = 'http://localhost:5000/clients'
 
 /*
  * JSON API Auth & JSON API User Plugin

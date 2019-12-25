@@ -88,7 +88,7 @@ function generateData () {
     }
 
     bookings.push({
-      "id": id,
+      "booking_id": id,
       "booking_date": booking_date,
       "booking_time": booking_time,
       "booking_end_time": booking_end_time,

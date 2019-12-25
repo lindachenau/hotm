@@ -50,7 +50,7 @@ const Menu = [
     icon: <AddIcon />
   },
   {
-    label: "Artist add a booking",
+    label: "Artist edit a booking",
     pathname: "/artist",
     icon: <CreateIcon />
   },
@@ -113,7 +113,7 @@ function Topbar ({location, bookingValue, loggedIn}) {
       title = 'Manage bookings'
       break
     case '/artist':
-      title = 'Artist add a booking'
+      title = 'Artist edit a booking'
       break
     default:
       title = 'Add a booking'

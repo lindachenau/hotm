@@ -15,10 +15,7 @@ export default function AddClient({setClientId}) {
 
   useEffect(() => {
 
-    if (loading) 
-      return
-
-    if (active) {
+    if (active && !loading) {
       (async () => {
 
         const config = {
@@ -36,7 +33,7 @@ export default function AddClient({setClientId}) {
       })()
     }
 
-  }, [searchKey, loading, active])
+  }, [searchKey, active])
 
   useEffect(() => {
     if (!open) {
