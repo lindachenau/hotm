@@ -48,9 +48,20 @@ const Routes = ({ theme, bookingStage, changeBookingStage, priceFactors, itemQty
               changeBookingStage={changeBookingStage} 
               bookingValue={bookingValue}
               depositPayable={depositPayable}
+              artists={artists}
+              newBooking={true}/>} 
+          />
+          <Route path='/manage' render={() => 
+            <Manage 
+              events={events} 
+              eventsFetched={eventsFetched}
+              services={services} 
+              bookingStage={bookingStage} 
+              changeBookingStage={changeBookingStage} 
+              bookingValue={bookingValue}
+              depositPayable={depositPayable}
               artists={artists}/>} 
           />
-          <Route path='/manage' render={() => <Manage events={events} eventsFetched={eventsFetched}/>} />
           <Route path='/calendar' render={() => <Calendar events={events} />} />
           {/* <Route path='/account' render={() => <Account/>} /> */}
         </Switch>}

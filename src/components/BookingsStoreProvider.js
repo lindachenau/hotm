@@ -3,7 +3,7 @@ import useAxiosFetch from '../actions/useAxiosFetch'
 import useAxiosCRUD from '../actions/useAxiosCRUD'
 import { normaliseArtists, normaliseServices } from '../utils/dataFormatter'
 import { bookings_url, user_url, access_token, artists_url, services_url } from '../config/dataLinks'
-import { getEvents } from '../utils/fakeload'
+import { getEvents } from '../utils/dataFormatter'
 import axios from 'axios'
 
 const BookingsStoreContext = createContext()
@@ -38,7 +38,7 @@ const BookingsStoreProvider = ({children, storeCtrl}) => {
     }
   }, [artistsData.isLoading, artistsData.data])
 
-  let bookingsData = useAxiosCRUD(bookings_url, {}, bookingsActive, requestMethod, data, callMe, bookingTrigger);
+  let bookingsData = useAxiosCRUD(bookings_url + '?from_date=2019-12-31', {}, bookingsActive, requestMethod, data, callMe, bookingTrigger);
 
   const getClientListFromBookings = bookings => {
     let list = []

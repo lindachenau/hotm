@@ -1,9 +1,20 @@
-import React, { useEffect} from "react";
+import React, { useState, useEffect} from "react";
 import { withRouter } from 'react-router-dom';
-import BookingCards from '../components/BookingCards'
+import BookingCards from '../config/BookingCardsContainer'
+import ArtistBooking from '../pages/ArtistBooking'
 
 
-const Manage = ({events, eventsFetched, setActivateBookings}) => {
+const Manage = ({
+  events, 
+  eventsFetched, 
+  setActivateBookings, 
+  bookingStage, 
+  changeBookingStage, 
+  services, 
+  bookingValue, 
+  depositPayable, 
+  artists}) => {
+  const [manageState, setManageState] = useState('Default')
 
   useEffect(() => {
     setActivateBookings(true)
@@ -14,9 +25,21 @@ const Manage = ({events, eventsFetched, setActivateBookings}) => {
   }, [])
 
   return (
-    <React.Fragment>
-      <BookingCards events={events} eventsFetched={eventsFetched}/>
-    </React.Fragment>
+    <>
+      {manageState === 'Default' ?
+        <BookingCards events={events} eventsFetched={eventsFetched} setManageState={setManageState}/>
+        : 
+        <ArtistBooking
+          bookingStage={bookingStage} 
+          changeBookingStage={changeBookingStage}
+          services={services}
+          bookingValue={bookingValue}
+          depositPayable={depositPayable}
+          artists={artists}
+          newBooking={false}
+        />
+      }
+    </>
   )
 }
 

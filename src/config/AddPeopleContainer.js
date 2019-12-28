@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
 import { assignArtists, saveBooking } from '../actions/bookingCreator'
 import AddPeople from '../components/AddPeople'
+import { statement } from '@babel/template'
+import { FaSatellite } from 'react-icons/fa'
 
 const mapStateToProps = state => {
   return {
-    artistId: state.availArtists.ids[state.selectedArtist.order],
     assignedArtists: state.assignedArtists,
     bookingDate: state.bookingDateAddr.bookingDate,
     bookingEnd: state.bookingDateAddr.bookingEnd,
@@ -12,7 +13,7 @@ const mapStateToProps = state => {
     itemQty: state.itemQty,
     organic: state.priceFactors.organic,
     pensioner: state.priceFactors.pensionerRate,
-    availArtists: state.assignedArtists
+    client: state.clientInfo.client
   }
 }
 

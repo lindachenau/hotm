@@ -79,8 +79,15 @@ const ServiceSelection = ({
   }
 
   const checkBookingRules = () => {
+    let allAddOn = true
+    Object.keys(itemQty).forEach(id => {allAddOn = items[id].addOn && allAddOn})
+
     if (pensionerRate && selectedDate.getDay() !== 1) {
       alert('Sorry, pensioner rate is only available on Mondays.')
+      return false
+    }
+    else if (allAddOn) {
+      alert('Sorry, add-on services* can not be booked on its own.')
       return false
     }
 

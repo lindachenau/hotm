@@ -5,10 +5,10 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { user_url, access_token } from '../config/dataLinks'
 import axios from "axios"
 
-export default function AddClient({setClientId}) {
+export default function AddClient({client, setClientId, }) {
   const [open, setOpen] = useState(false)
-  const [options, setOptions] = useState([])
-  const [client, setClient] = useState('')
+  const [options, setOptions] = useState(client !== null ? [client] : [])
+  const [tag, setTag] = useState(client !== null ? client : null)
   const [searchKey, setSearchKey] = useState('')
   const active = open && searchKey.length >= 3
   const [loading, setLoading] = useState(false)
@@ -27,7 +27,12 @@ export default function AddClient({setClientId}) {
         setLoading(true)
         let clients = await axios(config)
 
-        setOptions(clients.data)
+        setOptions(clients.data.map(client => {
+          return {
+            name: client.name, 
+            phone: client.meta.billing_phone[0]
+          }
+        }))
         setLoading(false)
 
       })()
@@ -35,19 +40,16 @@ export default function AddClient({setClientId}) {
 
   }, [searchKey, active])
 
-  useEffect(() => {
-    if (!open) {
-      setOptions([])
-    }
-  }, [open])
-
   const handleChangeClient = (event, value) => {
-    setClient(value)
-    setClientId(value.id)
+    if (value !== null)
+      setClientId(value.id)
   }
 
-  const handleChangeSearchKey = (event) => {
-    setSearchKey(event.target.value)
+  const handleChangeSearchKey = (event, value, reason) => {
+    if (reason === 'input')
+      setSearchKey(value)
+    else if (reason === 'clear')
+      setSearchKey('')
   }
 
   const handleOpen = () => {
@@ -57,11 +59,11 @@ export default function AddClient({setClientId}) {
   const handleClose = () => {
     setOpen(false)
     setSearchKey('')
+    setOptions([])
   }
 
   const getOptionLabel = option => {
-    // console.log(option.meta)
-    return option.name
+    return option.name + ' - ' + option.phone
   }
 
   return (
@@ -70,16 +72,16 @@ export default function AddClient({setClientId}) {
       open={open}
       onOpen={handleOpen}
       onClose={handleClose}
-      getOptionSelected={(option, value) => option.name === value.name}
+      // getOptionSelected={(option, value) => option.name === value.name}
       getOptionLabel={getOptionLabel}
       options={options}
       loading={loading}
-      value={client}
+      value={tag}
       onChange={handleChangeClient}
+      onInputChange={handleChangeSearchKey}
       renderInput={params => (
         <TextField
           {...params}
-          onChange={handleChangeSearchKey}
           label="Add client"
           fullWidth
           variant="outlined"

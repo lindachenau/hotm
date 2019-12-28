@@ -5,7 +5,7 @@ import ArtistBookingSteps from '../components/ArtistBookingSteps'
 import AddPeople from '../config/AddPeopleContainer'
 import ArtistPayment from '../config/ArtistPaymentContainer'
 
-const ArtistBooking = ({ bookingStage, changeBookingStage, services, theme, bookingValue, depositPayable, artists }) => {
+const ArtistBooking = ({ bookingStage, changeBookingStage, services, theme, bookingValue, depositPayable, artists, newBooking }) => {
   return (
     <React.Fragment>
       <ArtistBookingSteps activeStep={bookingStage}/>
@@ -25,7 +25,9 @@ const ArtistBooking = ({ bookingStage, changeBookingStage, services, theme, book
         theme={theme} 
         items={services.items} 
         bookingValue={bookingValue}
-        depositPayable={depositPayable}/> 
+        depositPayable={depositPayable} 
+        bookingValue={bookingValue}
+        newBooking={newBooking}/>
         : null
       }
     </React.Fragment>

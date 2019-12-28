@@ -1,3 +1,5 @@
+import { getBookingValue } from './getBookingValue'
+
 export function normaliseArtists(artistArr)
 {
   let artists = {}
@@ -6,6 +8,7 @@ export function normaliseArtists(artistArr)
     artists[artistArr[i].id.toString()] = {
       id: artistArr[i].id,
       name: artistArr[i].name,
+      state: artistArr[i].state,
       photo: artistArr[i].photo,
       title: artistArr[i].title,
       bio: artistArr[i].bio,
@@ -63,3 +66,46 @@ export function normaliseServices(serviceArr)
   }
 }
 
+export function getEvents(bookings, artists, clients, servicesMenu)
+{
+  let events = []
+
+  for (let id in bookings) {
+    let serviceItems = []
+    let total = 0
+    let booking = bookings[id]
+
+    //artist && client still exist
+    if (artists[booking.artist_id_list[0]] && clients[booking.client_id]) {
+      let itemQty = {}
+      let priceFactors = {
+        organic: booking.with_organic,
+        pensionerRate: booking.with_pensioner_rate
+      }
+      for (let j = 0; j < booking.services.length; j++) {
+        //Don't know why services contain invalid id. The random id is constrained to a valid range.
+        if (servicesMenu[booking.services[j]]) {
+          serviceItems.push(servicesMenu[booking.services[j]].description + ' Qty ' + booking.quantities[j])
+          itemQty[booking.services[j]] = booking.quantities[j]
+        }
+      }
+
+      total = getBookingValue(servicesMenu, priceFactors, itemQty)
+      
+      events.push({
+        id: booking.booking_id,
+        start: new Date(booking.booking_date + ' ' + booking.booking_time + ':00'),
+        end: new Date(booking.booking_date + ' ' + booking.booking_end_time + ':00'),
+        address: booking.event_address,
+        artists: booking.artist_id_list.map(id => artists[id]),
+        artistNames: booking.artist_id_list.map(id => artists[id].name).join(', '),
+        client: clients[booking.client_id],
+        organic: booking.with_organic,
+        serviceItems: serviceItems,
+        total: total
+      })
+    }
+  }
+
+  return events
+}

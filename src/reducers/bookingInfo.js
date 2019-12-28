@@ -13,7 +13,8 @@ import {
   ADD_BOOKING,
   SAVE_BOOKING,
   RESET_BOOKING,
-  ASSIGN_ARTISTS
+  ASSIGN_ARTISTS,
+  LOAD_BOOKING
 } from '../actions/bookingCreator'
 
 const initPriceFactors = {
@@ -31,6 +32,12 @@ export function priceFactors(state = initPriceFactors, action) {
     case CHANGE_PENSIONER_RATE: {
       return Object.assign({}, state, {
         pensionerRate: !state.pensionerRate
+      })
+    }
+    case LOAD_BOOKING: {
+      return Object.assign({}, {
+        organic: action.booking.with_organic === 1 ? true : false,
+        pensionerRate: action.booking.with_pensioner_rate === 1 ? true : false
       })
     }
     case RESET_BOOKING: {
@@ -54,6 +61,14 @@ export function bookingDateAddr(state = initDateAddr, action) {
         bookingDate: action.bookingDate,
         bookingEnd: action.bookingEnd,
         bookingAddr: action.bookingAddr
+      }
+    }
+    case LOAD_BOOKING: {
+      const booking = action.booking
+      return {
+        bookingDate: new Date(booking.booking_date + ' ' + booking.booking_time + ':00'),
+        bookingEnd: new Date(booking.booking_date + ' ' + booking.booking_end_time + ':00'),
+        bookingAddr: booking.event_address
       }
     }
     case RESET_BOOKING: {
@@ -93,8 +108,42 @@ export function assignedArtists(state = [], action) {
 
       return ids
     }
+    case LOAD_BOOKING: {
+      let ids = []
+      action.booking.artist_id_list.forEach(id => {
+        if (!ids.includes(id))
+          ids.push(id) 
+      })
+
+      return ids
+    }
     case RESET_BOOKING: {
       return []
+    }
+    default:
+      return state
+  }
+}
+
+const initClientInfo = {
+  client: null,
+  comment: ''
+}
+export function clientInfo(state = initClientInfo, action) {
+  switch (action.type) {
+    case LOAD_BOOKING: { 
+      const temp = Object.assign({}, {
+        client: action.booking.client,
+        comment: action.booking.comment
+      })
+      console.log(temp)
+      return Object.assign({}, {
+        client: action.booking.client,
+        comment: action.booking.comment
+      })
+    }
+    case RESET_BOOKING: {
+      return initClientInfo
     }
     default:
       return state
@@ -196,6 +245,16 @@ export function itemQty(state = {}, action) {
         return Object.assign({}, temp)
       }
     }
+    case LOAD_BOOKING: {
+      const services = action.booking.services
+      const quantities = action.booking.quantities
+      let temp = {}
+
+      for (let i = 0; i < services.length; i++ ) {
+        temp[services[i].toString()] = quantities[i]
+      }
+      return Object.assign({}, temp)
+    }
     case RESET_BOOKING: {
       return {}
     }
@@ -244,3 +303,4 @@ export function storeActivation(state = initActivation, action) {
       return state
   }
 }
+

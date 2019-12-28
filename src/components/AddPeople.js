@@ -58,9 +58,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function AddPeople ({ 
-  artistId, 
   saveBooking,
   assignedArtists, 
+  client,
   assignArtists,
   bookingDate, 
   bookingEnd, 
@@ -77,11 +77,14 @@ function AddPeople ({
   const [tags, setTags] = useState(assignedArtists.map(id => artists[id]))
   const classes = useStyles()
   const [disableNext, setDisableNext] = useState(true)
-  const [clientId, setClientId] = useState('')
+  const [clientId, setClientId] = useState(client !== null ? client.id : null)
+  
   const artistOptions = Object.values(artists).sort((a, b) => {
-    if (a.name < b.name)
+    let artists1 = a.state.toUpperCase() + a.name
+    let artists2 = b.state.toUpperCase() + b.name
+    if (artists1 < artists2)
       return -1
-    else if (a.name > b.name)
+    else if (artists1 > artists2)
       return 1
     else
       return 0
@@ -118,7 +121,7 @@ function AddPeople ({
       services: Object.keys(itemQty),
       unit_prices: Object.keys(itemQty).map(id => items[id].price),
       status: null,
-      time_on_site: 0,
+      time_on_site: (bookingEnd - bookingDate) / 1000 / 60,
       travel_distance: 0,
       travel_duration: 0,
       client_id: clientId,
@@ -173,6 +176,8 @@ function AddPeople ({
           disableClearable
           filterSelectedOptions
           options={artistOptions}
+          groupBy={option => option.state.toUpperCase()}
+          // getOptionLabel={option => option.state.toUpperCase() + ' - ' + option.name}
           getOptionLabel={option => option.name}
           value={tags}
           onChange={onChangeArtists}
@@ -189,6 +194,7 @@ function AddPeople ({
         <br/>
         <AddClient
           setClientId={setClientId}
+          client={client}
         />
         <br/>
         <Table size="small" aria-label="a dense table">

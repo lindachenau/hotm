@@ -5,13 +5,13 @@ import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign } from "react-ic
  * 
  * event display for Month view in mobile devices 
  */
-export function MonthEvent ({ event, localizer }) {
+export function MonthEvent ({ event }) {
   return (
     <div className='rbc-event-label'>
       <span>{ moment(event.start).format('LT') + ' – ' + moment(event.end).format('LT') + ' ' }</span>
       <FaDollarSign/>
       <span>{ event.total + ' '}</span>
-      <span>{ event.artist.name}</span>
+      <span>{ event.artistNames}</span>
     </div>
   )
 }
@@ -31,7 +31,7 @@ export function DayEvent ({ event }) {
       <>
         <FaDollarSign/>
         <span>{ event.total + ' '}</span>
-        <span>{ event.artist.name}</span>
+        <span>{ event.artistNames}</span>
         {event.serviceItems.map( item => <div>{ item }</div> )}
       </> 
     </div>

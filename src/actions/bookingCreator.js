@@ -14,6 +14,7 @@ export const ACTIVATE_BOOKINGS = 'ACTIVATE_BOOKINGS'
 export const ADD_BOOKING = 'ADD_BOOKING'
 export const SAVE_BOOKING = 'SAVE_BOOKING'
 export const ASSIGN_ARTISTS = 'ASSIGN_ARTISTS'
+export const LOAD_BOOKING = 'LOAD_BOOKING'
 
 export const toggleOrganic = () => ({
   type: CHANGE_ORGANIC
@@ -97,6 +98,11 @@ export const saveBooking = (bookingData) => ({
 })
 
 export const assignArtists = (artistIds) => ({
-  type : ASSIGN_ARTISTS,
+  type: ASSIGN_ARTISTS,
   artistIds
+})
+
+export const loadBooking = (booking) => ({
+  type: LOAD_BOOKING,
+  booking
 })

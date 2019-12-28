@@ -17,19 +17,28 @@ const useStyles = makeStyles(theme => ({
   },
   textField : {
     width: "100%"
+  },
+  flex: {
+    display: 'flex',
+    marginTop: 10
+  },
+  grow: {
+    flexGrow: 1,
   }
 }))
 
-function ArtistPayment (
-  { theme, 
-    changeBookingStage, 
-    depositPayable, 
-    resetBooking, 
-    addBooking, 
-    bookingData, 
-    bookingValue
+function ArtistPayment({
+  theme, 
+  changeBookingStage, 
+  depositPayable, 
+  resetBooking, 
+  addBooking, 
+  bookingData, 
+  bookingValue,
+  newBooking,
+  comment
   }) {
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState(comment);
 
   const classes = useStyles()
 
@@ -62,9 +71,15 @@ function ArtistPayment (
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
       <Paper className={classes.paper}>
-        <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
-          Deposit payable: $ {depositPayable.toString()}
-        </Typography>
+        {newBooking ?
+          <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
+            Deposit payable: $ {depositPayable.toString()}
+          </Typography>
+          :
+          <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
+            Balance payable: $ {(bookingValue - depositPayable).toString()}
+          </Typography>
+        }
         <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={true} payMessage="Client Pay"/>
         <TextField
           id="outlined-textarea"
@@ -73,15 +88,23 @@ function ArtistPayment (
           or any details about your room number if you are
           staying in a hotel. If there's free street parking near the event, please advise."
           multiline
+          value={value}
           className={classes.textField}
           margin="normal"
           variant="outlined"
           onChange={handleChange}
         />
       </Paper>
-      <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(2)}>
-        back
-      </Button>
+      <div className={classes.flex}>
+        <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(1)}>
+          back
+        </Button>
+        <div className={classes.grow} />
+        {!newBooking &&
+        <Button variant="text" color="primary" size='large'>
+          Update Booking
+        </Button>}
+      </div>
     </Container>
   )
 }
