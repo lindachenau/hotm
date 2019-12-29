@@ -27,8 +27,14 @@ const Manage = ({
   return (
     <>
       {manageState === 'Default' ?
-        <BookingCards events={events} eventsFetched={eventsFetched} setManageState={setManageState}/>
-        : 
+        <BookingCards 
+          events={events} 
+          eventsFetched={eventsFetched} 
+          changeBookingStage={changeBookingStage}
+          setManageState={setManageState}/>
+        : null
+      }
+      {manageState === 'Edit' || manageState === 'Checkout' ?
         <ArtistBooking
           bookingStage={bookingStage} 
           changeBookingStage={changeBookingStage}
@@ -37,7 +43,8 @@ const Manage = ({
           depositPayable={depositPayable}
           artists={artists}
           newBooking={false}
-        />
+          setManageState={setManageState}/>
+          : null
       }
     </>
   )

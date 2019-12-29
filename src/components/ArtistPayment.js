@@ -16,11 +16,15 @@ const useStyles = makeStyles(theme => ({
     overflowX: 'auto'
   },
   textField : {
-    width: "100%"
+    width: "100%",
+    marginTop: 30
   },
   flex: {
     display: 'flex',
     marginTop: 10
+  },
+  container: {
+    display: 'flex'
   },
   grow: {
     flexGrow: 1,
@@ -33,8 +37,8 @@ function ArtistPayment({
   depositPayable, 
   resetBooking, 
   addBooking, 
+  updateBooking,
   bookingData, 
-  bookingValue,
   newBooking,
   comment
   }) {
@@ -46,8 +50,9 @@ function ArtistPayment({
     setValue(event.target.value);
   }
 
-  const successNotification = () => {
-    alert("Booking successful!")
+  const successNotification = (message) => {
+    // const message = newBooking ? "Booking successful!" : "Checkout successful!"
+    alert(message + " successful!")
     resetBooking()
   }
 
@@ -57,15 +62,33 @@ function ArtistPayment({
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         id: token.id,
-        description: "'s deposit for booking",
-        amount: (depositPayable * 100).toFixed(0)
+        description: newBooking ? "deposit for booking" : "balance for booking",
+        amount: (bookingData.paid_amount * 100).toFixed(0)
       })
     });
   
-    if (response.ok) 
-      addBooking(bookingData, successNotification, depositPayable)
-    else
+    if (response.ok) {
+      if (newBooking)
+        addBooking(bookingData, successNotification("Booking"))
+      else
+        updateBooking(bookingData, successNotification("Checkout"))
+    }
+    else {
       alert("Stripe error. Please call to resolve this issue.")
+    }
+  }
+
+  const updateNotification = () => {
+    alert("Update successful!")
+    resetBooking()
+  }
+
+  const handleUpdate = () => {
+    updateBooking({...bookingData, paid_amount: 0, paid_type: "none"}, updateNotification)
+  }
+
+  const handleCashPay = () => {
+    updateBooking({...bookingData, paid_type: "cash"}, updateNotification)
   }
 
   return (
@@ -77,10 +100,22 @@ function ArtistPayment({
           </Typography>
           :
           <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
-            Balance payable: $ {(bookingValue - depositPayable).toString()}
+            Balance payable: $ {bookingData.paid_amount.toString()}
           </Typography>
         }
         <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={true} payMessage="Client Pay"/>
+        {!newBooking && 
+          <>
+            <div className={classes.container}>
+              <div className={classes.grow} />
+              <p>OR</p>
+              <div className={classes.grow} />
+            </div>
+            <Button variant="contained" onClick={handleCashPay} color="primary" fullWidth>
+              Cash Pay
+            </Button>
+          </>
+        }
         <TextField
           id="outlined-textarea"
           label="Additional instructions"
@@ -101,7 +136,7 @@ function ArtistPayment({
         </Button>
         <div className={classes.grow} />
         {!newBooking &&
-        <Button variant="text" color="primary" size='large'>
+        <Button variant="text" color="primary" size='large' onClick={handleUpdate}>
           Update Booking
         </Button>}
       </div>

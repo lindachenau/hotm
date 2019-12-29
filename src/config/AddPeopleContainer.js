@@ -13,7 +13,7 @@ const mapStateToProps = state => {
     itemQty: state.itemQty,
     organic: state.priceFactors.organic,
     pensioner: state.priceFactors.pensionerRate,
-    client: state.clientInfo.client
+    clientInfo: state.clientInfo
   }
 }
 

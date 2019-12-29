@@ -38,7 +38,7 @@ const BookingsStoreProvider = ({children, storeCtrl}) => {
     }
   }, [artistsData.isLoading, artistsData.data])
 
-  let bookingsData = useAxiosCRUD(bookings_url + '?from_date=2019-12-31', {}, bookingsActive, requestMethod, data, callMe, bookingTrigger);
+  let bookingsData = useAxiosCRUD(bookings_url, {}, bookingsActive, requestMethod, data, callMe, bookingTrigger);
 
   const getClientListFromBookings = bookings => {
     let list = []

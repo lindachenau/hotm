@@ -13,7 +13,7 @@ import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
 /**
  * For deploy testing frontend without backend
  */
-const Routes = ({ theme, bookingStage, changeBookingStage, priceFactors, itemQty, loggedIn }) => {
+const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn }) => {
   const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
@@ -38,7 +38,8 @@ const Routes = ({ theme, bookingStage, changeBookingStage, priceFactors, itemQty
               changeBookingStage={changeBookingStage} 
               bookingValue={bookingValue}
               depositPayable={depositPayable}
-              artists={artists}/>} 
+              artists={artists}
+              resetBooking={resetBooking}/>} 
           />
           <Route exact path='/artist' render={() => 
             <ArtistBooking 
@@ -49,7 +50,8 @@ const Routes = ({ theme, bookingStage, changeBookingStage, priceFactors, itemQty
               bookingValue={bookingValue}
               depositPayable={depositPayable}
               artists={artists}
-              newBooking={true}/>} 
+              newBooking={true}
+              resetBooking={resetBooking}/>} 
           />
           <Route path='/manage' render={() => 
             <Manage 

@@ -60,7 +60,7 @@ const useStyles = makeStyles(theme => ({
 function AddPeople ({ 
   saveBooking,
   assignedArtists, 
-  client,
+  clientInfo,
   assignArtists,
   bookingDate, 
   bookingEnd, 
@@ -72,8 +72,10 @@ function AddPeople ({
   pensioner, 
   bookingValue, 
   depositPayable,
+  newBooking,
   artists }) {
 
+  const client = clientInfo.client
   const [tags, setTags] = useState(assignedArtists.map(id => artists[id]))
   const classes = useStyles()
   const [disableNext, setDisableNext] = useState(true)
@@ -130,8 +132,8 @@ function AddPeople ({
       paid_balance_total: null,
       paid_deposit_total: null,
       total_amount: bookingValue, 
-      paid_amount: depositPayable, 
-      paid_type: 'deposit', 
+      paid_amount: newBooking? depositPayable : clientInfo.balance, 
+      paid_type: newBooking ? 'deposit' : 'balance', 
       comment: '',
       status: ''
     }

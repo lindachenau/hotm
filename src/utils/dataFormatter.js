@@ -91,7 +91,6 @@ export function getEvents(bookings, artists, clients, servicesMenu)
       }
 
       total = getBookingValue(servicesMenu, priceFactors, itemQty)
-      
       events.push({
         id: booking.booking_id,
         start: new Date(booking.booking_date + ' ' + booking.booking_time + ':00'),

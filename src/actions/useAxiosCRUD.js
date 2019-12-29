@@ -60,7 +60,7 @@ const dataFetchReducer = (state, action) => {
         isUpdating: false,
         hasErrored: false,
         errorMessage: "",
-        data: Object.assign({}, state.data, action.payload)
+        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "DELETE_SUCCESS":
       return {
@@ -126,7 +126,6 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe, boo
       try {
         let result = await axios(config)
         let bookingId = result.data.booking_id
-        console.log(bookingId)
         if (!didCancel) {
           if (bookingId > 0) {
             let payload = {...data, booking_id: bookingId}
@@ -139,7 +138,37 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe, boo
         }
       } catch (err) {
         if (!didCancel) {
-          dispatch({ type: "POST_FAILURE", errorMessage: err })
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
+        }
+      }
+    }
+
+    const updateData = async (data) => {
+      dispatch({ type: "UPDATE_INIT"})
+
+      const config = {
+        method: 'put',
+        headers: {"Content-Type": "application/json"},
+        url: url,
+        data: data
+      }
+
+      try {
+        let result = await axios(config)
+        let bookingId = result.data.booking_id
+        if (!didCancel) {
+          if (bookingId > 0) {
+            let payload = {...data, booking_id: bookingId}
+            dispatch({ type: "PUT_SUCCESS", payload: payload })
+            callMe()
+          }
+          else {
+            alert(result.data.error + ' Please call to resolve this issue.')
+          }
+        }
+      } catch (err) {
+        if (!didCancel) {
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
         }
       }
     }
@@ -152,6 +181,10 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe, boo
         }
         case 'post': {
           createData(data)
+          break
+        }
+        case 'put': {
+          updateData(data)
           break
         }
         default:

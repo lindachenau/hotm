@@ -1,15 +1,30 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { withRouter } from 'react-router-dom'
 import ServiceSelection from '../config/ServiceSelectionContainer'
 import ArtistBookingSteps from '../components/ArtistBookingSteps'
 import AddPeople from '../config/AddPeopleContainer'
 import ArtistPayment from '../config/ArtistPaymentContainer'
 
-const ArtistBooking = ({ bookingStage, changeBookingStage, services, theme, bookingValue, depositPayable, artists, newBooking }) => {
+const ArtistBooking = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists, newBooking, setManageState }) => {
+
+  useEffect(() => {
+    if (newBooking)
+      resetBooking()
+  }, [])
+
   return (
     <React.Fragment>
       <ArtistBookingSteps activeStep={bookingStage}/>
-      {bookingStage === 0 ? <ServiceSelection onSubmit={changeBookingStage} services={services} theme={theme} artistBooking={true}/> : null}
+      {bookingStage === 0 ? 
+        <ServiceSelection 
+        onSubmit={changeBookingStage} 
+        services={services} 
+        theme={theme} 
+        artistBooking={true}
+        newBooking={newBooking}
+        setManageState={setManageState}/> 
+        : null
+      }
       {bookingStage === 1 ? 
         <AddPeople 
           changeBookingStage={changeBookingStage} 
@@ -17,6 +32,7 @@ const ArtistBooking = ({ bookingStage, changeBookingStage, services, theme, book
           items={services.items} 
           bookingValue={bookingValue}
           depositPayable={depositPayable}
+          newBooking={newBooking}
           artists={artists}/> 
         : null
       }

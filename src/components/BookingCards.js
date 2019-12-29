@@ -70,9 +70,9 @@ function Card ({ event }) {
 }
 
 
-const BookingCards = ({events, eventsFetched, setManageState, loadBooking}) => {
+const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState, loadBooking, saveBooking}) => {
   const classes = useStyles()
-  const { bookingsData,  } = useContext(BookingsStoreContext)
+  const { bookingsData } = useContext(BookingsStoreContext)
   const bookings = bookingsData.data
   const [activeStep, setActiveStep] = useState(0)
   const [maxSteps, setMaxSteps] = useState(0)
@@ -95,6 +95,11 @@ const BookingCards = ({events, eventsFetched, setManageState, loadBooking}) => {
   }
 
   const handleCheckout = () => {
+    const bookingId = events[activeStep].id
+    const booking = bookings[bookingId]
+    loadBooking({...booking, client: events[activeStep].client})
+    saveBooking({...booking, paid_type: 'balance', paid_amount: (booking.total_amount - booking.paid_amount)})
+    changeBookingStage(2)
     setManageState('Checkout')
   }
 

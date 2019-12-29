@@ -43,7 +43,9 @@ const ServiceSelection = ({
   submitBooking,
   getAvailArtist,
   changeSelectedArtist,
-  artistBooking }) => {
+  artistBooking,
+  newBooking,
+  setManageState }) => {
   
   const classes = useStyles()
   const items = services.items
@@ -122,6 +124,10 @@ const ServiceSelection = ({
     onSubmit(1)
   }
 
+  const handleCancel = () => {
+    setManageState('Default')
+  }
+
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 50}}>
       <FormControlLabel
@@ -176,6 +182,10 @@ const ServiceSelection = ({
       </MuiPickersUtilsProvider>
       <LocationSearchInput address={address} changeAddr={handleAddrChange}/>
       <div className={classes.flex}>
+        {!newBooking &&
+        <Button variant='text' color='primary' onClick={handleCancel}>
+          Cancel
+        </Button>}
         <div className={classes.grow} />
         <Button variant='text' color='primary' onClick={artistBooking ? handleNext : handleSubmit} size="large" disabled={missingFields()}>
           {artistBooking ? 'Next' : 'Submit'}

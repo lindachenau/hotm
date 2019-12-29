@@ -12,6 +12,7 @@ import {
   ACTIVATE_BOOKINGS,
   ADD_BOOKING,
   SAVE_BOOKING,
+  UPDATE_BOOKING,
   RESET_BOOKING,
   ASSIGN_ARTISTS,
   LOAD_BOOKING
@@ -127,19 +128,16 @@ export function assignedArtists(state = [], action) {
 
 const initClientInfo = {
   client: null,
-  comment: ''
+  comment: '',
+  balance: null
 }
 export function clientInfo(state = initClientInfo, action) {
   switch (action.type) {
     case LOAD_BOOKING: { 
-      const temp = Object.assign({}, {
-        client: action.booking.client,
-        comment: action.booking.comment
-      })
-      console.log(temp)
       return Object.assign({}, {
         client: action.booking.client,
-        comment: action.booking.comment
+        comment: action.booking.comment,
+        balance: action.booking.total_amount - action.booking.paid_amount
       })
     }
     case RESET_BOOKING: {
@@ -282,6 +280,7 @@ export function storeActivation(state = initActivation, action) {
         requestMethod: 'get'
       })
     }
+    //create a new booking on the server
     case ADD_BOOKING: {
       return Object.assign({}, state, {
         bookingsActive: true,
@@ -291,6 +290,20 @@ export function storeActivation(state = initActivation, action) {
         callMe: action.callMe
       })
     }
+    //modify an existing booking on the server
+    case UPDATE_BOOKING: {
+      return Object.assign({}, state, {
+        bookingsActive: true,
+        requestMethod: 'put',
+        data: action.payload,
+        bookingTrigger: !state.bookingAddr,
+        callMe: action.callMe
+      })
+    }
+    /*
+     * Save booking information in an object as required by submission format for later use.
+     * This is different from LOAD_BOOKING which initializes the booking state from an existing booking.
+     */
     case SAVE_BOOKING: {
       return Object.assign({}, state, {
         bookingData: action.payload

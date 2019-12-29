@@ -13,6 +13,7 @@ export const MAKE_BOOKING = 'MAKE_BOOKING'
 export const ACTIVATE_BOOKINGS = 'ACTIVATE_BOOKINGS'
 export const ADD_BOOKING = 'ADD_BOOKING'
 export const SAVE_BOOKING = 'SAVE_BOOKING'
+export const UPDATE_BOOKING = 'UPDATE_BOOKING'
 export const ASSIGN_ARTISTS = 'ASSIGN_ARTISTS'
 export const LOAD_BOOKING = 'LOAD_BOOKING'
 
@@ -88,6 +89,12 @@ export const setActivateBookings = val => ({
 
 export const addBooking = (bookingInfo, callMe) => ({
   type: ADD_BOOKING,
+  payload: bookingInfo,
+  callMe
+})
+
+export const updateBooking = (bookingInfo, callMe) => ({
+  type: UPDATE_BOOKING,
   payload: bookingInfo,
   callMe
 })
