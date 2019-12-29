@@ -70,11 +70,10 @@ function Card ({ event }) {
 }
 
 
-const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState, loadBooking, saveBooking}) => {
+const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState, loadBooking, saveBooking, activeStep, setActiveStep}) => {
   const classes = useStyles()
   const { bookingsData } = useContext(BookingsStoreContext)
   const bookings = bookingsData.data
-  const [activeStep, setActiveStep] = useState(0)
   const [maxSteps, setMaxSteps] = useState(0)
 
   useEffect(() => {

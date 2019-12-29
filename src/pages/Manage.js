@@ -15,6 +15,7 @@ const Manage = ({
   depositPayable, 
   artists}) => {
   const [manageState, setManageState] = useState('Default')
+  const [activeStep, setActiveStep] = useState(0)
 
   useEffect(() => {
     setActivateBookings(true)
@@ -31,7 +32,9 @@ const Manage = ({
           events={events} 
           eventsFetched={eventsFetched} 
           changeBookingStage={changeBookingStage}
-          setManageState={setManageState}/>
+          setManageState={setManageState}
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}/>
         : null
       }
       {manageState === 'Edit' || manageState === 'Checkout' ?
