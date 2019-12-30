@@ -15,6 +15,7 @@ import {
   UPDATE_BOOKING,
   RESET_BOOKING,
   ASSIGN_ARTISTS,
+  ASSIGN_CLIENT,
   LOAD_BOOKING
 } from '../actions/bookingCreator'
 
@@ -138,6 +139,11 @@ export function clientInfo(state = initClientInfo, action) {
         client: action.booking.client,
         comment: action.booking.comment,
         balance: action.booking.total_amount - action.booking.paid_amount
+      })
+    }
+    case ASSIGN_CLIENT: {
+      return Object.assign({}, state, {
+        client: action.client
       })
     }
     case RESET_BOOKING: {
@@ -286,7 +292,7 @@ export function storeActivation(state = initActivation, action) {
         bookingsActive: true,
         requestMethod: 'post',
         data: action.payload,
-        bookingTrigger: !state.bookingAddr,
+        bookingTrigger: !state.bookingTrigger,
         callMe: action.callMe
       })
     }
@@ -296,7 +302,7 @@ export function storeActivation(state = initActivation, action) {
         bookingsActive: true,
         requestMethod: 'put',
         data: action.payload,
-        bookingTrigger: !state.bookingAddr,
+        bookingTrigger: !state.bookingTrigger,
         callMe: action.callMe
       })
     }

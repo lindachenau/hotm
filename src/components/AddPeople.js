@@ -62,6 +62,7 @@ function AddPeople ({
   assignedArtists, 
   clientInfo,
   assignArtists,
+  assignClient,
   bookingDate, 
   bookingEnd, 
   bookingAddr, 
@@ -75,11 +76,10 @@ function AddPeople ({
   newBooking,
   artists }) {
 
-  const client = clientInfo.client
   const [tags, setTags] = useState(assignedArtists.map(id => artists[id]))
   const classes = useStyles()
   const [disableNext, setDisableNext] = useState(true)
-  const [clientId, setClientId] = useState(client !== null ? client.id : null)
+  const [client, setClient] = useState(clientInfo.client)
   
   const artistOptions = Object.values(artists).sort((a, b) => {
     let artists1 = a.state.toUpperCase() + a.name
@@ -108,6 +108,7 @@ function AddPeople ({
 
   const handleNext = () => {
     assignArtists(tags.map(tag => tag.id))
+    assignClient(client)
 
     const start_time = moment(bookingDate).format("HH:mm")
     const bookingData = {
@@ -119,14 +120,14 @@ function AddPeople ({
       booking_id: null,
       created_datetime: null,
       event_address: bookingAddr,
-      quantities: Object.values(itemQty),
-      services: Object.keys(itemQty),
-      unit_prices: Object.keys(itemQty).map(id => items[id].price),
+      quantities: Object.values(itemQty).join(','),
+      services: Object.keys(itemQty).join(','),
+      unit_prices: Object.keys(itemQty).map(id => items[id].price).join(','),
       status: null,
       time_on_site: (bookingEnd - bookingDate) / 1000 / 60,
       travel_distance: 0,
       travel_duration: 0,
-      client_id: clientId,
+      client_id: client.id,
       with_organic: organic ? 1 : 0,
       with_pensioner_rate: pensioner ? 1 : 0,
       paid_balance_total: null,
@@ -179,7 +180,6 @@ function AddPeople ({
           filterSelectedOptions
           options={artistOptions}
           groupBy={option => option.state.toUpperCase()}
-          // getOptionLabel={option => option.state.toUpperCase() + ' - ' + option.name}
           getOptionLabel={option => option.name}
           value={tags}
           onChange={onChangeArtists}
@@ -195,7 +195,7 @@ function AddPeople ({
         />
         <br/>
         <AddClient
-          setClientId={setClientId}
+          setClient={setClient}
           client={client}
         />
         <br/>

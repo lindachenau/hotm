@@ -68,27 +68,22 @@ function ArtistPayment({
     });
   
     if (response.ok) {
-      if (newBooking)
-        addBooking(bookingData, () => successNotification("Booking"))
+      if (newBooking) 
+        addBooking({...bookingData, comment: value}, () => successNotification("Booking"))
       else
-        updateBooking(bookingData, () => successNotification("Checkout"))
+        updateBooking({...bookingData, comment: value}, () => successNotification("Checkout"))
     }
     else {
       alert("Stripe error. Please call to resolve this issue.")
     }
   }
 
-  const updateNotification = () => {
-    alert("Update successful!")
-    resetBooking()
-  }
-
   const handleUpdate = () => {
-    updateBooking({...bookingData, paid_amount: 0, paid_type: "none"}, updateNotification)
+    updateBooking({...bookingData, paid_amount: 0, paid_type: "none", comment: value}, () => successNotification("Update"))
   }
 
   const handleCashPay = () => {
-    updateBooking({...bookingData, paid_type: "cash"}, updateNotification)
+    updateBooking({...bookingData, paid_type: "cash", comment: value}, () => successNotification("Checkout"))
   }
 
   return (
@@ -119,9 +114,9 @@ function ArtistPayment({
         <TextField
           id="outlined-textarea"
           label="Additional instructions"
-          placeholder="Let us know about any allergies, preferences, entrances,
-          or any details about your room number if you are
-          staying in a hotel. If there's free street parking near the event, please advise."
+          placeholder="Any allergies, preferences, entrances,
+          or any details about the room number if the client is
+          staying in a hotel."
           multiline
           value={value}
           className={classes.textField}

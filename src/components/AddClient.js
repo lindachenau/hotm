@@ -5,10 +5,10 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { user_url, access_token } from '../config/dataLinks'
 import axios from "axios"
 
-export default function AddClient({client, setClientId, }) {
+export default function AddClient({client, setClient, }) {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState(client !== null ? [client] : [])
-  const [tag, setTag] = useState(client !== null ? client : null)
+  const [tag, setTag] = useState(client)
   const [searchKey, setSearchKey] = useState('')
   const active = open && searchKey.length >= 3
   const [loading, setLoading] = useState(false)
@@ -29,6 +29,7 @@ export default function AddClient({client, setClientId, }) {
 
         setOptions(clients.data.map(client => {
           return {
+            id: client.id,
             name: client.name, 
             phone: client.meta.billing_phone[0]
           }
@@ -41,8 +42,10 @@ export default function AddClient({client, setClientId, }) {
   }, [searchKey, active])
 
   const handleChangeClient = (event, value) => {
-    if (value !== null)
-      setClientId(value.id)
+    if (value !== null) {
+      setClient(value)
+      setTag(value)
+    }
   }
 
   const handleChangeSearchKey = (event, value, reason) => {

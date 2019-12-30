@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { assignArtists, saveBooking } from '../actions/bookingCreator'
+import { assignArtists, assignClient, saveBooking } from '../actions/bookingCreator'
 import AddPeople from '../components/AddPeople'
 import { statement } from '@babel/template'
 import { FaSatellite } from 'react-icons/fa'
@@ -20,6 +20,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     assignArtists: artistsIds => dispatch(assignArtists(artistsIds)),
+    assignClient: client => dispatch(assignClient(client)),
     saveBooking: (bookingData) => dispatch(saveBooking(bookingData)),
   }
 }
