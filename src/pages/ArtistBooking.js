@@ -14,7 +14,7 @@ const ArtistBooking = ({ bookingStage, changeBookingStage, resetBooking, service
 
   return (
     <React.Fragment>
-      <ArtistBookingSteps activeStep={bookingStage}/>
+      <ArtistBookingSteps activeStep={bookingStage} newBooking={newBooking}/>
       {bookingStage === 0 ? 
         <ServiceSelection 
         onSubmit={changeBookingStage} 

@@ -6,8 +6,11 @@ import Typography from '@material-ui/core/Typography'
 import Container from '@material-ui/core/Container'
 
 
-function getSteps() {
-  return ['Select service', 'Add people', 'Payment']
+function getSteps(newBooking) {
+  if (newBooking)
+    return ['Select service', 'Add people', 'Payment']
+  else
+    return ['Select service', 'Add people', 'Payment or Update']
 }
 
 function getStepContent(stepIndex) {
@@ -24,8 +27,8 @@ function getStepContent(stepIndex) {
 }
 
 export default function ArtistBookingSteps(props) {
-  const steps = getSteps()
-  const { activeStep } = props
+  const { activeStep, newBooking } = props
+  const steps = getSteps(newBooking)
 
   return (
     <Container maxWidth="md" style={{paddingTop: 20}}>

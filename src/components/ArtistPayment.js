@@ -69,9 +69,9 @@ function ArtistPayment({
   
     if (response.ok) {
       if (newBooking)
-        addBooking(bookingData, successNotification("Booking"))
+        addBooking(bookingData, () => successNotification("Booking"))
       else
-        updateBooking(bookingData, successNotification("Checkout"))
+        updateBooking(bookingData, () => successNotification("Checkout"))
     }
     else {
       alert("Stripe error. Please call to resolve this issue.")
