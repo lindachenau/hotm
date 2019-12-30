@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect, useContext, Suspense, lazy } from "react"
 import { Route, Switch, HashRouter } from "react-router-dom"
-import Booking from '../pages/Booking'
-import ArtistBooking from '../pages/ArtistBooking'
-import Calendar from '../pages/Calendar'
-import Manage from '../config/ManageContainer'
 import ScrollToTop from './ScrollTop'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Topbar from './Topbar'
 import { BookingsStoreContext } from './BookingsStoreProvider'
 import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
+import CircularProgress from '@material-ui/core/CircularProgress'
+
+//Use route based lazy loading to split the code to smaller chunks
+const Booking = lazy(() => import('../pages/Booking'))
+const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
+const Manage = lazy(() => import('../config/ManageContainer'))
+const Calendar = lazy(() => import('../config/ManageContainer'))
 
 /**
  * For deploy testing frontend without backend
@@ -28,45 +31,46 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
       <ScrollToTop>
         <CssBaseline />
         <Topbar bookingValue={bookingValue} loggedIn={loggedIn}/>
+        <Suspense fallback={<CircularProgress/>}>
         {servicesFetched &&
-        <Switch>
-          <Route exact path='/' render={() => 
-            <Booking 
-              theme={theme} 
-              services={services} 
-              bookingStage={bookingStage} 
-              changeBookingStage={changeBookingStage} 
-              bookingValue={bookingValue}
-              depositPayable={depositPayable}
-              artists={artists}
-              resetBooking={resetBooking}/>} 
-          />
-          <Route exact path='/artist' render={() => 
-            <ArtistBooking 
-              theme={theme} 
-              services={services} 
-              bookingStage={bookingStage} 
-              changeBookingStage={changeBookingStage} 
-              bookingValue={bookingValue}
-              depositPayable={depositPayable}
-              artists={artists}
-              newBooking={true}
-              resetBooking={resetBooking}/>} 
-          />
-          <Route path='/manage' render={() => 
-            <Manage 
-              events={events} 
-              eventsFetched={eventsFetched}
-              services={services} 
-              bookingStage={bookingStage} 
-              changeBookingStage={changeBookingStage} 
-              bookingValue={bookingValue}
-              depositPayable={depositPayable}
-              artists={artists}/>} 
-          />
-          <Route path='/calendar' render={() => <Calendar events={events} />} />
-          {/* <Route path='/account' render={() => <Account/>} /> */}
-        </Switch>}
+          <Switch>
+            <Route exact path='/' render={() => 
+              <Booking 
+                theme={theme} 
+                services={services} 
+                bookingStage={bookingStage} 
+                changeBookingStage={changeBookingStage} 
+                bookingValue={bookingValue}
+                depositPayable={depositPayable}
+                artists={artists}
+                resetBooking={resetBooking}/>} 
+            />
+            <Route exact path='/artist' render={() => 
+              <ArtistBooking 
+                theme={theme} 
+                services={services} 
+                bookingStage={bookingStage} 
+                changeBookingStage={changeBookingStage} 
+                bookingValue={bookingValue}
+                depositPayable={depositPayable}
+                artists={artists}
+                newBooking={true}
+                resetBooking={resetBooking}/>} 
+            />
+            <Route path='/manage' render={() => 
+              <Manage 
+                events={events} 
+                eventsFetched={eventsFetched}
+                services={services} 
+                bookingStage={bookingStage} 
+                changeBookingStage={changeBookingStage} 
+                bookingValue={bookingValue}
+                depositPayable={depositPayable}
+                artists={artists}/>} 
+            />
+            <Route path='/calendar' render={() => <Calendar events={events} />} />
+          </Switch>}
+        </Suspense>
       </ScrollToTop>
     </HashRouter>
   )
