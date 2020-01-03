@@ -112,8 +112,8 @@ const ServiceSelection = ({
     *(itemQty, selectedDate, address) become undefined even though the values are still correct in mapDispatchToProps.
     */
     let url = available_artists_url + '?date=' + moment(selectedDate).format("YYYY-MM-DD") + 
-    '&start_time=' + moment(selectedDate).format("HH:mm") + '&services=' + Object.keys(itemQty).join(',') +
-    '&quantities=' + Object.values(itemQty).join(',') + '&event_addr=' + address
+    '&start_time=' + moment(selectedDate).format("HH:mm") + '&services=' + Object.keys(itemQty) +
+    '&quantities=' + Object.values(itemQty) + '&event_addr=' + address
     
     getAvailArtist(url)
 

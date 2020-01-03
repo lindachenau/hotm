@@ -158,6 +158,12 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
         let bookingId = result.data.booking_id
         if (!didCancel) {
           if (bookingId > 0) {
+            /*
+             * Balance payment success. Change paid_amount to total_amount locally. Server performs this step. Because 
+             * we don't read back the updated booking record from the server, we simply modify paid_amount locally.
+             */ 
+            if (data.paid_amount > 0)
+              data.paid_amount = data.total_amount
             dispatch({ type: "PUT_SUCCESS", payload: data })
             callMe()
           }

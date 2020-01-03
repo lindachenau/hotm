@@ -47,7 +47,7 @@ function ArtistPayment({
   const [value, setValue] = useState(comment)
 
   //This booking has been checked out. No payment or update is allowed.
-  const disablePayment = !newBooking & bookingData.paid_amount === 0
+  const checkOutable = newBooking || bookingData.paid_amount > 0
 
   const classes = useStyles()
 
@@ -103,15 +103,16 @@ function ArtistPayment({
             Balance payable: $ {bookingData.paid_amount.toString()}
           </Typography>
         }
-        <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={true} payMessage="Client Pay"/>
-        {!newBooking && 
+        {checkOutable && 
+          <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={true} payMessage="Client Pay"/>}
+        {!newBooking && checkOutable &&
           <>
             <div className={classes.container}>
               <div className={classes.grow} />
               <p>OR</p>
               <div className={classes.grow} />
             </div>
-            <Button variant="contained" onClick={handleCashPay} color="primary" fullWidth disabled={disablePayment}>
+            <Button variant="contained" onClick={handleCashPay} color="primary" fullWidth>
               Cash Pay
             </Button>
           </>
@@ -140,8 +141,8 @@ function ArtistPayment({
             back
           </Button>}
         <div className={classes.grow} />
-        {!newBooking && manageState !== 'Checkout' &&
-        <Button variant="text" color="primary" size='large' onClick={handleUpdate} disabled={disablePayment}>
+        {!newBooking && manageState !== 'Checkout' && checkOutable &&
+        <Button variant="text" color="primary" size='large' onClick={handleUpdate}>
           Update Booking
         </Button>}
       </div>
