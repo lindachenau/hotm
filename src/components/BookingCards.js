@@ -90,6 +90,7 @@ const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState
 
   const handleEdit = () => {
     loadBooking({...bookings[events[activeStep].id], client: events[activeStep].client})
+    changeBookingStage(0)
     setManageState('Edit')
   }
 

@@ -10,13 +10,18 @@ import {
   RECEIVE_AVAIL_ARTISTS,
   ERROR_AVAIL_ARTISTS,
   ACTIVATE_BOOKINGS,
+  SEARCH_BOOKING,
   ADD_BOOKING,
   SAVE_BOOKING,
   UPDATE_BOOKING,
   RESET_BOOKING,
   ASSIGN_ARTISTS,
   ASSIGN_CLIENT,
-  LOAD_BOOKING
+  LOAD_BOOKING,
+  SET_FROM_DATE,
+  SET_TO_DATE,
+  SET_ARTIST,
+  SET_CLIENT
 } from '../actions/bookingCreator'
 
 const initPriceFactors = {
@@ -104,8 +109,9 @@ export function assignedArtists(state = [], action) {
     case ASSIGN_ARTISTS: {
       let ids = [...state]
       action.artistIds.forEach(id => {
-        if (!ids.includes(id))
-          ids.push(id) 
+        let i = Number(id)
+        if (!ids.includes(i))
+          ids.push(i) 
       })
 
       return ids
@@ -130,7 +136,9 @@ export function assignedArtists(state = [], action) {
 const initClientInfo = {
   client: null,
   comment: '',
-  balance: null
+  balance: null,
+  paid: null,
+  bookingId : null
 }
 export function clientInfo(state = initClientInfo, action) {
   switch (action.type) {
@@ -138,7 +146,9 @@ export function clientInfo(state = initClientInfo, action) {
       return Object.assign({}, {
         client: action.booking.client,
         comment: action.booking.comment,
-        balance: action.booking.total_amount - action.booking.paid_amount
+        balance: action.booking.total_amount - action.booking.paid_amount,
+        paid: action.booking.paid_amount,
+        bookingId: action.booking.booking_id
       })
     }
     case ASSIGN_CLIENT: {
@@ -286,6 +296,13 @@ export function storeActivation(state = initActivation, action) {
         requestMethod: 'get'
       })
     }
+    case SEARCH_BOOKING: {
+      return Object.assign({}, state, {
+        bookingsActive: true,
+        requestMethod: 'get',
+        bookingTrigger: !state.bookingTrigger
+      })
+    }
     //create a new booking on the server
     case ADD_BOOKING: {
       return Object.assign({}, state, {
@@ -323,3 +340,38 @@ export function storeActivation(state = initActivation, action) {
   }
 }
 
+const today = new Date()
+
+const initBookingFilter = {
+  fromDate: new Date(),
+  toDate: today.setDate(today.getDate() + 7),
+  artist: null,
+  client: null
+}
+
+export function bookingFilter(state = initBookingFilter, action) {
+  switch (action.type) {
+    case SET_FROM_DATE: {
+      return Object.assign({}, state, {
+        fromDate: action.val
+      })
+    }
+    case SET_TO_DATE: {
+      return Object.assign({}, state, {
+        toDate: action.val
+      })
+    }
+    case SET_ARTIST: {
+      return Object.assign({}, state, {
+        artist: action.val
+      })
+    }
+    case SET_CLIENT: {
+      return Object.assign({}, state, {
+        client: action.val
+      })
+    }
+    default:
+      return state
+  }
+}

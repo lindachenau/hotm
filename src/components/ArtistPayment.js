@@ -40,9 +40,14 @@ function ArtistPayment({
   updateBooking,
   bookingData, 
   newBooking,
+  manageState,
+  setManageState,
   comment
   }) {
-  const [value, setValue] = useState(comment);
+  const [value, setValue] = useState(comment)
+
+  //This booking has been checked out. No payment or update is allowed.
+  const disablePayment = !newBooking & bookingData.paid_amount === 0
 
   const classes = useStyles()
 
@@ -106,7 +111,7 @@ function ArtistPayment({
               <p>OR</p>
               <div className={classes.grow} />
             </div>
-            <Button variant="contained" onClick={handleCashPay} color="primary" fullWidth>
+            <Button variant="contained" onClick={handleCashPay} color="primary" fullWidth disabled={disablePayment}>
               Cash Pay
             </Button>
           </>
@@ -126,12 +131,17 @@ function ArtistPayment({
         />
       </Paper>
       <div className={classes.flex}>
-        <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(1)}>
-          back
-        </Button>
+        {manageState === 'Checkout' ?
+          <Button variant="text" color="primary" size='large' onClick={() => setManageState('Default')}>
+            Cancel
+          </Button>
+          :
+          <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(1)}>
+            back
+          </Button>}
         <div className={classes.grow} />
-        {!newBooking &&
-        <Button variant="text" color="primary" size='large' onClick={handleUpdate}>
+        {!newBooking && manageState !== 'Checkout' &&
+        <Button variant="text" color="primary" size='large' onClick={handleUpdate} disabled={disablePayment}>
           Update Booking
         </Button>}
       </div>

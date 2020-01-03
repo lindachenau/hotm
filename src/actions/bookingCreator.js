@@ -11,12 +11,17 @@ export const ERROR_AVAIL_ARTISTS = 'ERROR_AVAIL_ARTISTS'
 export const RESET_BOOKING = 'RESET_BOOKING'
 export const MAKE_BOOKING = 'MAKE_BOOKING'
 export const ACTIVATE_BOOKINGS = 'ACTIVATE_BOOKINGS'
+export const SEARCH_BOOKING = 'SEARCH_BOOKING'
 export const ADD_BOOKING = 'ADD_BOOKING'
 export const SAVE_BOOKING = 'SAVE_BOOKING'
 export const UPDATE_BOOKING = 'UPDATE_BOOKING'
 export const ASSIGN_ARTISTS = 'ASSIGN_ARTISTS'
 export const ASSIGN_CLIENT = 'ASSIGN_CLIENT'
 export const LOAD_BOOKING = 'LOAD_BOOKING'
+export const SET_FROM_DATE = 'SET_FROM_DATE'
+export const SET_TO_DATE = 'SET_TO_DATE'
+export const SET_ARTIST = 'SET_ARTIST'
+export const SET_CLIENT = 'SET_CLIENT'
 
 export const toggleOrganic = () => ({
   type: CHANGE_ORGANIC
@@ -88,6 +93,10 @@ export const setActivateBookings = val => ({
   val
 })
 
+export const searchBooking = () => ({
+  type : SEARCH_BOOKING
+})
+
 export const addBooking = (bookingInfo, callMe) => ({
   type: ADD_BOOKING,
   payload: bookingInfo,
@@ -118,4 +127,24 @@ export const assignClient = (client) => ({
 export const loadBooking = (booking) => ({
   type: LOAD_BOOKING,
   booking
+})
+
+export const setFromDate = (val) => ({
+  type: SET_FROM_DATE,
+  val
+})
+
+export const setToDate = (val) => ({
+  type: SET_TO_DATE,
+  val
+})
+
+export const setClient = (val) => ({
+  type: SET_CLIENT,
+  val
+})
+
+export const setArtist = (val) => ({
+  type: SET_ARTIST,
+  val
 })

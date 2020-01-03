@@ -184,129 +184,127 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   }
 
   return (
-    <>
-      <Dialog open={open} onBackdropClick={() => setOpen(false)}>
-        <div className={classes.container1}>
-          <div className={classes.grow} />
-          <img className={classes.logo} src={logo} alt="Hair on the move logo" />
-          <div className={classes.grow} />
-        </div>
-        <DialogContent>
-          <Grid container>
-            <Grid item xs={6}>
-              <TextField
-                autoFocus
-                required
-                margin="dense"
-                label="username"
-                type="username"
-                fullWidth
-                onChange={onChangeUsername}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                margin="dense"
-                label="password"
-                type="password"
-                fullWidth
-                onChange={onChangePassword}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                required
-                margin="dense"
-                label="email"
-                type="email"
-                fullWidth
-                onChange={onChangeEmail}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                margin="dense"
-                label="first name"
-                type="firstname"
-                fullWidth
-                onChange={onChangeFirstName}
-              />
-            </Grid>  
-            <Grid item xs={6}>
-              <TextField
-                required
-                margin="dense"
-                label="last name"
-                type="lastname"
-                fullWidth
-                onChange={onChangeLastName}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                margin="dense"
-                label="company"
-                type="company"
-                fullWidth
-                onChange={onChangeCompany}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                margin="dense"
-                label="address"
-                type="address"
-                fullWidth
-                onChange={onChangeAddress}
-              />
-            </Grid>  
-            <Grid item xs={6}>
-              <TextField
-                margin="dense"
-                label="city"
-                type="city"
-                fullWidth
-                onChange={onChangeCity}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                margin="dense"
-                label="postcode"
-                type="postcode"
-                fullWidth
-                onChange={onChangePostcode}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                margin="dense"
-                label="state abbr."
-                type="state"
-                fullWidth
-                onChange={onChangeStateAbbr}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                required
-                margin="dense"
-                label="phone"
-                type="phone"
-                fullWidth
-                onChange={onChangePhone}
-              />
-            </Grid>  
+    <Dialog open={open} onBackdropClick={() => setOpen(false)}>
+      <div className={classes.container1}>
+        <div className={classes.grow} />
+        <img className={classes.logo} src={logo} alt="Hair on the move logo" />
+        <div className={classes.grow} />
+      </div>
+      <DialogContent>
+        <Grid container>
+          <Grid item xs={6}>
+            <TextField
+              autoFocus
+              required
+              margin="dense"
+              label="username"
+              type="username"
+              fullWidth
+              onChange={onChangeUsername}
+            />
           </Grid>
-        </DialogContent>
-        <DialogActions className={classes.button1}>
-          <Button variant="contained" onClick={handleRegister} color="primary" fullWidth disabled={disableSubmit}>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+          <Grid item xs={6}>
+            <TextField
+              required
+              margin="dense"
+              label="password"
+              type="password"
+              fullWidth
+              onChange={onChangePassword}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              required
+              margin="dense"
+              label="email"
+              type="email"
+              fullWidth
+              onChange={onChangeEmail}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              required
+              margin="dense"
+              label="first name"
+              type="firstname"
+              fullWidth
+              onChange={onChangeFirstName}
+            />
+          </Grid>  
+          <Grid item xs={6}>
+            <TextField
+              required
+              margin="dense"
+              label="last name"
+              type="lastname"
+              fullWidth
+              onChange={onChangeLastName}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              margin="dense"
+              label="company"
+              type="company"
+              fullWidth
+              onChange={onChangeCompany}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              margin="dense"
+              label="address"
+              type="address"
+              fullWidth
+              onChange={onChangeAddress}
+            />
+          </Grid>  
+          <Grid item xs={6}>
+            <TextField
+              margin="dense"
+              label="city"
+              type="city"
+              fullWidth
+              onChange={onChangeCity}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              margin="dense"
+              label="postcode"
+              type="postcode"
+              fullWidth
+              onChange={onChangePostcode}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              margin="dense"
+              label="state abbr."
+              type="state"
+              fullWidth
+              onChange={onChangeStateAbbr}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              required
+              margin="dense"
+              label="phone"
+              type="phone"
+              fullWidth
+              onChange={onChangePhone}
+            />
+          </Grid>  
+        </Grid>
+      </DialogContent>
+      <DialogActions className={classes.button1}>
+        <Button variant="contained" onClick={handleRegister} color="primary" fullWidth disabled={disableSubmit}>
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 }

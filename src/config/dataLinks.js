@@ -8,11 +8,9 @@ export const home_url = "https://appvelation.app"
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.6"
-// const HOTM_BOOKING_API = home_url + "/wp-content/themes/belleza-pro/inc/hotm_booking/api/v0.3/"
+const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.7"
 export const services_url = HOTM_BOOKING_API + "/services"
-// export const artists_url = HOTM_BOOKING_API + "/artists"
-export const artists_url = "https://appvelation.app/hotm_booking/api/v0.7/artists"
+export const artists_url = HOTM_BOOKING_API + "/artists"
 export const bookings_url = HOTM_BOOKING_API + "/bookings"
 export const available_artists_url = HOTM_BOOKING_API + '/get_available_artists.php'
 

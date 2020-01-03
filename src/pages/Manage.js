@@ -46,6 +46,7 @@ const Manage = ({
           depositPayable={depositPayable}
           artists={artists}
           newBooking={false}
+          manageState={manageState}
           setManageState={setManageState}/>
           : null
       }

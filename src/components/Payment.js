@@ -65,7 +65,7 @@ function Payment (
       client_id: userId,
       with_organic: priceFactors.organic ? 1 : 0,
       with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
-      unit_prices: Object.keys(itemQty).map(id => items[id].price).join(','),
+      unit_prices: Object.keys(itemQty).map(id => items[id].price),
       total_amount: bookingValue, 
       paid_amount: depositPayable, 
       paid_type: 'deposit', 

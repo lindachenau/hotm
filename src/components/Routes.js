@@ -11,7 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 const Booking = lazy(() => import('../pages/Booking'))
 const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
 const Manage = lazy(() => import('../config/ManageContainer'))
-const Calendar = lazy(() => import('../config/ManageContainer'))
+const Calendar = lazy(() => import('../pages/Calendar'))
 
 /**
  * For deploy testing frontend without backend
@@ -30,7 +30,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
     <HashRouter>
       <ScrollToTop>
         <CssBaseline />
-        <Topbar bookingValue={bookingValue} loggedIn={loggedIn}/>
+        <Topbar bookingValue={bookingValue} loggedIn={loggedIn} artists={artists}/>
         <Suspense fallback={<CircularProgress/>}>
         {servicesFetched &&
           <Switch>

@@ -54,30 +54,28 @@ export default function SignoutForm({firstName, lastName, email, triggerOpen, si
   }
 
   return (
-    <>
-      <Dialog maxWidth='xs' fullWidth open={open}>
-        <div className={classes.container1}>
-          <div className={classes.grow} />
-          <ExitToAppIcon color='primary' fontSize='large'/>
-          <div className={classes.grow} />
-        </div>
-        <DialogContent className={classes.container2}>
-          <Typography variant='h6' align='center'>
-            {firstName + ' ' + lastName}
-          </Typography>
-          <Typography variant='body2' align='center'>
-            {email}
-          </Typography>
-        </DialogContent>  
-        <DialogActions className={classes.button}>
-          <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={handleSignout} color="primary" fullWidth>
-            Sign out
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    <Dialog maxWidth='xs' fullWidth open={open}>
+      <div className={classes.container1}>
+        <div className={classes.grow} />
+        <ExitToAppIcon color='primary' fontSize='large'/>
+        <div className={classes.grow} />
+      </div>
+      <DialogContent className={classes.container2}>
+        <Typography variant='h6' align='center'>
+          {firstName + ' ' + lastName}
+        </Typography>
+        <Typography variant='body2' align='center'>
+          {email}
+        </Typography>
+      </DialogContent>  
+      <DialogActions className={classes.button}>
+        <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
+          Cancel
+        </Button>
+        <Button variant="contained" onClick={handleSignout} color="primary" fullWidth>
+          Sign out
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 }

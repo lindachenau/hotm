@@ -75,30 +75,28 @@ export default function ForgetPWForm({triggerOpen}) {
   }
 
   return (
-    <>
-      <Dialog open={open}>
-      <DialogContent>
-          <DialogContentText>
-            To reset password, please enter your username or email.
-          </DialogContentText>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="username or email"
-            type="userLogin"
-            fullWidth
-            onChange={onChangeUserLogin}
-          />
-        </DialogContent>
-        <DialogActions className={classes.button}>
-          <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={handleResetPW} color="primary" fullWidth>
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+    <Dialog open={open}>
+    <DialogContent>
+        <DialogContentText>
+          To reset password, please enter your username or email.
+        </DialogContentText>
+        <TextField
+          autoFocus
+          margin="dense"
+          label="username or email"
+          type="userLogin"
+          fullWidth
+          onChange={onChangeUserLogin}
+        />
+      </DialogContent>
+      <DialogActions className={classes.button}>
+        <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
+          Cancel
+        </Button>
+        <Button variant="contained" onClick={handleResetPW} color="primary" fullWidth>
+          Submit
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 }

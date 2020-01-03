@@ -5,7 +5,18 @@ import ArtistBookingSteps from '../components/ArtistBookingSteps'
 import AddPeople from '../config/AddPeopleContainer'
 import ArtistPayment from '../config/ArtistPaymentContainer'
 
-const ArtistBooking = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists, newBooking, setManageState }) => {
+const ArtistBooking = ({ 
+  bookingStage, 
+  changeBookingStage, 
+  resetBooking, 
+  services, 
+  theme, 
+  bookingValue, 
+  depositPayable, 
+  artists, 
+  newBooking, 
+  manageState, 
+  setManageState }) => {
 
   useEffect(() => {
     if (newBooking)
@@ -14,7 +25,9 @@ const ArtistBooking = ({ bookingStage, changeBookingStage, resetBooking, service
 
   return (
     <React.Fragment>
-      <ArtistBookingSteps activeStep={bookingStage} newBooking={newBooking}/>
+      {manageState === 'Checkout' ?
+      null
+      : <ArtistBookingSteps activeStep={bookingStage} newBooking={newBooking}/>}
       {bookingStage === 0 ? 
         <ServiceSelection 
         onSubmit={changeBookingStage} 
@@ -43,7 +56,9 @@ const ArtistBooking = ({ bookingStage, changeBookingStage, resetBooking, service
         bookingValue={bookingValue}
         depositPayable={depositPayable} 
         bookingValue={bookingValue}
-        newBooking={newBooking}/>
+        newBooking={newBooking}
+        manageState={manageState}
+        setManageState={setManageState}/>
         : null
       }
     </React.Fragment>

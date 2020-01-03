@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
@@ -53,6 +53,11 @@ const ServiceSelection = ({
   const [selectedDate, setSelectedDate] = useState(bookingDate)
   const [address, setAddress] = useState(bookingAddr)
   
+  useEffect(() => {
+    setSelectedDate(bookingDate)
+    setAddress(bookingAddr)
+  }, [bookingAddr, bookingDate])
+
   const missingFields = () => {
     let qty = 0
     for (let id of Object.keys(itemQty)) {

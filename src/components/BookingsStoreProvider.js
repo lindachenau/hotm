@@ -5,11 +5,20 @@ import { normaliseArtists, normaliseServices } from '../utils/dataFormatter'
 import { bookings_url, user_url, access_token, artists_url, services_url } from '../config/dataLinks'
 import { getEvents } from '../utils/dataFormatter'
 import axios from 'axios'
+import moment from 'moment'
 
 const BookingsStoreContext = createContext()
 
-const BookingsStoreProvider = ({children, storeCtrl}) => {
+const initFilter = (fromDate, toDate) => {
+  return new String (bookings_url + '?from_date=' + moment(fromDate).format("YYYY-MM-DD") + '&to_date=' + moment(toDate).format("YYYY-MM-DD"))
+}
+
+const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
   const {servicesActive, artistsActive, bookingsActive, requestMethod, data, callMe, bookingTrigger} = storeCtrl
+  const {fromDate, toDate} = bookingFilter
+  const artistId = bookingFilter.artist ? bookingFilter.artist.id : null
+  const clientId = bookingFilter.client ? bookingFilter.client.id : null
+  const [bookingUrl, setBookingUrl] = useState(initFilter(fromDate, toDate))
   const [services, setServices] = useState({})
   const [servicesFetched, setServicesFetched] = useState(false)
   const [artists, setArtists] = useState({})
@@ -17,10 +26,10 @@ const BookingsStoreProvider = ({children, storeCtrl}) => {
   const [events, setEvents] = useState([])
   const [eventsFetched, setEventsFetched] = useState(false)
   const [clientList, setClientList] = useState([])
-  const [clientsFetched, setClientsFetched] = useState(false)
+  const [clientsFetchTrigger, setClientsFetchTrigger] = useState(false)
   const [clients, setClients] = useState({})
 
-  let servicesData = useAxiosFetch(services_url, [], servicesActive);
+  let servicesData = useAxiosFetch(services_url, [], servicesActive)
 
   useEffect(() => {
     if (servicesData.data.length !== 0) {
@@ -29,7 +38,22 @@ const BookingsStoreProvider = ({children, storeCtrl}) => {
     }
   }, [servicesData.isLoading, servicesData.data])
 
-  let artistsData = useAxiosFetch(artists_url, [], artistsActive);
+  let artistsData = useAxiosFetch(artists_url, [], artistsActive)
+
+  //update booking filter
+  useEffect(() => {
+    let newFilter = new String(bookings_url + '?from_date=' + moment(fromDate).format("YYYY-MM-DD"))
+
+    newFilter = newFilter + '&to_date=' + moment(toDate).format("YYYY-MM-DD")
+    
+    if (artistId)
+      newFilter = newFilter + '&artist_id=' + artistId.toString()
+
+    if (clientId)
+    newFilter = newFilter + '&client_id=' + clientId.toString()
+
+    setBookingUrl(newFilter)
+  }, [fromDate, toDate, artistId, clientId])
 
   useEffect(() => {
     if (artistsData.data.length !== 0) {
@@ -38,7 +62,7 @@ const BookingsStoreProvider = ({children, storeCtrl}) => {
     }
   }, [artistsData.isLoading, artistsData.data])
 
-  let bookingsData = useAxiosCRUD(bookings_url, {}, bookingsActive, requestMethod, data, callMe, bookingTrigger);
+  let bookingsData = useAxiosCRUD(bookingUrl, {}, bookingsActive, requestMethod, data, callMe, bookingTrigger)
 
   const getClientListFromBookings = bookings => {
     let list = []
@@ -60,8 +84,6 @@ const BookingsStoreProvider = ({children, storeCtrl}) => {
   useEffect(() => {
     if (clientList.length > 0) {
       
-      setClientsFetched(false)
-
       Promise.allSettled(clientList.map(id => {
         const config = {
           method: 'get',
@@ -84,17 +106,17 @@ const BookingsStoreProvider = ({children, storeCtrl}) => {
           }
         })
         setClients(temp)
-        setClientsFetched(true)
+        setClientsFetchTrigger(!clientsFetchTrigger)
       })
     }
   }, [clientList])
 
   useEffect(() => {
-    if (artistsFetched && clientsFetched && servicesFetched) {
+    if (artistsFetched && servicesFetched) {
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
       setEventsFetched(true)
     }
-  }, [clientsFetched])
+  }, [clientsFetchTrigger, clients])
 
   return (
     <BookingsStoreContext.Provider value={{services, servicesFetched, events, eventsFetched, artists, artistsFetched, bookingsData}}>

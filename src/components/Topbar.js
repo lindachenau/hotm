@@ -23,6 +23,7 @@ import FilterListIcon from '@material-ui/icons/FilterList'
 
 import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
+import Filter from '../config/FilterContainer'
 import { home_url } from '../config/dataLinks'
 
 const logo = require('../images/logo192.png')
@@ -78,11 +79,12 @@ const Menu = [
 
 ];
 
-function Topbar ({location, bookingValue, loggedIn}) {
+function Topbar ({location, bookingValue, loggedIn, artists}) {
   const classes = useStyles()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [triggerSignin, setTriggerSignin] = useState(false)
   const [triggerSignout, setTriggerSignout] = useState(false)
+  const [triggerFilter, setTriggerFilter] = useState(false)
   const currentPath = location.pathname
   const bookingPage = currentPath === '/' || currentPath === '/artist'
   const eventsPage = currentPath === '/manage' || currentPath === '/calendar'
@@ -101,6 +103,11 @@ function Topbar ({location, bookingValue, loggedIn}) {
       setTriggerSignout(!triggerSignout)
     else
       setTriggerSignin(!triggerSignin)
+  }
+
+  const handleFilter = evt => {
+    evt.preventDefault()
+    setTriggerFilter(!triggerFilter)
   }
 
   let title
@@ -165,6 +172,7 @@ function Topbar ({location, bookingValue, loggedIn}) {
             <IconButton
               edge="end"
               color="inherit"
+              onClick={handleFilter}
             >
               <FilterListIcon/>
             </IconButton>}
@@ -179,6 +187,7 @@ function Topbar ({location, bookingValue, loggedIn}) {
         </Toolbar>
         <SignoutForm triggerOpen={triggerSignout}/> 
         <SigninForm triggerOpen={triggerSignin} initOpen={false}/>
+        <Filter triggerOpen={triggerFilter} artists={artists}/> 
       </AppBar>
     </div>
   )

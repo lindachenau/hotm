@@ -12,8 +12,7 @@ import TableCell from '@material-ui/core/TableCell'
 import TableRow from '@material-ui/core/TableRow'
 import Chip from '@material-ui/core/Chip'
 import DoneIcon from '@material-ui/icons/Done'
-import Autocomplete from '@material-ui/lab/Autocomplete'
-import TextField from '@material-ui/core/TextField'
+import AddArtists from './AddArtists'
 import AddClient from './AddClient'
 
 const useStyles = makeStyles(theme => ({
@@ -81,17 +80,6 @@ function AddPeople ({
   const [disableNext, setDisableNext] = useState(true)
   const [client, setClient] = useState(clientInfo.client)
   
-  const artistOptions = Object.values(artists).sort((a, b) => {
-    let artists1 = a.state.toUpperCase() + a.name
-    let artists2 = b.state.toUpperCase() + b.name
-    if (artists1 < artists2)
-      return -1
-    else if (artists1 > artists2)
-      return 1
-    else
-      return 0
-  })
-
   useEffect(() => {
     if (tags.length > 0)
       setDisableNext(false)
@@ -103,6 +91,7 @@ function AddPeople ({
 
   const handleBack = () => {
     assignArtists(tags.map(tag => tag.id))
+    assignClient(client)
     changeBookingStage(0)
   }
 
@@ -117,12 +106,12 @@ function AddPeople ({
       booking_time: start_time,
       booking_end_time: moment(bookingEnd).format("HH:mm"),
       artist_start_time: start_time,
-      booking_id: null,
+      booking_id: newBooking? null : clientInfo.bookingId,
       created_datetime: null,
       event_address: bookingAddr,
-      quantities: Object.values(itemQty).join(','),
-      services: Object.keys(itemQty).join(','),
-      unit_prices: Object.keys(itemQty).map(id => items[id].price).join(','),
+      quantities: Object.values(itemQty),
+      services: Object.keys(itemQty),
+      unit_prices: Object.keys(itemQty).map(id => items[id].price),
       status: null,
       time_on_site: (bookingEnd - bookingDate) / 1000 / 60,
       travel_distance: 0,
@@ -133,7 +122,7 @@ function AddPeople ({
       paid_balance_total: null,
       paid_deposit_total: null,
       total_amount: bookingValue, 
-      paid_amount: newBooking? depositPayable : clientInfo.balance, 
+      paid_amount: newBooking? depositPayable : (bookingValue - clientInfo.paid), 
       paid_type: newBooking ? 'deposit' : 'balance', 
       comment: '',
       status: ''
@@ -141,10 +130,6 @@ function AddPeople ({
   
     saveBooking(bookingData)
     changeBookingStage(2)
-  }
-
-  const onChangeArtists = (event, value) => {
-    setTags(value)
   }
 
   return (
@@ -173,30 +158,19 @@ function AddPeople ({
           </TableBody>
         </Table>
         <br/>
-        <Autocomplete
-          multiple
-          id="artist-list"
-          disableClearable
-          filterSelectedOptions
-          options={artistOptions}
-          groupBy={option => option.state.toUpperCase()}
-          getOptionLabel={option => option.name}
-          value={tags}
-          onChange={onChangeArtists}
-          renderInput={params => (
-            <TextField
-              {...params}
-              variant="outlined"
-              placeholder="Artist name"
-              label="Add artists"
-              fullWidth
-            />
-          )}
+        <AddArtists
+          artists={artists}
+          multiArtists={true}
+          clearable={true}
+          setTags={setTags}
+          tags={tags}
+          label="Add artists"
         />
         <br/>
         <AddClient
           setClient={setClient}
           client={client}
+          label="Add client"
         />
         <br/>
         <Table size="small" aria-label="a dense table">

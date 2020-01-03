@@ -27,7 +27,8 @@ const dataFetchReducer = (state, action) => {
         isUpdating: false,
         hasErrored: false,
         errorMessage: "",
-        data: Object.assign({}, state.data, convertArrayToObject(action.payload, 'booking_id'))
+        // data: Object.assign({}, state.data, convertArrayToObject(action.payload, 'booking_id'))
+        data: Object.assign({}, convertArrayToObject(action.payload, 'booking_id'))
       }
     case "FETCH_FAILURE":
       return {
@@ -84,8 +85,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe, bookingTrigger) => {
-  const [url] = useState(initialUrl)
+const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTrigger) => {
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -158,8 +158,7 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe, boo
         let bookingId = result.data.booking_id
         if (!didCancel) {
           if (bookingId > 0) {
-            let payload = {...data, booking_id: bookingId}
-            dispatch({ type: "PUT_SUCCESS", payload: payload })
+            dispatch({ type: "PUT_SUCCESS", payload: data })
             callMe()
           }
           else {
@@ -195,7 +194,7 @@ const useAxiosCRUD = (initialUrl, initialData, active, method, data, callMe, boo
     return () => {
       didCancel = true
     }
-  }, [url, active, method, data, bookingTrigger])
+  }, [active, method, data, bookingTrigger])
 
   return { ...state }
 }

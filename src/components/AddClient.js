@@ -5,10 +5,9 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import { user_url, access_token } from '../config/dataLinks'
 import axios from "axios"
 
-export default function AddClient({client, setClient, }) {
+export default function AddClient({client, setClient, label}) {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState(client !== null ? [client] : [])
-  const [tag, setTag] = useState(client)
   const [searchKey, setSearchKey] = useState('')
   const active = open && searchKey.length >= 3
   const [loading, setLoading] = useState(false)
@@ -42,10 +41,7 @@ export default function AddClient({client, setClient, }) {
   }, [searchKey, active])
 
   const handleChangeClient = (event, value) => {
-    if (value !== null) {
-      setClient(value)
-      setTag(value)
-    }
+    setClient(value)
   }
 
   const handleChangeSearchKey = (event, value, reason) => {
@@ -75,17 +71,16 @@ export default function AddClient({client, setClient, }) {
       open={open}
       onOpen={handleOpen}
       onClose={handleClose}
-      // getOptionSelected={(option, value) => option.name === value.name}
       getOptionLabel={getOptionLabel}
       options={options}
       loading={loading}
-      value={tag}
+      value={client}
       onChange={handleChangeClient}
       onInputChange={handleChangeSearchKey}
       renderInput={params => (
         <TextField
           {...params}
-          label="Add client"
+          label={label}
           fullWidth
           variant="outlined"
           placeholder="Client name or username"

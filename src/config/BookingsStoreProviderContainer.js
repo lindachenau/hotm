@@ -3,7 +3,8 @@ import { BookingsStoreProvider } from '../components/BookingsStoreProvider'
 
 const mapStateToProps = state => {
   return {
-    storeCtrl : state.storeActivation
+    storeCtrl : state.storeActivation,
+    bookingFilter: state.bookingFilter
   }
 }
 
