@@ -107,23 +107,10 @@ export function bookingStage(state = {stage: 0}, action) {
 export function assignedArtists(state = [], action) {
   switch (action.type) {
     case ASSIGN_ARTISTS: {
-      let ids = [...state]
-      action.artistIds.forEach(id => {
-        let i = Number(id)
-        if (!ids.includes(i))
-          ids.push(i) 
-      })
-
-      return ids
+      return action.artistIds
     }
     case LOAD_BOOKING: {
-      let ids = []
-      action.booking.artist_id_list.forEach(id => {
-        if (!ids.includes(id))
-          ids.push(id) 
-      })
-
-      return ids
+      return action.booking.artist_id_list
     }
     case RESET_BOOKING: {
       return []

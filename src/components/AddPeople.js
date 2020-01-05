@@ -90,18 +90,18 @@ function AddPeople ({
   const ids = Object.keys(itemQty)
 
   const handleBack = () => {
-    assignArtists(tags.map(tag => tag.id))
+    assignArtists(tags.map(tag => Number(tag.id)))
     assignClient(client)
     changeBookingStage(0)
   }
 
   const handleNext = () => {
-    assignArtists(tags.map(tag => tag.id))
+    assignArtists(tags.map(tag => Number(tag.id)))
     assignClient(client)
 
     const start_time = moment(bookingDate).format("HH:mm")
     const bookingData = {
-      artist_id_list: tags.map(tag => tag.id),
+      artist_id_list: tags.map(tag => Number(tag.id)),
       booking_date: moment(bookingDate).format("YYYY-MM-DD"),
       booking_time: start_time,
       booking_end_time: moment(bookingEnd).format("HH:mm"),
@@ -110,7 +110,7 @@ function AddPeople ({
       created_datetime: null,
       event_address: bookingAddr,
       quantities: Object.values(itemQty),
-      services: Object.keys(itemQty),
+      services: Object.keys(itemQty).map(id => Number(id)),
       unit_prices: Object.keys(itemQty).map(id => items[id].price),
       status: null,
       time_on_site: (bookingEnd - bookingDate) / 1000 / 60,
