@@ -7,7 +7,8 @@ const initUser = {
   email: '',
   id: '',
   phone: '',
-  loggedIn: false
+  loggedIn: false,
+  isArtist: false
 }
 
 export function userInfo(state = initUser, action) {
@@ -19,7 +20,8 @@ export function userInfo(state = initUser, action) {
         nickName: action.payload.nickName,
         email: action.payload.email,
         id: action.payload.id,
-        loggedIn: true
+        loggedIn: action.payload.loggedIn,
+        isArtist: action.payload.isArtist
       })
     }
     case SIGN_OUT: {

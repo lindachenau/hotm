@@ -1,14 +1,14 @@
 /*
  * Hair On the Move 2 U Home page
  */
-// export const home_url = "https://procomhost.com"
-export const home_url = "https://appvelation.app"
+export const home_url = "https://procomhost.com"
+// export const home_url = "https://appvelation.app"
 
 
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.7"
+const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.8"
 export const services_url = HOTM_BOOKING_API + "/services"
 export const artists_url = HOTM_BOOKING_API + "/artists"
 export const bookings_url = HOTM_BOOKING_API + "/bookings"
@@ -35,7 +35,10 @@ export const reset_pw_url = home_url + "/api/user/retrieve_password/?user_login=
 // export const user_url = home_url + "/wp-json/wp/v2/users"
 // Use relative path in development mode to make use of proxy
 export const user_url = "/wp-json/wp/v2/users"
-export const access_token = "Basic YmxhY2tjYXQ6QEdhdmluJlMwMHR5"
+// Username : Password authentication
+// export const access_token = "Basic YmxhY2tjYXQ6QEdhdmluJlMwMHR5"
+// Client-ID : Client-Secret authentication
+export const access_token = "Basic ZEtkWDBTM0wwSERsOnAxMk9GeFNMczVVNXVxdEEyQnVTYkFuUg=="
 
 /*
  * Instagram root for artists

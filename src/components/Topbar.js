@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const Menu = [
+const artistMenu = [
   {
     label: "Add a booking",
     pathname: "/",
@@ -65,21 +65,29 @@ const Menu = [
     pathname: "/calendar",
     icon: <EventIcon />
   },
-  // {
-  //   label: "Manage account",
-  //   pathname: "/account",
-  //   icon: <AccountBoxIcon />
-  // },
   {
     label: "Go to Hair on the Move",
     pathname: home_url,
     external: true,
     icon: <LinkIcon />
   }
-
 ];
 
-function Topbar ({location, bookingValue, loggedIn, artists}) {
+const userMenu = [
+  {
+    label: "Add a booking",
+    pathname: "/",
+    icon: <AddIcon />
+  },
+  {
+    label: "Go to Hair on the Move",
+    pathname: home_url,
+    external: true,
+    icon: <LinkIcon />
+  }
+];
+
+function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
   const classes = useStyles()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [triggerSignin, setTriggerSignin] = useState(false)
@@ -88,6 +96,7 @@ function Topbar ({location, bookingValue, loggedIn, artists}) {
   const currentPath = location.pathname
   const bookingPage = currentPath === '/' || currentPath === '/artist'
   const eventsPage = currentPath === '/manage' || currentPath === '/calendar'
+  const menu = isArtist ? artistMenu : userMenu
   
   const toggleDrawer = (open) => event => {
     if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
@@ -145,7 +154,7 @@ function Topbar ({location, bookingValue, loggedIn, artists}) {
                 onKeyDown={toggleDrawer(false)}
               >
                 <List>
-                  {Menu.map(item => (
+                  {menu.map(item => (
                     <ListItem 
                       component={item.external ? MaterialLink : Link} 
                       href={item.external ? item.pathname : null} 

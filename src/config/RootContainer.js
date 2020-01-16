@@ -10,7 +10,8 @@ const mapStateToProps = state => {
     clients: state.clients,
     bookings: state.bookings,
     bookingStage: state.bookingStage.stage,
-    loggedIn: state.userInfo.loggedIn
+    loggedIn: state.userInfo.loggedIn,
+    isArtist: state.userInfo.isArtist
   }
 }
 

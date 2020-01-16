@@ -16,7 +16,7 @@ const Calendar = lazy(() => import('../pages/Calendar'))
 /**
  * For deploy testing frontend without backend
  */
-const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn }) => {
+const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist }) => {
   const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
@@ -30,7 +30,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
     <HashRouter>
       <ScrollToTop>
         <CssBaseline />
-        <Topbar bookingValue={bookingValue} loggedIn={loggedIn} artists={artists}/>
+        <Topbar bookingValue={bookingValue} loggedIn={loggedIn} isArtist={isArtist} artists={artists}/>
         <Suspense fallback={<CircularProgress/>}>
         {servicesFetched &&
           <Switch>
