@@ -1,3 +1,4 @@
+import { miniOrangeAccessKey } from '../ApiKeys'
 /*
  * Hair On the Move 2 U Home page
  */
@@ -38,7 +39,7 @@ export const user_url = "/wp-json/wp/v2/users"
 // Username : Password authentication
 // export const access_token = "Basic YmxhY2tjYXQ6QEdhdmluJlMwMHR5"
 // Client-ID : Client-Secret authentication
-export const access_token = "Basic ZEtkWDBTM0wwSERsOnAxMk9GeFNMczVVNXVxdEEyQnVTYkFuUg=="
+export const access_token = miniOrangeAccessKey
 
 /*
  * Instagram root for artists

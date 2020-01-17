@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
+import { stripePublicKey } from '../ApiKeys'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -104,7 +105,7 @@ function ArtistPayment({
           </Typography>
         }
         {checkOutable && 
-          <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={true} payMessage="Client Pay"/>}
+          <StripeForm stripePublicKey={stripePublicKey} handleCharge={submit} loggedIn={true} payMessage="Client Pay"/>}
         {!newBooking && checkOutable &&
           <>
             <div className={classes.container}>

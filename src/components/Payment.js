@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
+import { stripePublicKey } from '../ApiKeys'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -85,7 +86,7 @@ function Payment (
         <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
           Deposit payable: $ {depositPayable.toString()}
         </Typography>
-        <StripeForm stripePublicKey="pk_test_a0vfdte94kBhPrDqosS5OnPd00A0fS0egz" handleCharge={submit} loggedIn={loggedIn} payMessage="Pay"/>
+        <StripeForm stripePublicKey={stripePublicKey} handleCharge={submit} loggedIn={loggedIn} payMessage="Pay"/>
         <TextField
           id="outlined-textarea"
           label="Additional instructions"

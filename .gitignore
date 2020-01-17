@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 
+#Api Keys
+/src/ApiKeys.js
+
 # production
 /build*
 
