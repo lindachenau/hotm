@@ -48,3 +48,8 @@ export const instagram_url = "https://www.instagram.com/explore/tags/"
  * Hair On the Move 2 U Terms & Conditions
  */
 export const term_url = home_url + "/terms-conditions/"
+
+/*
+ * Stripe charge server running on Node.js deployed to Heroku
+ */
+export const stripe_charge_server = "https://boiling-shore-55046.herokuapp.com/charge"

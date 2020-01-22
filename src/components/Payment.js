@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
 import { stripePublicKey } from '../ApiKeys'
+import { stripe_charge_server } from '../config/dataLinks'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -51,7 +52,7 @@ function Payment (
   }
 
   const submit = async (token) => {
-    let response = await fetch("/charge", {
+    let response = await fetch(stripe_charge_server, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
@@ -60,6 +61,8 @@ function Payment (
         amount: (depositPayable * 100).toFixed(0)
       })
     });
+
+    console.log(response)
   
     let bookingData = {
       ...bookingInfo, 
