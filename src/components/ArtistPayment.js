@@ -7,6 +7,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import { stripePublicKey } from '../ApiKeys'
+import { stripe_charge_server } from '../config/dataLinks'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -63,7 +64,7 @@ function ArtistPayment({
   }
 
   const submit = async (token) => {
-    let response = await fetch("/charge", {
+    let response = await fetch(stripe_charge_server, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
