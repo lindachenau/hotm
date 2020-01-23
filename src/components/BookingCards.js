@@ -17,7 +17,8 @@ const useStyles = makeStyles(theme => ({
   paper: {
     padding: theme.spacing(3),
     color: theme.palette.text.secondary,
-    background: "linear-gradient(#f0e8e8, #e0d8d8)"
+    background: "linear-gradient(#f0e8e8, #e0d8d8)",
+    marginBottom: 10
   },
   flex: {
     display: 'flex',
@@ -38,7 +39,7 @@ function Card ({ event }) {
   let itemKey = 0
 
   return (
-    <Paper className={classes.paper}>
+    <Paper className={classes.paper} elevation={6}>
       <Typography variant="h6" align="center" color="textPrimary">
         { moment(event.start).format("dddd, YYYY/MM/DD") }
       </Typography>

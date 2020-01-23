@@ -52,7 +52,7 @@ class CardItem extends Component {
     const url = instagram_url + hashtag
 
     return (
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} elevation={6}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={3} className={classes.flex}>
             <Avatar alt="" src={ avatar } className={classes.avatar}/>
