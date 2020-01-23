@@ -8,15 +8,15 @@ import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 //Use route based lazy loading to split the code to smaller chunks
-// const Booking = lazy(() => import('../pages/Booking'))
-// const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
-// const Manage = lazy(() => import('../config/ManageContainer'))
-// const Calendar = lazy(() => import('../pages/Calendar'))
+const Booking = lazy(() => import('../pages/Booking'))
+const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
+const Manage = lazy(() => import('../config/ManageContainer'))
+const Calendar = lazy(() => import('../pages/Calendar'))
 
-import Booking from '../pages/Booking'
-import ArtistBooking from '../pages/ArtistBooking'
-import Manage from  '../config/ManageContainer'
-import Calendar from '../pages/Calendar'
+// import Booking from '../pages/Booking'
+// import ArtistBooking from '../pages/ArtistBooking'
+// import Manage from  '../config/ManageContainer'
+// import Calendar from '../pages/Calendar'
 
 /**
  * For deploy testing frontend without backend
