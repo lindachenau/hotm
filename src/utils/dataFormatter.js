@@ -93,8 +93,8 @@ export function getEvents(bookings, artists, clients, servicesMenu)
       total = getBookingValue(servicesMenu, priceFactors, itemQty)
       events.push({
         id: booking.booking_id,
-        start: new Date(booking.booking_date + ' ' + booking.booking_time + ':00'),
-        end: new Date(booking.booking_date + ' ' + booking.booking_end_time + ':00'),
+        start: new Date(booking.booking_date + 'T' + booking.booking_time + ':00'),
+        end: new Date(booking.booking_date + 'T' + booking.booking_end_time + ':00'),
         address: booking.event_address,
         artists: booking.artist_id_list.map(id => artists[id]),
         artistNames: booking.artist_id_list.map(id => artists[id].name).join(', '),
