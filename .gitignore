@@ -4,7 +4,7 @@
 /node_modules
 
 #Api Keys
-#/src/ApiKeys.js
+.env
 
 # production
 /build*

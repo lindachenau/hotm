@@ -1,4 +1,4 @@
-import { miniOrangeAccessKey } from '../ApiKeys'
+const miniOrangeAccessKey = process.env.REACT_APP_MINIORANGE_ACCESS_KEY
 /*
  * Hair On the Move 2 U Home page
  */

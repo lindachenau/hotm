@@ -7,8 +7,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
-import { stripePublicKey } from '../ApiKeys'
+
 import { stripe_charge_server } from '../config/dataLinks'
+const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
 const useStyles = makeStyles(theme => ({
   paper: {
