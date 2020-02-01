@@ -85,7 +85,7 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
           { moment(bookingDate).format("dddd, Do MMMM YYYY") }
         </Typography>
         <Typography variant="subtitle1" align="center" color="textPrimary" gutterBottom>
-          { moment(bookingDate).format('LT') + ' – ' + moment(bookingEnd).format('LT')}
+          { `${moment(bookingDate).format('LT')} – ${moment(bookingEnd).format('LT')}` }
         </Typography>
         <Table size="small" aria-label="a dense table">
           <TableHead className={classes.background}>
@@ -143,12 +143,12 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
                 <TableCell align="left" style={{width: "70%"}}>
                   {items[id].description}
                   <div className={classes.priceEmbedded}>
-                    {' - $' + ((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                    { ` - $${((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}` }
                   </div>
                 </TableCell>
                 <TableCell align="right" style={{width: "20%", padding: 0}}>
                   <div className={classes.priceField}>
-                    {'$' + ((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                    { `$${((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}` }
                   </div>
                 </TableCell>
                 <TableCell align="right" style={{width: "10%"}}>
@@ -162,7 +162,7 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
         {organic ? <Chip deleteIcon={<DoneIcon/>} onDelete={()=> {}} label="Use organic products" color='primary' size="small"/> : null}
         <hr></hr>
         <Typography variant="subtitle2" align="right" color="textPrimary">
-          {'TOTAL (GST INCL): $' + bookingValue}
+          { `TOTAL (GST INCL): $${bookingValue}` }
         </Typography>
         <div className={classes.acknowledge}>
           <Checkbox checked={checkedDeposit} onChange={handleDeposit} value="checkedDeposit" className={classes.inline}/>

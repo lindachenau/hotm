@@ -121,7 +121,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
       userFormData.set('username', username)
       userFormData.set('user_pass', password)
       userFormData.set('email', email)
-      userFormData.set('display_name', firstName + ' ' + lastName)
+      userFormData.set('display_name', `${firstName} ${lastName}`)
       userFormData.set('nonce', nonce)
 
       const config = {

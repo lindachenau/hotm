@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { setActivateClients, setActivateBookings } from '../actions/bookingCreator'
+import { setActivateBookings } from '../actions/bookingCreator'
 import Manage from '../pages/Manage'
 
 const mapDispatchToProps = dispatch => {

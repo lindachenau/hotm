@@ -88,7 +88,7 @@ export default function ServiceMenu({ theme, items, cat, organic, pensioner, ite
                 <TableCell align="left" style={{width: "60%"}}>
                   {items[id].description + (items[id].addOn ? '*' : '')}
                   <div className={classes.priceEmbedded}>
-                    {' - $' + ((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                    { ` - $${((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}` }
                   </div>
                 </TableCell>
                 <TableCell align="right" style={{width: "30%", padding: 0}}>

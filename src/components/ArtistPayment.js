@@ -60,7 +60,7 @@ function ArtistPayment({
 
   const successNotification = (message) => {
     // const message = newBooking ? "Booking successful!" : "Checkout successful!"
-    alert(message + " successful!")
+    alert(`${message} successful!`)
     resetBooking()
   }
 

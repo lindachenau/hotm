@@ -112,7 +112,6 @@ function AddPeople ({
       quantities: Object.values(itemQty),
       services: Object.keys(itemQty).map(id => Number(id)),
       unit_prices: Object.keys(itemQty).map(id => items[id].price),
-      status: null,
       time_on_site: (bookingEnd - bookingDate) / 1000 / 60,
       travel_distance: 0,
       travel_duration: 0,
@@ -139,7 +138,7 @@ function AddPeople ({
           { moment(bookingDate).format("dddd, Do MMMM YYYY") }
         </Typography>
         <Typography variant="subtitle1" align="center" color="textPrimary" gutterBottom>
-          { moment(bookingDate).format('LT') + ' – ' + moment(bookingEnd).format('LT')}
+          { `${moment(bookingDate).format('LT')} – ${moment(bookingEnd).format('LT')}` }
         </Typography>
         <Table size="small" aria-label="a dense table">
           <TableHead className={classes.background}>
@@ -195,12 +194,12 @@ function AddPeople ({
                 <TableCell align="left" style={{width: "70%"}}>
                   {items[id].description}
                   <div className={classes.priceEmbedded}>
-                    {' - $' + ((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                    { ` - $${((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}` }
                   </div>
                 </TableCell>
                 <TableCell align="right" style={{width: "20%", padding: 0}}>
                   <div className={classes.priceField}>
-                    {'$' + ((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                    { `$${((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}` }
                   </div>
                 </TableCell>
                 <TableCell align="right" style={{width: "10%"}}>
@@ -214,7 +213,7 @@ function AddPeople ({
         {organic ? <Chip deleteIcon={<DoneIcon/>} onDelete={()=> {}} label="Use organic products" color='primary' size="small"/> : null}
         <hr></hr>
         <Typography variant="subtitle2" align="right" color="textPrimary">
-          {'TOTAL (GST INCL): $' + bookingValue}
+          { `TOTAL (GST INCL): $${bookingValue}` }
         </Typography>
       </Paper>
       <div className={classes.flex}>

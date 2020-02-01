@@ -175,7 +175,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
             {bookingPage && 
             <React.Fragment>
               <AccountBalanceWalletIcon fontSize='small'/>
-              <span>{' $' + bookingValue}</span>
+              <span>{ `$${bookingValue}` }</span>
             </React.Fragment>}
             {eventsPage && 
             <IconButton

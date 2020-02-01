@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { resetBooking, addBooking, setActivateBookings } from '../actions/bookingCreator'
+import { resetBooking, addBooking } from '../actions/bookingCreator'
 import Payment from '../components/Payment'
 
 const mapStateToProps = state => {

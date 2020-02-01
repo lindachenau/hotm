@@ -10,7 +10,7 @@ import moment from 'moment'
 const BookingsStoreContext = createContext()
 
 const initFilter = (fromDate, toDate) => {
-  return new String (bookings_url + '?from_date=' + moment(fromDate).format("YYYY-MM-DD") + '&to_date=' + moment(toDate).format("YYYY-MM-DD"))
+  return `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
 }
 
 const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
@@ -42,15 +42,13 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
 
   //update booking filter
   useEffect(() => {
-    let newFilter = new String(bookings_url + '?from_date=' + moment(fromDate).format("YYYY-MM-DD"))
-
-    newFilter = newFilter + '&to_date=' + moment(toDate).format("YYYY-MM-DD")
+    let newFilter = `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
     
     if (artistId)
-      newFilter = newFilter + '&artist_id=' + artistId.toString()
+      newFilter = `${newFilter}&artist_id=${artistId.toString()}`
 
     if (clientId)
-    newFilter = newFilter + '&client_id=' + clientId.toString()
+      newFilter = `${newFilter}&client_id=${clientId.toString()}`
 
     setBookingUrl(newFilter)
   }, [fromDate, toDate, artistId, clientId])
@@ -88,7 +86,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
         const config = {
           method: 'get',
           headers: { 'Authorization': access_token },
-          url: user_url + '/' + id
+          url: `${user_url}/${id}`
         }
         return axios(config)
       }))

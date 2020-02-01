@@ -62,7 +62,7 @@ export default function SignoutForm({firstName, lastName, email, triggerOpen, si
       </div>
       <DialogContent className={classes.container2}>
         <Typography variant='h6' align='center'>
-          {firstName + ' ' + lastName}
+          { `${firstName} ${lastName}` }
         </Typography>
         <Typography variant='body2' align='center'>
           {email}

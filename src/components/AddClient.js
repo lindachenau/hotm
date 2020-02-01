@@ -20,7 +20,7 @@ export default function AddClient({client, setClient, label}) {
         const config = {
           method: 'get',
           headers: { 'Authorization': access_token },
-          url: user_url + '?search=' + searchKey
+          url: `${user_url}?search=${searchKey}`
         }
 
         setLoading(true)
@@ -62,7 +62,7 @@ export default function AddClient({client, setClient, label}) {
   }
 
   const getOptionLabel = option => {
-    return option.name + ' - ' + option.phone
+    return `${option.name} - ${option.phone}`
   }
 
   return (

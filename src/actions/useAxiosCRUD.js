@@ -1,4 +1,4 @@
-import { useState, useEffect, useReducer } from "react"
+import { useEffect, useReducer } from "react"
 import axios from "axios"
 
 const convertArrayToObject = (array, key) => {
@@ -133,7 +133,7 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
             callMe()
           }
           else {
-            alert(result.data.error + ' Please call to resolve this issue.')
+            alert(`${result.data.error} Please call to resolve this issue.`)
           }
         }
       } catch (err) {
@@ -168,7 +168,7 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
             callMe()
           }
           else {
-            alert(result.data.error + ' Please call to resolve this issue.')
+            alert(`${result.data.error} Please call to resolve this issue.`)
           }
         }
       } catch (err) {

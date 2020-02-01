@@ -1,8 +1,6 @@
 import { connect } from 'react-redux'
 import { assignArtists, assignClient, saveBooking } from '../actions/bookingCreator'
 import AddPeople from '../components/AddPeople'
-import { statement } from '@babel/template'
-import { FaSatellite } from 'react-icons/fa'
 
 const mapStateToProps = state => {
   return {

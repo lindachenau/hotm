@@ -44,22 +44,22 @@ function Card ({ event }) {
         { moment(event.start).format("dddd, YYYY/MM/DD") }
       </Typography>
       <Typography variant="h6" align="center" color="textPrimary" gutterBottom>
-        { moment(event.start).format('LT') + ' – ' + moment(event.end).format('LT')}
+        { `${moment(event.start).format('LT')} – ${moment(event.end).format('LT')}` }
       </Typography>
       <div>
         <FaMapMarkerAlt/><span>{ event.address }</span>
       </div>
       <div>
         <FaUserAlt/> 
-        <span>{ event.client.name + ' ' }</span> 
+        <span>{ `${event.client.name} ` }</span> 
         <FaPhoneSquare/>
-        <span>{ event.client.phone + ' ' }</span>
+        <span>{ `${event.client.phone} ` }</span>
         {event.organic ? <EmojiNatureIcon color='primary'/> : null}
       </div>
       <div>
         <br/>
         <FaDollarSign/>
-        <span>{ event.total + ' '}</span>
+        <span>{ `${event.total} `}</span>
         <FaUserCog/>
         <span>{ event.artists.map(artist => artist.name).join(', ')}</span>
         <ul>
