@@ -1,5 +1,6 @@
 import { useEffect, useReducer } from "react"
 import axios from "axios"
+import { bookings_url } from '../config/dataLinks'
 
 const convertArrayToObject = (array, key) => {
   const initialValue = {};
@@ -119,7 +120,7 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
       const config = {
         method: 'post',
         headers: {"Content-Type": "application/json"},
-        url: url,
+        url: bookings_url,
         data: data
       }
 
@@ -149,7 +150,7 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
       const config = {
         method: 'put',
         headers: {"Content-Type": "application/json"},
-        url: url,
+        url: bookings_url,
         data: data
       }
 
