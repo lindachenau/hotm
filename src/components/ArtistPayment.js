@@ -65,7 +65,7 @@ function ArtistPayment({
   }
 
   const submit = async (token) => {
-    let response = await fetch(stripe_charge_server, {
+    const response = await fetch(stripe_charge_server, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
