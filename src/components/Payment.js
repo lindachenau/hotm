@@ -53,7 +53,7 @@ function Payment (
   }
 
   const submit = async (token) => {
-    let response = await fetch(stripe_charge_server, {
+    const response = await fetch(stripe_charge_server, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
@@ -65,7 +65,7 @@ function Payment (
 
     console.log(response)
   
-    let bookingData = {
+    const bookingData = {
       ...bookingInfo, 
       client_id: userId,
       with_organic: priceFactors.organic ? 1 : 0,
