@@ -125,11 +125,11 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
       }
 
       try {
-        let result = await axios(config)
-        let bookingId = result.data.booking_id
+        const result = await axios(config)
+        const bookingId = result.data.booking_id
         if (!didCancel) {
           if (bookingId > 0) {
-            let payload = {...data, booking_id: bookingId}
+            const payload = {...data, booking_id: bookingId}
             dispatch({ type: "POST_SUCCESS", payload: payload })
             callMe()
           }
@@ -155,8 +155,8 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
       }
 
       try {
-        let result = await axios(config)
-        let bookingId = result.data.booking_id
+        const result = await axios(config)
+        const bookingId = result.data.booking_id
         if (!didCancel) {
           if (bookingId > 0) {
             /*

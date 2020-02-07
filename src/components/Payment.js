@@ -63,8 +63,6 @@ function Payment (
       })
     });
 
-    console.log(response)
-  
     const bookingData = {
       ...bookingInfo, 
       client_id: userId,

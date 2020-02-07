@@ -49,28 +49,24 @@ export const changeSelectedArtist = order => ({
 })
 
 export function getAvailArtist(url) {
-  return function(dispatch) {
-    
+  return async function(dispatch) {
     dispatch({
       type: GET_AVAIL_ARTISTS
     })
 
-    return fetch(url)
-    .then(
-      response => response.json(),
-      error => {
-        console.log("Artists fetching error")
-        dispatch({
-          type: ERROR_AVAIL_ARTISTS
-        })
-      }
-    )
-    .then(data => {
+    try {
+      const result = await fetch(url)
+      const data = await result.json()
       dispatch({
         type: RECEIVE_AVAIL_ARTISTS,
         payload: data
       })
-    })
+    } catch (err) {
+      console.log("Artists fetching error")
+      dispatch({
+        type: ERROR_AVAIL_ARTISTS
+      })
+    }
   }
 }
 
