@@ -5,6 +5,7 @@ import Container from '@material-ui/core/Container'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import Grid from '@material-ui/core/Grid'
+import Alert from '@material-ui/lab/Alert'
 import DateFnsUtils from '@date-io/date-fns'
 import {
   MuiPickersUtilsProvider,
@@ -28,6 +29,13 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+function Info() {
+  return (
+    <Alert elevation={6} severity="info" variant="outlined" style={{marginTop: 10}}>
+      Appointments between 8am to 6pm can be booked online, at least 24 hours before the appointment.
+    </Alert>
+  )
+}
 
 const ServiceSelection = ({ 
   theme, 
@@ -85,6 +93,15 @@ const ServiceSelection = ({
     return selectedDate.getTime() + duration * 60 * 1000
   }
 
+  const legalBookingTime = () => {
+    const now = new Date()
+    const ahead24hrs = (selectedDate - now) / 3600000 >= 24 
+    const bookingTime = selectedDate.getTime() / 3600000
+    const between8And18 = bookingTime >= 8 && bookingTime <= 18
+
+    return ahead24hrs && between8And18
+  }
+
   const checkBookingRules = () => {
     let allAddOn = true
     Object.keys(itemQty).forEach(id => {allAddOn = items[id].addOn && allAddOn})
@@ -92,9 +109,11 @@ const ServiceSelection = ({
     if (pensionerRate && selectedDate.getDay() !== 1) {
       alert('Sorry, pensioner rate is only available on Mondays.')
       return false
-    }
-    else if (allAddOn) {
+    } else if (allAddOn) {
       alert('Sorry, add-on services* can not be booked on its own.')
+      return false
+    } else if (!artistBooking && !legalBookingTime()) {
+      alert('Please book appointments between 8am to 6pm at least 24 hours beforehand. If you need to book outside these hours, please call xxx.')
       return false
     }
 
@@ -158,6 +177,7 @@ const ServiceSelection = ({
           artistBooking={artistBooking}
         />
       )}
+      {artistBooking ? null : <Info/>}
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Grid container justify="space-between">
           <KeyboardDatePicker

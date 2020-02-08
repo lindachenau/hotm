@@ -70,7 +70,7 @@ function ArtistPayment({
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         id: token.id,
-        description: newBooking ? "deposit for booking" : "balance for booking",
+        description: `${bookingData.client_id} ${newBooking ? "deposit" : "balance"} for booking on ${bookingData.booking_date}`,
         amount: (bookingData.paid_amount * 100).toFixed(0)
       })
     });

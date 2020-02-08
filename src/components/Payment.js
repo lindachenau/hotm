@@ -58,7 +58,7 @@ function Payment (
       headers: {"Content-Type": "application/json"},
       body: JSON.stringify({
         id: token.id,
-        description: `${userName}'s deposit for booking`,
+        description: `${userName}'s deposit for booking on ${bookingInfo.booking_date}`,
         amount: (depositPayable * 100).toFixed(0)
       })
     });
