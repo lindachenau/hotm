@@ -7,8 +7,8 @@
     "static/js/2.de21b19b.chunk.js": "/hotm/static/js/2.de21b19b.chunk.js",
     "static/js/2.de21b19b.chunk.js.map": "/hotm/static/js/2.de21b19b.chunk.js.map",
     "main.css": "/hotm/static/css/main.b100e6da.chunk.css",
-    "main.js": "/hotm/static/js/main.30d45230.chunk.js",
-    "main.js.map": "/hotm/static/js/main.30d45230.chunk.js.map",
+    "main.js": "/hotm/static/js/main.4fe21766.chunk.js",
+    "main.js.map": "/hotm/static/js/main.4fe21766.chunk.js.map",
     "runtime-main.js": "/hotm/static/js/runtime-main.4d729d36.js",
     "runtime-main.js.map": "/hotm/static/js/runtime-main.4d729d36.js.map",
     "static/js/5.55b94ff2.chunk.js": "/hotm/static/js/5.55b94ff2.chunk.js",
@@ -24,7 +24,7 @@
     "static/js/9.7ddbcf1c.chunk.js": "/hotm/static/js/9.7ddbcf1c.chunk.js",
     "static/js/9.7ddbcf1c.chunk.js.map": "/hotm/static/js/9.7ddbcf1c.chunk.js.map",
     "index.html": "/hotm/index.html",
-    "precache-manifest.46391fc2cbd2290f8f826c443ef8f5ee.js": "/hotm/precache-manifest.46391fc2cbd2290f8f826c443ef8f5ee.js",
+    "precache-manifest.a55de20597436f772e16695b6dbac26d.js": "/hotm/precache-manifest.a55de20597436f772e16695b6dbac26d.js",
     "service-worker.js": "/hotm/service-worker.js",
     "static/css/6.0b229b51.chunk.css.map": "/hotm/static/css/6.0b229b51.chunk.css.map",
     "static/css/9.eeff2320.chunk.css.map": "/hotm/static/css/9.eeff2320.chunk.css.map",
@@ -36,6 +36,6 @@
     "static/js/runtime-main.4d729d36.js",
     "static/js/5.55b94ff2.chunk.js",
     "static/css/main.b100e6da.chunk.css",
-    "static/js/main.30d45230.chunk.js"
+    "static/js/main.4fe21766.chunk.js"
   ]
 }
