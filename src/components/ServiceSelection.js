@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
 function Info() {
   return (
     <Alert elevation={6} severity="info" variant="outlined" style={{marginTop: 10}}>
-      Appointments between 8am to 6pm can be booked online, at least 24 hours before the appointment.
+      Appointments between 8am to 6pm can be booked online, at least 24 hours in advance.
     </Alert>
   )
 }
@@ -96,8 +96,8 @@ const ServiceSelection = ({
   const legalBookingTime = () => {
     const now = new Date()
     const ahead24hrs = (selectedDate - now) / 3600000 >= 24 
-    const bookingTime = selectedDate.getTime() / 3600000
-    const between8And18 = bookingTime >= 8 && bookingTime <= 18
+    const bookingHour = selectedDate.getHours()
+    const between8And18 = bookingHour >= 8 && bookingHour <= 18
 
     return ahead24hrs && between8And18
   }
@@ -113,7 +113,7 @@ const ServiceSelection = ({
       alert('Sorry, add-on services* can not be booked on its own.')
       return false
     } else if (!artistBooking && !legalBookingTime()) {
-      alert('Please book appointments between 8am to 6pm at least 24 hours beforehand. If you need to book outside these hours, please call xxx.')
+      alert('Please book appointments between 8am to 6pm at least 24 hours in advance. If you need to book outside these hours, please call xxx.')
       return false
     }
 
