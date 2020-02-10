@@ -35,10 +35,10 @@
   "scripts": {
     "start": "react-scripts start",
     "prod": "node server.js",
-    "build": "react-scripts build",
+    "build": "REACT_APP_VERSION=0.8.0 react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "react-scripts build",
+    "predeploy": "REACT_APP_VERSION=0.8.0 react-scripts build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {

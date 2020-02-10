@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Provider } from 'react-redux'
 import { ThemeProvider } from '@material-ui/styles'
 import { createMuiTheme } from '@material-ui/core/styles'
-import './App.css';
+import './App.css'
 import Routes from './config/RootContainer'
 import store from './config/Store'
 import BookingsStoreProvider from './config/BookingsStoreProviderContainer'
@@ -24,7 +24,7 @@ const theme = createMuiTheme({
   //     'sans-serif'
   //   ].join(',')
   // }
-});
+})
 
 
 class App extends Component {
