@@ -78,7 +78,7 @@ const dataFetchReducer = (state, action) => {
         isLoading: false,
         isUpdating: false,
         hasErrored: true,
-        errorMessage: action.errMessage
+        errorMessage: action.errorMessage
       }
   
     default:
@@ -126,15 +126,17 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
 
       try {
         const result = await axios(config)
-        const bookingId = result.data.booking_id
+        const error = result.data.error
         if (!didCancel) {
-          if (bookingId > 0) {
+          if (error) {
+            alert(`${error} Please call to resolve this issue.`)
+            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+          }
+          else {
+            const bookingId = result.data.booking_id
             const payload = {...data, booking_id: bookingId}
             dispatch({ type: "POST_SUCCESS", payload: payload })
             callMe()
-          }
-          else {
-            alert(`${result.data.error} Please call to resolve this issue.`)
           }
         }
       } catch (err) {
@@ -156,9 +158,14 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
 
       try {
         const result = await axios(config)
-        const bookingId = result.data.booking_id
+        const error = result.data.error
         if (!didCancel) {
-          if (bookingId > 0) {
+          if (error) {
+            alert(`${error} Please call to resolve this issue.`)
+            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+          }
+          else {
+            const bookingId = result.data.booking_id
             /*
              * Balance payment success. Change paid_amount to total_amount locally. Server performs this step. Because 
              * we don't read back the updated booking record from the server, we simply modify paid_amount locally.
@@ -167,9 +174,6 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
               data.paid_amount = data.total_amount
             dispatch({ type: "PUT_SUCCESS", payload: data })
             callMe()
-          }
-          else {
-            alert(`${result.data.error} Please call to resolve this issue.`)
           }
         }
       } catch (err) {
