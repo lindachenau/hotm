@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "4a73fce22235c2e664ed93282bf8e528",
+    "revision": "f9608affa8cf8c269c175b1a65dc3a72",
     "url": "/hotm/index.html"
   },
   {
@@ -12,7 +12,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/hotm/static/css/9.eeff2320.chunk.css"
   },
   {
-    "revision": "12926ddcb45ef252e8d7",
+    "revision": "6a05cc3579db33b35f60",
     "url": "/hotm/static/css/main.b100e6da.chunk.css"
   },
   {
@@ -20,8 +20,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/hotm/static/js/0.7a624e7d.chunk.js"
   },
   {
-    "revision": "20c41f3673781dbe15a6",
-    "url": "/hotm/static/js/1.65d73c77.chunk.js"
+    "revision": "1413a58418a5aa559cba",
+    "url": "/hotm/static/js/1.5462e626.chunk.js"
   },
   {
     "revision": "15bf6224c8c51abb8256",
@@ -36,8 +36,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/hotm/static/js/6.0a57a4f8.chunk.js"
   },
   {
-    "revision": "17b08be43421462c3f47",
-    "url": "/hotm/static/js/7.e7a7a8a7.chunk.js"
+    "revision": "a27688d5aa90f40a3fdf",
+    "url": "/hotm/static/js/7.dba0f7a0.chunk.js"
   },
   {
     "revision": "cd6a0c31e6ab3259e2b4",
@@ -48,12 +48,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/hotm/static/js/9.7ddbcf1c.chunk.js"
   },
   {
-    "revision": "12926ddcb45ef252e8d7",
-    "url": "/hotm/static/js/main.4fe21766.chunk.js"
+    "revision": "6a05cc3579db33b35f60",
+    "url": "/hotm/static/js/main.3491577e.chunk.js"
   },
   {
-    "revision": "64409e52ba108146fa97",
-    "url": "/hotm/static/js/runtime-main.4d729d36.js"
+    "revision": "24c704de76e27ccfc022",
+    "url": "/hotm/static/js/runtime-main.c99a9558.js"
   },
   {
     "revision": "a36b58329db5080156a2e35a989e907b",
