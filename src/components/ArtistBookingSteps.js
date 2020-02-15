@@ -10,17 +10,17 @@ function getSteps(newBooking) {
   if (newBooking)
     return ['Select service', 'Add people', 'Payment']
   else
-    return ['Select service', 'Add people', 'Payment or Update']
+    return ['Select service', 'Change artist', 'Update']
 }
 
-function getStepContent(stepIndex) {
+function getStepContent(stepIndex, newBooking) {
   switch (stepIndex) {
     case 0:
       return 'Select service items, time and location'
     case 1:
-      return 'Add artists and client to the booking'
+      return newBooking ? 'Add artists and client to the booking' : "Change artists for the booking"
     case 2:
-      return 'Payment'
+      return newBooking ? 'Pay deposit' : 'Update changes to the system'
     default:
       return 'Unknown stepIndex'
   }
@@ -39,7 +39,7 @@ export default function ArtistBookingSteps(props) {
           </Step>
         ))}
       </Stepper>
-      <Typography variant='h6' align='center' gutterBottom>{getStepContent(activeStep)}</Typography>
+      <Typography variant='h6' align='center' gutterBottom>{getStepContent(activeStep, newBooking)}</Typography>
     </Container>
   )
 }

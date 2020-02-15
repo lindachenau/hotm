@@ -118,11 +118,11 @@ function AddPeople ({
       client_id: client.id,
       with_organic: organic ? 1 : 0,
       with_pensioner_rate: pensioner ? 1 : 0,
-      paid_balance_total: null,
-      paid_deposit_total: null,
+      paid_checkout_total: 0,
+      paid_deposit_total: clientInfo.paidDeposit,
       total_amount: bookingValue, 
-      paid_amount: newBooking? depositPayable : (bookingValue - clientInfo.paid), 
-      paid_type: newBooking ? 'deposit' : 'balance', 
+      payment_amount: newBooking? depositPayable : (bookingValue - clientInfo.paidDeposit), 
+      payment_type: newBooking ? 'deposit' : 'checkout_credit', 
       comment: '',
       status: ''
     }
@@ -166,12 +166,16 @@ function AddPeople ({
           label="Add artists"
         />
         <br/>
-        <AddClient
-          setClient={setClient}
-          client={client}
-          label="Add client"
-        />
-        <br/>
+        {newBooking &&
+          <>
+            <AddClient
+              setClient={setClient}
+              client={client}
+              label="Add client"
+            />
+            <br/>
+          </>
+        }
         <Table size="small" aria-label="a dense table">
           <TableHead className={classes.background}>
             <TableRow>

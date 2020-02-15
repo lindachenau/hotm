@@ -100,7 +100,7 @@ function generateData () {
       "with_organic": organic,
       "with_pensioner_rate": pensionerRate,
       "total_amount": 0,
-      "paid_amount": 0,
+      "payment_amount": 0,
       "comment": ""
     })
   }

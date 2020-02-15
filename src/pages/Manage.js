@@ -7,7 +7,6 @@ import ArtistBooking from '../pages/ArtistBooking'
 const Manage = ({
   events, 
   eventsFetched, 
-  setActivateBookings, 
   bookingStage, 
   changeBookingStage, 
   services, 
@@ -16,14 +15,6 @@ const Manage = ({
   artists}) => {
   const [manageState, setManageState] = useState('Default')
   const [activeStep, setActiveStep] = useState(0)
-
-  useEffect(() => {
-    setActivateBookings(true)
-
-    return () => {
-      setActivateBookings(false)
-    }
-  }, [])
 
   return (
     <>

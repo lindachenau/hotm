@@ -35,10 +35,10 @@
   "scripts": {
     "start": "react-scripts start",
     "prod": "node server.js",
-    "build": "REACT_APP_VERSION=0.8.0 react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy": "REACT_APP_VERSION=0.8.0 react-scripts build",
+    "predeploy": "react-scripts build",
     "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
@@ -55,6 +55,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "homepage": "https://lindachenau.github.io/hotm"
+  }
 }

@@ -9,7 +9,7 @@ export const home_url = "https://procomhost.com"
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.8"
+const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.9"
 export const services_url = HOTM_BOOKING_API + "/services"
 export const artists_url = HOTM_BOOKING_API + "/artists"
 export const bookings_url = HOTM_BOOKING_API + "/bookings"

@@ -66,12 +66,18 @@ function Payment (
     const bookingData = {
       ...bookingInfo, 
       client_id: userId,
+      client_name: userName,
+      client_email: "lenaqunying@outlook.com",
+      booking_artist_name: "",
+      booking_artist_email: "",
       with_organic: priceFactors.organic ? 1 : 0,
       with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
       unit_prices: Object.keys(itemQty).map(id => items[id].price),
       total_amount: bookingValue, 
-      paid_amount: depositPayable, 
-      paid_type: 'deposit', 
+      payment_amount: depositPayable, 
+      paid_checkout_total: 0,
+      paid_deposit_total: depositPayable,
+      payment_type: 'deposit', 
       comment: value,
       status: ''
     }

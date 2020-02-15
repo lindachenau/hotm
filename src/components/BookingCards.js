@@ -10,7 +10,9 @@ import Button from '@material-ui/core/Button'
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import EmojiNatureIcon from '@material-ui/icons/EmojiNature'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import CommentIcon from '@material-ui/icons/Comment';
 import { BookingsStoreContext } from './BookingsStoreProvider'
 
 const useStyles = makeStyles(theme => ({
@@ -59,12 +61,17 @@ function Card ({ event }) {
       <div>
         <br/>
         <FaDollarSign/>
-        <span>{ `${event.total} `}</span>
+        <span>{ `${event.depositPaid}/${event.total} `}</span>
         <FaUserCog/>
         <span>{ event.artists.map(artist => artist.name).join(', ')}</span>
+        {event.complete ? <CheckCircleIcon color='primary'/> : null}
         <ul>
           {event.serviceItems.map( item => <li key={itemKey++}>{ item }</li> )}
         </ul>
+      </div>
+      <div>
+        <CommentIcon/>
+        <span>{event.comment}</span>
       </div>
     </Paper>
   )
@@ -76,6 +83,13 @@ const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState
   const { bookingsData } = useContext(BookingsStoreContext)
   const bookings = bookingsData.data
   const [maxSteps, setMaxSteps] = useState(0)
+  const [completed, setCompleted] = useState(false)
+
+  // disable EDIT and CHECKOUT for completed bookings
+  useEffect(() => {
+    if (events.length > 0)
+      setCompleted(events[activeStep].complete)
+  }, [events, activeStep])
 
   useEffect(() => {
     setMaxSteps(events.length)
@@ -99,7 +113,7 @@ const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState
     const bookingId = events[activeStep].id
     const booking = bookings[bookingId]
     loadBooking({...booking, client: events[activeStep].client})
-    saveBooking({...booking, paid_type: 'balance', paid_amount: (booking.total_amount - booking.paid_amount)})
+    saveBooking({...booking, payment_type: 'checkout_credit', payment_amount: (booking.total_amount - booking.paid_deposit_total)})
     changeBookingStage(2)
     setManageState('Checkout')
   }
@@ -131,11 +145,11 @@ const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState
             }
           />
           <div className={classes.flex}>
-            <Button variant="text" color="primary" size='large' onClick={handleEdit}>
+            <Button variant="text" color="primary" size='large' onClick={handleEdit} disabled={completed}>
               Edit
             </Button>
             <div className={classes.grow} />
-            <Button variant="text" color="primary" size='large' onClick={handleCheckout}>
+            <Button variant="text" color="primary" size='large' onClick={handleCheckout} disabled={completed}>
               Checkout
             </Button>
           </div>

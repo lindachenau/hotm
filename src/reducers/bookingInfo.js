@@ -124,7 +124,7 @@ const initClientInfo = {
   client: null,
   comment: '',
   balance: null,
-  paid: null,
+  paidDeposit: null,
   bookingId : null
 }
 export function clientInfo(state = initClientInfo, action) {
@@ -133,8 +133,8 @@ export function clientInfo(state = initClientInfo, action) {
       return Object.assign({}, {
         client: action.booking.client,
         comment: action.booking.comment,
-        balance: action.booking.total_amount - action.booking.paid_amount,
-        paid: action.booking.paid_amount,
+        balance: action.booking.total_amount - action.booking.paid_deposit_total,
+        paidDeposit: action.booking.paid_deposit_total,
         bookingId: action.booking.booking_id
       })
     }
@@ -267,7 +267,6 @@ export function itemQty(state = {}, action) {
 const initActivation = {
   servicesActive: true,
   artistsActive: true,
-  bookingsActive: false,
   bookingTrigger: false,
   requestMethod: 'get',
   data: {},
@@ -277,15 +276,8 @@ const initActivation = {
 
 export function storeActivation(state = initActivation, action) {
   switch (action.type) {
-    case ACTIVATE_BOOKINGS: {
-      return Object.assign({}, state, {
-        bookingsActive: action.val,
-        requestMethod: 'get'
-      })
-    }
     case SEARCH_BOOKING: {
       return Object.assign({}, state, {
-        bookingsActive: true,
         requestMethod: 'get',
         bookingTrigger: !state.bookingTrigger
       })
@@ -293,7 +285,6 @@ export function storeActivation(state = initActivation, action) {
     //create a new booking on the server
     case ADD_BOOKING: {
       return Object.assign({}, state, {
-        bookingsActive: true,
         requestMethod: 'post',
         data: action.payload,
         bookingTrigger: !state.bookingTrigger,
@@ -303,7 +294,6 @@ export function storeActivation(state = initActivation, action) {
     //modify an existing booking on the server
     case UPDATE_BOOKING: {
       return Object.assign({}, state, {
-        bookingsActive: true,
         requestMethod: 'put',
         data: action.payload,
         bookingTrigger: !state.bookingTrigger,
@@ -320,7 +310,11 @@ export function storeActivation(state = initActivation, action) {
       })
     }
     case RESET_BOOKING: {
-      return initActivation
+      return Object.assign({}, state, {
+        data: {},
+        callMe: null,
+        bookingData: {}
+      })
     }
     default:
       return state

@@ -101,6 +101,9 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         client: clients[booking.client_id],
         organic: booking.with_organic,
         serviceItems: serviceItems,
+        depositPaid: booking.paid_deposit_total,
+        complete: (total - booking.paid_checkout_total - booking.paid_deposit_total) < 0.01,
+        comment: booking.comment,
         total: total
       })
     }

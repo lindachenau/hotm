@@ -29,6 +29,7 @@ const dataFetchReducer = (state, action) => {
         hasErrored: false,
         errorMessage: "",
         // data: Object.assign({}, state.data, convertArrayToObject(action.payload, 'booking_id'))
+        // Reload all bookings based on the new filter so the new booking list reflects the search results 
         data: Object.assign({}, convertArrayToObject(action.payload, 'booking_id'))
       }
     case "FETCH_FAILURE":
@@ -86,7 +87,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTrigger) => {
+const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) => {
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -167,11 +168,11 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
           else {
             const bookingId = result.data.booking_id
             /*
-             * Balance payment success. Change paid_amount to total_amount locally. Server performs this step. Because 
-             * we don't read back the updated booking record from the server, we simply modify paid_amount locally.
+             * Balance payment success. Change paid_checkout_total to total_amount locally. Server performs this step. Because 
+             * we don't read back the updated booking record from the server, we simply modify paid_checkout_total locally.
              */ 
-            if (data.paid_amount > 0)
-              data.paid_amount = data.total_amount
+            if (data.payment_amount > 0)
+              data.paid_checkout_total = data.payment_amount
             dispatch({ type: "PUT_SUCCESS", payload: data })
             callMe()
           }
@@ -183,7 +184,7 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
       }
     }
 
-    if (active && !state.isLoading && !state.isUpdating) {
+    if (!state.isLoading && !state.isUpdating) {
       switch (method) {
         case 'get': {
           fetchData()
@@ -205,7 +206,7 @@ const useAxiosCRUD = (url, initialData, active, method, data, callMe, bookingTri
     return () => {
       didCancel = true
     }
-  }, [active, method, data, bookingTrigger])
+  }, [bookingTrigger])
 
   return { ...state }
 }

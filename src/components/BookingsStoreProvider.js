@@ -7,6 +7,31 @@ import { getEvents } from '../utils/dataFormatter'
 import axios from 'axios'
 import moment from 'moment'
 
+
+/*
+ * Booking store provider handles all async requests to services, artists, bookings and clients APIs.
+ * Each booking requires information from all above 4 APIs. The extracted info from all 4 APIs is 
+ * stored in events. Events are used in "Manage bookings" (BookingCards) and "Booking calendar".
+ * 
+ * services and artists APIs are requested during app initialisation and stored in local states. There
+ * won't be further requests during the life of the app. If backend updates services and artists, the app 
+ * wouldn't know about it. To get new services and artists, the app must be closed and reopen.
+ * 
+ * bookings and clients APIs are requested by demand. Bookings are loaded by the search filter or adding 
+ * new bookings. All relevant clients in the loaded bookings will be requested to complete the corresponding
+ * booking events.
+ * 
+ * The dependency diagram for events is shown below:
+ * services, artists            \
+ *                               -> events
+ * bookings          -> clients / 
+ * 
+ * Since services and artists data won't change during the life of the app, whenever bookings data is 
+ * updated, a new client list is generated and then fetched. bookings or clients data updates will refresh 
+ * events.
+ * 
+ */
+
 const BookingsStoreContext = createContext()
 
 const initFilter = (fromDate, toDate) => {
@@ -14,7 +39,7 @@ const initFilter = (fromDate, toDate) => {
 }
 
 const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
-  const {servicesActive, artistsActive, bookingsActive, requestMethod, data, callMe, bookingTrigger} = storeCtrl
+  const {servicesActive, artistsActive, requestMethod, data, callMe, bookingTrigger} = storeCtrl
   const {fromDate, toDate} = bookingFilter
   const artistId = bookingFilter.artist ? bookingFilter.artist.id : null
   const clientId = bookingFilter.client ? bookingFilter.client.id : null
@@ -29,18 +54,17 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
   const [clientsFetchTrigger, setClientsFetchTrigger] = useState(false)
   const [clients, setClients] = useState({})
 
-  let servicesData = useAxiosFetch(services_url, [], servicesActive)
+  const servicesData = useAxiosFetch(services_url, [], servicesActive)
 
   useEffect(() => {
     if (servicesData.data.length !== 0) {
+      //change array to object for easy access
       setServices(normaliseServices(servicesData.data))
       setServicesFetched(true)
     }
-  }, [servicesData.isLoading, servicesData.data])
+  }, [servicesData.data])
 
-  let artistsData = useAxiosFetch(artists_url, [], artistsActive)
-
-  //update booking filter
+    //update booking filter
   useEffect(() => {
     let newFilter = `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
     
@@ -53,14 +77,17 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
     setBookingUrl(newFilter)
   }, [fromDate, toDate, artistId, clientId])
 
+  const artistsData = useAxiosFetch(artists_url, [], artistsActive)
+
   useEffect(() => {
     if (artistsData.data.length !== 0) {
+      //change array to object for easy access
       setArtists(normaliseArtists(artistsData.data))
       setArtistsFetched(true)
     }
-  }, [artistsData.isLoading, artistsData.data])
+  }, [artistsData.data])
 
-  let bookingsData = useAxiosCRUD(bookingUrl, {}, bookingsActive, requestMethod, data, callMe, bookingTrigger)
+  let bookingsData = useAxiosCRUD(bookingUrl, {}, requestMethod, data, callMe, bookingTrigger)
 
   const getClientListFromBookings = bookings => {
     let list = []
@@ -73,15 +100,17 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
     return list
   }
 
+  //update client list whenever new bookings are loaded
   useEffect(() => {
     if (bookingsData.data.length !== 0) {
       setClientList(getClientListFromBookings(bookingsData.data))
     }
-  }, [bookingsData.isLoading, bookingsData.data])
+  }, [bookingsData.data])
 
+  //fetch new clients whenever the client list is updated
   useEffect(() => {
     if (clientList.length > 0) {
-      
+      setClients({})
       Promise.allSettled(clientList.map(id => {
         const config = {
           method: 'get',
@@ -109,12 +138,13 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
     }
   }, [clientList])
 
+  //regenerate events whenever clients or bookings data are updated
   useEffect(() => {
-    if (artistsFetched && servicesFetched) {
+    if (artistsFetched && servicesFetched && Object.keys(clients).length > 0) {
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
       setEventsFetched(true)
     }
-  }, [clientsFetchTrigger, clients])
+  }, [clientsFetchTrigger, bookingsData.data])
 
   return (
     <BookingsStoreContext.Provider value={{services, servicesFetched, events, eventsFetched, artists, artistsFetched, bookingsData}}>

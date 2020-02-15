@@ -10,7 +10,6 @@ export const RECEIVE_AVAIL_ARTISTS = 'RECEIVE_AVAIL_ARTISTS'
 export const ERROR_AVAIL_ARTISTS = 'ERROR_AVAIL_ARTISTS'
 export const RESET_BOOKING = 'RESET_BOOKING'
 export const MAKE_BOOKING = 'MAKE_BOOKING'
-export const ACTIVATE_BOOKINGS = 'ACTIVATE_BOOKINGS'
 export const SEARCH_BOOKING = 'SEARCH_BOOKING'
 export const ADD_BOOKING = 'ADD_BOOKING'
 export const SAVE_BOOKING = 'SAVE_BOOKING'
@@ -82,11 +81,6 @@ export const decItemQty = id => ({
 
 export const resetBooking = () => ({
   type: RESET_BOOKING,
-})
-
-export const setActivateBookings = val => ({
-  type : ACTIVATE_BOOKINGS,
-  val
 })
 
 export const searchBooking = () => ({

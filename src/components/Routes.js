@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 //Use route based lazy loading to split the code to smaller chunks
 const Booking = lazy(() => import('../pages/Booking'))
 const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
-const Manage = lazy(() => import('../config/ManageContainer'))
+const Manage = lazy(() => import('../pages/Manage'))
 const Calendar = lazy(() => import('../pages/Calendar'))
 
 // import Booking from '../pages/Booking'
@@ -18,9 +18,6 @@ const Calendar = lazy(() => import('../pages/Calendar'))
 // import Manage from  '../config/ManageContainer'
 // import Calendar from '../pages/Calendar'
 
-/**
- * For deploy testing frontend without backend
- */
 const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist }) => {
   const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
@@ -28,9 +25,12 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
 
   useEffect(() => {
     setBookingValue(getBookingValue(services.items, priceFactors, itemQty))
-    setDepositPayable(getDepositPayable(bookingValue))
-  }, [services.items, priceFactors, itemQty, bookingValue])
+  }, [services.items, priceFactors, itemQty])
   
+  useEffect(() => {
+    setDepositPayable(getDepositPayable(bookingValue))
+  }, [bookingValue])
+
   return (
     <HashRouter>
       <ScrollToTop>
