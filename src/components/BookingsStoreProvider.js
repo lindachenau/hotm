@@ -136,6 +136,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
         setClientsFetchTrigger(!clientsFetchTrigger)
       })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientList])
 
   //regenerate events whenever clients or bookings data are updated
@@ -144,6 +145,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
       setEventsFetched(true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [clientsFetchTrigger, bookingsData.data])
 
   return (

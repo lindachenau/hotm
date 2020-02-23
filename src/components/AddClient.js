@@ -25,7 +25,7 @@ export default function AddClient({client, setClient, label}) {
 
         setLoading(true)
         let clients = await axios(config)
-
+        // console.log(searchKey, clients.data)
         setOptions(clients.data.map(client => {
           return {
             id: client.id,
@@ -37,8 +37,9 @@ export default function AddClient({client, setClient, label}) {
 
       })()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchKey])
 
-  }, [searchKey, active])
 
   const handleChangeClient = (event, value) => {
     setClient(value)

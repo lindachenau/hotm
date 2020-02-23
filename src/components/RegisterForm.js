@@ -6,7 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
-import { register_nonce_url, register_url, update_user_meta_url } from '../config/dataLinks'
+import { register_nonce_url, register_url, update_user_meta_url, email_verification_server, user_url, access_token } from '../config/dataLinks'
 import axios from 'axios'
 
 const logo = require('../images/logo.png')
@@ -40,6 +40,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   const didMountRef = useRef(false)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmedPassword, setConfirmedPassword] = useState('')
   const [email, setEmail] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -53,11 +54,11 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   const [disableSubmit, setDisableSubmit] = useState(true)
 
   useEffect(() => {
-    if (username === '' || password === '' || email === '' || firstName === '' || lastName === '' || phone === '')
+    if (username === '' || password === '' || confirmedPassword === '' || email === '' || firstName === '' || lastName === '' || phone === '')
       setDisableSubmit(true)
     else
       setDisableSubmit(false)
-  },[username, password, email, firstName, lastName, phone])
+  },[username, password, confirmedPassword, email, firstName, lastName, phone])
 
   useEffect(() => {
     if (didMountRef.current)
@@ -73,6 +74,24 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   const onChangePassword = event => {
     setPassword(event.target.value)
   }
+
+  const onChangeConfirmedPassword = event => {
+    setConfirmedPassword(event.target.value)
+  }
+
+  //check retyped password matches
+  useEffect(() => {
+    let matched = true
+    for (let i = 0; i < confirmedPassword.length; i++) {
+      if (confirmedPassword[i] != password[i]) {
+        matched = false
+      }
+    }
+
+    if (!matched || confirmedPassword.length > password.length)
+      alert("Re-typed password does not match. Please type again.")
+
+  }, [confirmedPassword]) 
 
   const onChangeEmail = event => {
     setEmail(event.target.value)
@@ -111,6 +130,58 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   }
 
   const handleRegister = async () => {
+
+    /*
+     * Check if username or email exist first
+     */ 
+    const config1 = {
+      method: 'get',
+      headers: { 'Authorization': access_token },
+      url: `${user_url}?search=${email}`
+    }
+
+    const users1 = await axios(config1)
+    if (users1.data.length > 0) {
+      alert("Email exists. Login or reset password.")
+      return
+    } 
+
+    const config2 = {
+      method: 'get',
+      headers: { 'Authorization': access_token },
+      url: `${user_url}?search=${username}`
+    }
+
+    const users2 = await axios(config2)
+    if (users2.data.length > 0) {
+      alert("Username exists. Please change to a different username.")
+      return 
+    } 
+
+    /*
+     * username and email are unique. Now verify email by sending a verification link to email.
+     * Call EMAIL_VERIFICATION server to do so.
+     */ 
+    const reqConfig = {
+      method: 'post',
+      headers: {"Content-Type": "application/json"},
+      url: `${email_verification_server}/send`,
+      data: {
+        id: username,
+        email: email
+      }
+    }
+
+    const sendRes = await axios(reqConfig)
+    if (sendRes.status === 200) {
+      alert(`An email has been sent to ${email} for verification. Please check your Inbox or Spam!`)
+    }
+
+    const checkRes = await axios.get(`${email_verification_server}/check?id=${username}`)
+    if (checkRes.status === 408) {
+      alert(`Timeout: ${email} has not been verified in 30 seconds. Click Submit to send the verification email again.`)
+      return
+    }
 
     let nonceResponse = await axios(register_nonce_url)
 
@@ -207,20 +278,30 @@ export default function RegisterForm({triggerOpen, signinUser}) {
             <TextField
               required
               margin="dense"
+              label="email"
+              type="email"
+              fullWidth
+              onChange={onChangeEmail}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              required
+              margin="dense"
               label="password"
               type="password"
               fullWidth
               onChange={onChangePassword}
             />
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <TextField
               required
               margin="dense"
-              label="email"
-              type="email"
+              label="confirm pw"
+              type="password"
               fullWidth
-              onChange={onChangeEmail}
+              onChange={onChangeConfirmedPassword}
             />
           </Grid>
           <Grid item xs={6}>

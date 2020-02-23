@@ -10,6 +10,7 @@ const Booking = ({ bookingStage, changeBookingStage, resetBooking, services, the
 
   useEffect(() => {
     resetBooking()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

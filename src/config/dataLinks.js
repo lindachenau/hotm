@@ -52,4 +52,9 @@ export const term_url = home_url + "/terms-conditions/"
 /*
  * Stripe charge server running on Node.js deployed to Heroku
  */
-export const stripe_charge_server = "https://boiling-shore-55046.herokuapp.com/charge"
+export const stripe_charge_server = process.env.REACT_APP_CHARGE_SERVER
+
+/*
+ * Email verification server running on Node.js deployed to Heroku
+ */
+export const email_verification_server = process.env.REACT_APP_EMAIL_VERIFICATION

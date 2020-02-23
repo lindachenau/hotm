@@ -66,7 +66,7 @@ export default function ForgetPWForm({triggerOpen}) {
         setOpen(false)
       }
       else {
-        alert('username or email not found')
+        alert(data.error)
       }
     }
     else {

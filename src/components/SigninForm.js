@@ -89,7 +89,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
     if (response.status === 200 && response.data.user) {
       let user = response.data.user
       let isArtist = false
-      if (user.capabilities.staff_members)
+      if (user.capabilities.staff_members || user.capabilities.editor)
         isArtist = true
       const payload = {
         firstName: user.firstname,

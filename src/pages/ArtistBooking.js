@@ -21,13 +21,16 @@ const ArtistBooking = ({
   useEffect(() => {
     if (newBooking)
       resetBooking()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <React.Fragment>
       {manageState === 'Checkout' ?
-      null
-      : <ArtistBookingSteps activeStep={bookingStage} newBooking={newBooking}/>}
+        null
+        : 
+        <ArtistBookingSteps activeStep={bookingStage} newBooking={newBooking}/>
+      }
       {bookingStage === 0 ? 
         <ServiceSelection 
         onSubmit={changeBookingStage} 
@@ -55,7 +58,6 @@ const ArtistBooking = ({
         items={services.items} 
         bookingValue={bookingValue}
         depositPayable={depositPayable} 
-        bookingValue={bookingValue}
         newBooking={newBooking}
         manageState={manageState}
         setManageState={setManageState}/>

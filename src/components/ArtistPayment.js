@@ -8,7 +8,6 @@ import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 
 import { stripe_charge_server } from '../config/dataLinks'
-import { useRadioGroup } from '@material-ui/core'
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
 const useStyles = makeStyles(theme => ({
@@ -115,7 +114,7 @@ function ArtistPayment({
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
       <Paper className={classes.paper}>
-        {manageState != 'Edit' &&
+        {manageState !== 'Edit' &&
           <>
             {newBooking ?
               null

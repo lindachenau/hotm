@@ -81,11 +81,11 @@ function AddPeople ({
   const [client, setClient] = useState(clientInfo.client)
   
   useEffect(() => {
-    if (tags.length > 0)
+    if (tags.length > 0 && client)
       setDisableNext(false)
     else
       setDisableNext(true)
-  }, [tags])
+  }, [tags, client])
   
   const ids = Object.keys(itemQty)
 

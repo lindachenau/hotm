@@ -103,8 +103,23 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
     const fetchData = async () => {
       dispatch({ type: "FETCH_INIT" })
 
+      /*
+       * Do not cache booking query response because booking update only changes
+       * individual booking which will have different url from the query url. If the
+       * queried url is cached followed by a booking update, retrieval from the same
+       * query will have stale info from cache.
+       */
+      const config = {
+        method: 'get',
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        },
+        url: url
+      }
+
       try {
-        let result = await axios.get(url)
+        let result = await axios(config)
         if (!didCancel) {
           dispatch({ type: "FETCH_SUCCESS", payload: result.data })
         }
@@ -166,7 +181,6 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
-            const bookingId = result.data.booking_id
             /*
              * Balance payment success. Change paid_checkout_total to total_amount locally. Server performs this step. Because 
              * we don't read back the updated booking record from the server, we simply modify paid_checkout_total locally.
@@ -206,6 +220,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
     return () => {
       didCancel = true
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [bookingTrigger])
 
   return { ...state }
