@@ -74,6 +74,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
     let serviceItems = []
     let total = 0
     let booking = bookings[id]
+    let complete = (booking.total_amount - booking.paid_checkout_total - booking.paid_deposit_total) < 0.01
 
     //artist && client still exist
     if (artists[booking.artist_id_list[0]] && clients[booking.client_id]) {
@@ -90,7 +91,11 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         }
       }
 
-      total = getBookingValue(servicesMenu, priceFactors, itemQty)
+      if (complete)
+        total = booking.total_amount
+      else
+        total = getBookingValue(servicesMenu, priceFactors, itemQty)
+
       events.push({
         id: booking.booking_id,
         start: new Date(`${booking.booking_date}T${booking.booking_time}:00`),
@@ -102,7 +107,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         organic: booking.with_organic,
         serviceItems: serviceItems,
         depositPaid: booking.paid_deposit_total,
-        complete: (total - booking.paid_checkout_total - booking.paid_deposit_total) < 0.01,
+        complete: complete,
         comment: booking.comment,
         total: total
       })

@@ -83,7 +83,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   useEffect(() => {
     let matched = true
     for (let i = 0; i < confirmedPassword.length; i++) {
-      if (confirmedPassword[i] != password[i]) {
+      if (confirmedPassword[i] !== password[i]) {
         matched = false
       }
     }
@@ -91,7 +91,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     if (!matched || confirmedPassword.length > password.length)
       alert("Re-typed password does not match. Please type again.")
 
-  }, [confirmedPassword]) 
+  }, [password, confirmedPassword]) 
 
   const onChangeEmail = event => {
     setEmail(event.target.value)
@@ -178,8 +178,8 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     }
 
     const checkRes = await axios.get(`${email_verification_server}/check?id=${username}`)
-    if (checkRes.status === 408) {
-      alert(`Timeout: ${email} has not been verified in 30 seconds. Click Submit to send the verification email again.`)
+    if (checkRes.data.error) {
+      alert(`Timeout: Email has not been verified in 30 seconds. Click Submit to send the verification email again.`)
       return
     }
 
