@@ -4,6 +4,7 @@ import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
+import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import { auth_url } from '../config/dataLinks'
 import axios from 'axios'
@@ -127,6 +128,9 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
           <div className={classes.grow} />
         </div>
         <DialogContent>
+          <Typography variant="body2" gutterBottom>
+            Please login so that we can provide you with a better booking experience.
+          </Typography>
           <TextField
             autoFocus
             margin="dense"
