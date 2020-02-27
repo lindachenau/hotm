@@ -40,7 +40,7 @@ const useAxiosFetch = (initialUrl, initialData, active) => {
 
     const fetchData = async () => {
       dispatch({ type: "FETCH_INIT" })
-
+ 
       try {
         let result = await axios.get(url)
         if (!didCancel) {

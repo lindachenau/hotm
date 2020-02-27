@@ -1,45 +1,76 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useReducer } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { user_url, access_token } from '../config/dataLinks'
 import axios from "axios"
 
+const dataFetchReducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_INIT":
+      return { ...state, isLoading: true }
+    case "FETCH_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        data: action.payload
+      }
+    case "FETCH_FAILURE":
+      return {
+        ...state,
+        isLoading: false
+      }
+    default:
+      throw new Error()
+  }
+}
+
 export default function AddClient({client, setClient, label}) {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState(client !== null ? [client] : [])
   const [searchKey, setSearchKey] = useState('')
   const active = open && searchKey.length >= 3
-  const [loading, setLoading] = useState(false)
+  const [state, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    data: []
+  })
+  const { isLoading, data }  = state
 
   useEffect(() => {
 
-    if (active && !loading) {
-      (async () => {
+    const fetchData = async () => {
+      dispatch({ type: "FETCH_INIT" })
 
-        const config = {
-          method: 'get',
-          headers: { 'Authorization': access_token },
-          url: `${user_url}?search=${searchKey}`
-        }
-
-        setLoading(true)
-        let clients = await axios(config)
-        // console.log(searchKey, clients.data)
-        setOptions(clients.data.map(client => {
-          return {
-            id: client.id,
-            name: client.name, 
-            phone: client.meta.billing_phone[0]
-          }
-        }))
-        setLoading(false)
-
-      })()
+      const config = {
+        method: 'get',
+        headers: { 'Authorization': access_token },
+        url: user_url + '?search=' + searchKey
+      }
+ 
+      try {
+        let result = await axios(config)
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data })
+      } catch (err) {
+        dispatch({ type: "FETCH_FAILURE" })
+        console.log("Client search error")
+      }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    if (active && !isLoading) {
+      fetchData()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [searchKey])
 
+  useEffect(() => {
+    setOptions(data.map(client => {
+      return {
+        id: client.id,
+        name: client.name, 
+        phone: client.meta.billing_phone[0]
+      }
+    }))
+  }, [data])
 
   const handleChangeClient = (event, value) => {
     setClient(value)
@@ -59,7 +90,7 @@ export default function AddClient({client, setClient, label}) {
   const handleClose = () => {
     setOpen(false)
     setSearchKey('')
-    setOptions([])
+    // setOptions([])
   }
 
   const getOptionLabel = option => {
@@ -74,7 +105,7 @@ export default function AddClient({client, setClient, label}) {
       onClose={handleClose}
       getOptionLabel={getOptionLabel}
       options={options}
-      loading={loading}
+      loading={isLoading}
       value={client}
       onChange={handleChangeClient}
       onInputChange={handleChangeSearchKey}
@@ -89,7 +120,7 @@ export default function AddClient({client, setClient, label}) {
             ...params.InputProps,
             endAdornment: (
               <React.Fragment>
-                {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                {isLoading ? <CircularProgress color="inherit" size={20} /> : null}
                 {params.InputProps.endAdornment}
               </React.Fragment>
             ),
