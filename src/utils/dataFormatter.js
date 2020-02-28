@@ -5,14 +5,17 @@ export function normaliseArtists(artistArr)
   let artists = {}
   
   for (let i = 0; i < artistArr.length; i++ ) {
-    artists[artistArr[i].id.toString()] = {
-      id: artistArr[i].id,
-      name: artistArr[i].name,
-      state: artistArr[i].state,
-      photo: artistArr[i].photo,
-      title: artistArr[i].title,
-      bio: artistArr[i].bio,
-      hashtag: artistArr[i].hashtag ? artistArr[i].hashtag.replace('#', '') : "haironthemove2u"
+    //Filter out invalid entries so that artist selection can display the list properly
+    if (artistArr[i].state && artistArr[i].name) {
+      artists[artistArr[i].id.toString()] = {
+        id: artistArr[i].id,
+        name: artistArr[i].name,
+        state: artistArr[i].state,
+        photo: artistArr[i].photo,
+        title: artistArr[i].title,
+        bio: artistArr[i].bio,
+        hashtag: artistArr[i].hashtag ? artistArr[i].hashtag.replace('#', '') : "haironthemove2u"
+      }
     }
   }
   
