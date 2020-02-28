@@ -14,11 +14,11 @@ import ShoppingCartIcon from '@material-ui/icons/ShoppingCart'
 import AddIcon from '@material-ui/icons/Add'
 import RemoveIcon from '@material-ui/icons/Remove'
 import PhoneEnabledIcon from '@material-ui/icons/PhoneEnabled'
-
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 import Button from '@material-ui/core/Button'
 import Badge from '@material-ui/core/Badge'
 
+import ContactInfo from './ContactInfo'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -45,6 +45,7 @@ const useStyles = makeStyles(theme => ({
 export default function ServiceMenu({ theme, items, cat, organic, pensioner, itemQty, incItemQty, decItemQty, artistBooking }) {
   const classes = useStyles(theme)
   const [ listOpen, setListOpen ] = useState(false)
+  const [triggerContact, setTriggerContact] = useState(false)
 
   const toggleListOpen = (e) => { setListOpen(!listOpen) }
 
@@ -54,6 +55,11 @@ export default function ServiceMenu({ theme, items, cat, organic, pensioner, ite
       total += (itemQty[id] ? itemQty[id] : 0)
     }
     return total
+  }
+
+  const handlePhone = evt => {
+    evt.preventDefault()
+    setTriggerContact(!triggerContact)
   }
 
   return (
@@ -82,43 +88,48 @@ export default function ServiceMenu({ theme, items, cat, organic, pensioner, ite
           </TableRow>
         </TableHead>
         {listOpen ?
-          <TableBody>
-            {cat.list.map(id => (
-              <TableRow key={id}>
-                <TableCell align="left" style={{width: "60%"}}>
-                  {items[id].description + (items[id].addOn ? '*' : '')}
-                  <div className={classes.priceEmbedded}>
-                    { ` - $${((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}` }
-                  </div>
-                </TableCell>
-                <TableCell align="right" style={{width: "30%", padding: 0}}>
-                  <div className={classes.priceField}>
-                    {((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
-                  </div>
-                </TableCell>
-                {items[id].onlineBooking || artistBooking ?
-                  <TableCell align="right" style={{width: "10%"}}>
-                    <ButtonGroup>
-                      <Button 
-                        variant="text" 
-                        startIcon={<AddIcon fontSize="small"/>}
-                        onClick={() => incItemQty(id)}
-                      >
-                        {itemQty[id] ? itemQty[id] : 0} 
-                      </Button>
-                      <IconButton onClick={() => decItemQty(id)}>
-                        <RemoveIcon fontSize="small"/>
+          <>
+            <TableBody>
+              {cat.list.map(id => (
+                <TableRow key={id}>
+                  <TableCell align="left" style={{width: "60%"}}>
+                    {items[id].description + (items[id].addOn ? '*' : '')}
+                    <div className={classes.priceEmbedded}>
+                      { ` - $${((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}` }
+                    </div>
+                  </TableCell>
+                  <TableCell align="right" style={{width: "30%", padding: 0}}>
+                    <div className={classes.priceField}>
+                      {((organic ? items[id].organicPrice : items[id].price) * (pensioner ? 0.8 : 1)).toFixed(2)}
+                    </div>
+                  </TableCell>
+                  {items[id].onlineBooking || artistBooking ?
+                    <TableCell align="right" style={{width: "10%"}}>
+                      <ButtonGroup>
+                        <Button 
+                          variant="text" 
+                          startIcon={<AddIcon fontSize="small"/>}
+                          onClick={() => incItemQty(id)}
+                        >
+                          {itemQty[id] ? itemQty[id] : 0} 
+                        </Button>
+                        <IconButton onClick={() => decItemQty(id)}>
+                          <RemoveIcon fontSize="small"/>
+                        </IconButton>
+                      </ButtonGroup>
+                    </TableCell>
+                    : 
+                    <TableCell align="center" style={{width: "10%"}}>
+                      <IconButton onClick={handlePhone}>
+                        <PhoneEnabledIcon/>
                       </IconButton>
-                    </ButtonGroup>
-                  </TableCell>
-                  : 
-                  <TableCell align="center" style={{width: "10%"}}>
-                    <PhoneEnabledIcon/>
-                  </TableCell>
-                }
-              </TableRow>
-            ))}
-          </TableBody>
+                    </TableCell>
+                  }
+                </TableRow>
+              ))}
+            </TableBody>
+            <ContactInfo triggerOpen={triggerContact}/>
+          </>
           : null
         }
       </Table> 
