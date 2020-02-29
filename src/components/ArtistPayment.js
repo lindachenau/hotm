@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import StripeForm from './StripeForm'
 import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
@@ -6,6 +6,8 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
+import { BookingsStoreContext } from './BookingsStoreProvider'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { stripe_charge_server } from '../config/dataLinks'
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
@@ -34,6 +36,11 @@ const useStyles = makeStyles(theme => ({
   },
   grow: {
     flexGrow: 1,
+  },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: 40
   }
 }))
 
@@ -44,6 +51,7 @@ function ArtistPayment({
   resetBooking, 
   addBooking, 
   updateBooking,
+  cancelBooking,
   bookingData, 
   newBooking,
   manageState,
@@ -53,18 +61,14 @@ function ArtistPayment({
   userEmail, 
   userName
   }) {
+  const { bookingsData } = useContext(BookingsStoreContext)
+  const { bookingInProgress } = bookingsData
   const [value, setValue] = useState(comment)
 
   const classes = useStyles()
 
   const handleChange = event => {
     setValue(event.target.value);
-  }
-
-  const successNotification = (message) => {
-    // const message = newBooking ? "Booking successful!" : "Checkout successful!"
-    alert(`${message} successful!`)
-    resetBooking()
   }
 
   const updatedBookingData = {
@@ -76,43 +80,52 @@ function ArtistPayment({
   }
 
   const submit = async (token) => {
-    const response = await fetch(stripe_charge_server, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        id: token.id,
-        description: `${clientName}'s ${newBooking ? "deposit" : "balance"} for booking on ${bookingData.booking_date} 
-        by ${userName}`,
-        amount: (bookingData.payment_amount * 100).toFixed(0)
-      })
-    });
-  
-    if (response.ok) {
-      if (newBooking) {
-        addBooking({...updatedBookingData, comment: value}, () => successNotification("Booking"))
+    const charge = async (bookingId) => {
+      const response = await fetch(stripe_charge_server, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          id: token.id,
+          description: `${clientName}'s ${newBooking ? "deposit" : "balance"} for booking on ${bookingData.booking_date} 
+          by ${userName}`,
+          amount: (bookingData.payment_amount * 100).toFixed(0)
+        })
+      });
+
+      if (response.ok) {
+        const message = newBooking ? "Booking successful!" : "Checkout successful!"
+        alert(message)
+        resetBooking()
       }
       else {
-        updateBooking({...updatedBookingData, comment: value}, () => successNotification("Checkout"))
-        setManageState('Default')
+        alert("Your card was declined.")
+        const payload = { 'booking_id': bookingId }
+        cancelBooking(payload)
       }
     }
+
+    if (newBooking) {
+      addBooking({...updatedBookingData, comment: value}, charge)
+    }
     else {
-      alert("Stripe error. Please call to resolve this issue.")
+      updateBooking({...updatedBookingData, comment: value}, charge)
+      setManageState('Default')
     }
   }
 
   const handleUpdate = () => {
-    updateBooking({...updatedBookingData, payment_amount: 0, payment_type: "nil", comment: value}, () => successNotification("Update"))
+    updateBooking({...updatedBookingData, payment_amount: 0, payment_type: "nil", comment: value}, () => alert("Update successful!"))
     setManageState('Default')
   }
 
   const handleCashPay = () => {
-    updateBooking({...updatedBookingData, payment_type: "checkout_cash", comment: value}, () => successNotification("Checkout"))
+    updateBooking({...updatedBookingData, payment_type: "checkout_cash", comment: value}, () => alert("Checkout successful!"))
     setManageState('Default')
   }
 
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
+      {bookingInProgress && <div className={classes.progress}><CircularProgress color='primary' /></div>}
       <Paper className={classes.paper}>
         {manageState !== 'Edit' &&
           <>

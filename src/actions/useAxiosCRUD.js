@@ -19,15 +19,13 @@ const dataFetchReducer = (state, action) => {
         ...state,
         isLoading: true,
         isUpdating: false,
-        hasErrored: false
+        hasErrored: false,
+        errorMessage: ""
       }
     case "FETCH_SUCCESS":
       return {
         ...state,
         isLoading: false,
-        isUpdating: false,
-        hasErrored: false,
-        errorMessage: "",
         // data: Object.assign({}, state.data, convertArrayToObject(action.payload, 'booking_id'))
         // Reload all bookings based on the new filter so the new booking list reflects the search results 
         data: Object.assign({}, convertArrayToObject(action.payload, 'booking_id'))
@@ -36,7 +34,6 @@ const dataFetchReducer = (state, action) => {
       return {
         ...state,
         isLoading: false,
-        isUpdating: false,
         hasErrored: true,
         errorMessage: "Data Retrieve Failure"
       }
@@ -45,42 +42,43 @@ const dataFetchReducer = (state, action) => {
         ...state,
         isLoading: false,
         isUpdating: true,
-        hasErrored: false
+        hasErrored: false,
+        errorMessage: ""
       }
     case "POST_SUCCESS":
       return {
         ...state,
-        isLoading: false,
         isUpdating: false,
-        hasErrored: false,
-        errorMessage: "",
         data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "PUT_SUCCESS":
       return {
         ...state,
-        isLoading: false,
         isUpdating: false,
-        hasErrored: false,
-        errorMessage: "",
         data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "DELETE_SUCCESS":
       return {
         ...state,
-        isLoading: false,
-        isUpdating: false,
-        hasErrored: false,
-        errorMessage: ""
+        isUpdating: false
       }
     case "UPDATE_FAILURE":
       return {
         ...state,
-        isLoading: false,
         isUpdating: false,
         hasErrored: true,
         errorMessage: action.errorMessage
       }
+    case "CHARGE_START":
+      return {
+        ...state,
+        bookingInProgress: true
+      }
+    case "CHARGE_END":
+        return {
+          ...state,
+          bookingInProgress: false
+        }
   
     default:
       throw new Error()
@@ -94,13 +92,14 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
     isUpdating: false,
     hasErrored: false,
     errorMessage: "",
-    data: initialData
+    data: initialData,
+    bookingInProgress: false
   })
 
   useEffect(() => {
     let didCancel = false
 
-    const fetchData = async () => {
+    const requestData = async () => {
       dispatch({ type: "FETCH_INIT" })
 
       /*
@@ -140,26 +139,30 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         data: data
       }
 
+      dispatch({ type: "CHARGE_START" })
       try {
         const result = await axios(config)
         const error = result.data.error
         if (!didCancel) {
           if (error) {
-            alert(`${error} Please call to resolve this issue.`)
+            alert(`${error} Your card is NOT charged. Please call to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
             const bookingId = result.data.booking_id
             const payload = {...data, booking_id: bookingId}
             dispatch({ type: "POST_SUCCESS", payload: payload })
-            callMe()
+            //Now charge
+            callMe(bookingId)
           }
         }
       } catch (err) {
         if (!didCancel) {
+          alert(`${err} Your card is NOT charged. Please call to resolve this issue.`)
           dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
         }
       }
+      dispatch({ type: "CHARGE_END" })
     }
 
     const updateData = async (data) => {
@@ -172,12 +175,13 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         data: data
       }
 
+      dispatch({ type: "CHARGE_START" })
       try {
         const result = await axios(config)
         const error = result.data.error
         if (!didCancel) {
           if (error) {
-            alert(`${error} Please call to resolve this issue.`)
+            alert(`${error} Your card is NOT charged. Please call to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
@@ -196,12 +200,45 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
           dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
         }
       }
+      dispatch({ type: "CHARGE_END" })
+    }
+
+    const deleteData = async (data) => {
+      dispatch({ type: "UPDATE_INIT"})
+
+      const config = {
+        method: 'delete',
+        headers: {"Content-Type": "application/json"},
+        url: bookings_url,
+        data: data
+      }
+
+      try {
+        const result = await axios(config)
+        const error = result.data.error
+        if (!didCancel) {
+          /*
+          * No need to do anything if no error as data hasn't been written into local Booking Store yet.
+          */ 
+          if (error) {
+            alert(`${error} Your card is NOT charged. Please call to resolve this issue.`)
+            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+          } else {
+            dispatch({ type: "DELETE_SUCCESS" })
+          }
+        }
+      } catch (err) {
+        if (!didCancel) {
+          alert(`${err} Your card is NOT charged. Please call to resolve this issue.`)
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
+        }
+      }
     }
 
     if (!state.isLoading && !state.isUpdating) {
       switch (method) {
         case 'get': {
-          fetchData()
+          requestData()
           break
         }
         case 'post': {
@@ -210,6 +247,10 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         }
         case 'put': {
           updateData(data)
+          break
+        }
+        case 'delete': {
+          deleteData(data)
           break
         }
         default:

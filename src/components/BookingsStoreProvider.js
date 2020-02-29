@@ -104,6 +104,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
   useEffect(() => {
     if (bookingsData.data.length !== 0) {
       setClientList(getClientListFromBookings(bookingsData.data))
+      setEventsFetched(false)
     }
   }, [bookingsData.data])
 

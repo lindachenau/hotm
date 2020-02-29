@@ -43,7 +43,10 @@ export default function AddClient({client, setClient, label}) {
 
       const config = {
         method: 'get',
-        headers: { 'Authorization': access_token },
+        headers: { 
+          'Authorization': access_token,
+          "Cache-Control": "no-store"
+        },
         url: user_url + '?search=' + searchKey
       }
  

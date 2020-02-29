@@ -3,13 +3,13 @@ const miniOrangeAccessKey = process.env.REACT_APP_MINIORANGE_ACCESS_KEY
  * Hair On the Move 2 U Home page
  */
 export const home_url = "https://procomhost.com"
-// export const home_url = "https://appvelation.app"
 
+export const corporate_url = home_url + "/contact-us/"
 
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.9"
+const HOTM_BOOKING_API = home_url + "/hotm_booking/api/v0.10"
 export const services_url = HOTM_BOOKING_API + "/services"
 export const artists_url = HOTM_BOOKING_API + "/artists"
 export const bookings_url = HOTM_BOOKING_API + "/bookings"

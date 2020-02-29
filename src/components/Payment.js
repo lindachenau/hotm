@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import StripeForm from './StripeForm'
 import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
@@ -7,6 +7,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
+import { BookingsStoreContext } from './BookingsStoreProvider'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { stripe_charge_server } from '../config/dataLinks'
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
@@ -21,6 +23,11 @@ const useStyles = makeStyles(theme => ({
   },
   textField : {
     width: "100%"
+  },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: 40
   }
 }))
 
@@ -29,7 +36,8 @@ function Payment (
     changeBookingStage, 
     depositPayable, 
     resetBooking, 
-    addBooking, 
+    addBooking,
+    cancelBooking, 
     bookingInfo, 
     items, 
     itemQty, 
@@ -39,6 +47,8 @@ function Payment (
     userId, 
     userName
   }) {
+  const { bookingsData } = useContext(BookingsStoreContext)
+  const { bookingInProgress } = bookingsData
   const [value, setValue] = useState('');
 
   const classes = useStyles()
@@ -47,21 +57,28 @@ function Payment (
     setValue(event.target.value);
   }
 
-  const successNotification = () => {
-    alert("Booking successful!")
-    resetBooking()
-  }
-
   const submit = async (token) => {
-    const response = await fetch(stripe_charge_server, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        id: token.id,
-        description: `${userName}'s deposit for booking on ${bookingInfo.booking_date}`,
-        amount: (depositPayable * 100).toFixed(0)
-      })
-    });
+    const charge = async (bookingId) => {
+      const response = await fetch(stripe_charge_server, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          id: token.id,
+          description: `${userName}'s deposit for booking on ${bookingInfo.booking_date}`,
+          amount: (depositPayable * 100).toFixed(0)
+        })
+      });
+
+      if (response.ok) {
+        alert("Booking successful!")
+        resetBooking()
+      }
+      else {
+        alert("Your card was declined.")
+        const payload = { 'booking_id': bookingId }
+        cancelBooking(payload)
+      }
+    }
 
     const bookingData = {
       ...bookingInfo, 
@@ -82,14 +99,12 @@ function Payment (
       status: ''
     }
 
-    if (response.ok) 
-      addBooking(bookingData, successNotification, depositPayable)
-    else
-      alert("Stripe error. Please call to resolve this issue.")
+    addBooking(bookingData, charge)
   }
 
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
+      {bookingInProgress && <div className={classes.progress}><CircularProgress color='primary' /></div>}
       <Paper className={classes.paper}>
         <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
           Deposit payable: $ {depositPayable.toString()}

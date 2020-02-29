@@ -24,7 +24,7 @@ import FilterListIcon from '@material-ui/icons/FilterList'
 import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
 import Filter from '../config/FilterContainer'
-import { home_url } from '../config/dataLinks'
+import { home_url, corporate_url } from '../config/dataLinks'
 
 const logo = require('../images/logo192.png')
 
@@ -46,12 +46,18 @@ const useStyles = makeStyles(theme => ({
 
 const artistMenu = [
   {
-    label: "Add a booking",
+    label: "Personal booking",
     pathname: "/",
     icon: <AddIcon />
   },
   {
-    label: "Artist add a booking",
+    label: "Corporate booking",
+    pathname: corporate_url,
+    external: true,
+    icon: <LinkIcon />
+  },
+  {
+    label: "Artist booking",
     pathname: "/artist",
     icon: <CreateIcon />
   },
@@ -75,9 +81,15 @@ const artistMenu = [
 
 const userMenu = [
   {
-    label: "Add a booking",
+    label: "Personal booking",
     pathname: "/",
     icon: <AddIcon />
+  },
+  {
+    label: "Corporate booking",
+    pathname: corporate_url,
+    external: true,
+    icon: <LinkIcon />
   },
   {
     label: "Go to Hair on the Move",
@@ -129,10 +141,10 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
       title = 'Manage bookings'
       break
     case '/artist':
-      title = 'Artist add a booking'
+      title = 'Artist booking'
       break
     default:
-      title = 'Add a booking'
+      title = 'Personal booking'
   }
 
   return (

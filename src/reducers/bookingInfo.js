@@ -13,6 +13,7 @@ import {
   ADD_BOOKING,
   SAVE_BOOKING,
   UPDATE_BOOKING,
+  CANCEL_BOOKING,
   RESET_BOOKING,
   ASSIGN_ARTISTS,
   ASSIGN_CLIENT,
@@ -72,8 +73,8 @@ export function bookingDateAddr(state = initDateAddr, action) {
     case LOAD_BOOKING: {
       const booking = action.booking
       return {
-        bookingDate: new Date(booking.booking_date + ' ' + booking.booking_time + ':00'),
-        bookingEnd: new Date(booking.booking_date + ' ' + booking.booking_end_time + ':00'),
+        bookingDate: new Date(`${booking.booking_date}T${booking.booking_time}:00`),
+        bookingEnd: new Date(`${booking.booking_date}T${booking.booking_end_time}:00`),
         bookingAddr: booking.event_address
       }
     }
@@ -297,6 +298,15 @@ export function storeActivation(state = initActivation, action) {
         data: action.payload,
         bookingTrigger: !state.bookingTrigger,
         callMe: action.callMe
+      })
+    }
+    //delete an existing booking on the server
+    case CANCEL_BOOKING: {
+      return Object.assign({}, state, {
+        requestMethod: 'delete',
+        data: action.payload,
+        bookingTrigger: !state.bookingTrigger,
+        callMe: null
       })
     }
     /*

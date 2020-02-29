@@ -14,6 +14,7 @@ export const SEARCH_BOOKING = 'SEARCH_BOOKING'
 export const ADD_BOOKING = 'ADD_BOOKING'
 export const SAVE_BOOKING = 'SAVE_BOOKING'
 export const UPDATE_BOOKING = 'UPDATE_BOOKING'
+export const CANCEL_BOOKING = 'CANCEL_BOOKING'
 export const ASSIGN_ARTISTS = 'ASSIGN_ARTISTS'
 export const ASSIGN_CLIENT = 'ASSIGN_CLIENT'
 export const LOAD_BOOKING = 'LOAD_BOOKING'
@@ -97,6 +98,11 @@ export const updateBooking = (bookingInfo, callMe) => ({
   type: UPDATE_BOOKING,
   payload: bookingInfo,
   callMe
+})
+
+export const cancelBooking = (bookingInfo) => ({
+  type: CANCEL_BOOKING,
+  payload: bookingInfo
 })
 
 export const saveBooking = (bookingData) => ({

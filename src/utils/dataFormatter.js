@@ -6,7 +6,7 @@ export function normaliseArtists(artistArr)
   
   for (let i = 0; i < artistArr.length; i++ ) {
     //Filter out invalid entries so that artist selection can display the list properly
-    if (artistArr[i].state && artistArr[i].name) {
+    if (artistArr[i].state && artistArr[i].name && artistArr[i].email !== 'tttttt') {
       artists[artistArr[i].id.toString()] = {
         id: artistArr[i].id,
         name: artistArr[i].name,

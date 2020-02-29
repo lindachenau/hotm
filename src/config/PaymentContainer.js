@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { resetBooking, addBooking } from '../actions/bookingCreator'
+import { resetBooking, addBooking, cancelBooking } from '../actions/bookingCreator'
 import Payment from '../components/Payment'
 
 const mapStateToProps = state => {
@@ -15,7 +15,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     resetBooking: () => dispatch(resetBooking()),
-    addBooking: (bookingInfo, callMe) => dispatch(addBooking(bookingInfo, callMe))
+    addBooking: (bookingInfo, callMe) => dispatch(addBooking(bookingInfo, callMe)),
+    cancelBooking: (bookingInfo) => dispatch(cancelBooking(bookingInfo)),
   }
 }
 
