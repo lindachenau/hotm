@@ -4,6 +4,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import ContactPhoneIcon from '@material-ui/icons/ContactPhone'
+import { contact_phone } from '../config/dataLinks'
 
 
 const useStyles = makeStyles(() => ({
@@ -44,7 +45,7 @@ export default function ContactInfo({triggerOpen}) {
       </div>
       <DialogContent className={classes.container2}>
         <Typography variant='h6' align='center'>
-          1300 816 757
+          {contact_phone}
         </Typography>
         <Typography variant='body2' align='center'>
           This service requires multiple artists. Please call to let us arrange artists for you.

@@ -17,7 +17,7 @@ import ServiceMenu from '../config/ServiceMenuContainer'
 
 import LocationSearchInput from './LocationSearchInput'
 
-import { available_artists_url } from '../config/dataLinks'
+import { available_artists_url, contact_phone } from '../config/dataLinks'
 import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
@@ -113,7 +113,7 @@ const ServiceSelection = ({
       alert('Sorry, add-on services* can not be booked on its own.')
       return false
     } else if (!artistBooking && !legalBookingTime()) {
-      alert('Please book appointments between 8am to 6pm at least 24 hours in advance. If you need to book outside these hours, please call xxx.')
+      alert(`Please book appointments between 8am to 6pm at least 24 hours in advance. If you need to book outside these hours, please call ${contact_phone}.`)
       return false
     }
 

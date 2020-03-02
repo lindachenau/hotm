@@ -5,6 +5,7 @@ const miniOrangeAccessKey = process.env.REACT_APP_MINIORANGE_ACCESS_KEY
 export const home_url = "https://procomhost.com"
 
 export const corporate_url = home_url + "/contact-us/"
+export const contact_phone = "1300 816 757"
 
 /*
  * The active custom booking api

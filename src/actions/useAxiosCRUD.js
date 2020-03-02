@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react"
 import axios from "axios"
-import { bookings_url } from '../config/dataLinks'
+import { bookings_url, contact_phone } from '../config/dataLinks'
 
 const convertArrayToObject = (array, key) => {
   const initialValue = {};
@@ -145,7 +145,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         const error = result.data.error
         if (!didCancel) {
           if (error) {
-            alert(`${error} Your card is NOT charged. Please call to resolve this issue.`)
+            alert(`${error} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
@@ -153,12 +153,12 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
             const payload = {...data, booking_id: bookingId}
             dispatch({ type: "POST_SUCCESS", payload: payload })
             //Now charge
-            callMe(bookingId)
+            await callMe(bookingId)
           }
         }
       } catch (err) {
         if (!didCancel) {
-          alert(`${err} Your card is NOT charged. Please call to resolve this issue.`)
+          alert(`${err} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
           dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
         }
       }
@@ -181,7 +181,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         const error = result.data.error
         if (!didCancel) {
           if (error) {
-            alert(`${error} Your card is NOT charged. Please call to resolve this issue.`)
+            alert(`${error} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
@@ -192,7 +192,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
             if (data.payment_amount > 0)
               data.paid_checkout_total = data.payment_amount
             dispatch({ type: "PUT_SUCCESS", payload: data })
-            callMe()
+            await callMe()
           }
         }
       } catch (err) {
@@ -221,7 +221,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
           * No need to do anything if no error as data hasn't been written into local Booking Store yet.
           */ 
           if (error) {
-            alert(`${error} Your card is NOT charged. Please call to resolve this issue.`)
+            alert(`${error} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           } else {
             dispatch({ type: "DELETE_SUCCESS" })
@@ -229,7 +229,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         }
       } catch (err) {
         if (!didCancel) {
-          alert(`${err} Your card is NOT charged. Please call to resolve this issue.`)
+          alert(`${err} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
           dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
         }
       }
