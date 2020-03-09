@@ -147,11 +147,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     setPhone(event.target.value)
   }
 
-  const handleRegister = async () => {
-
-    /*
-     * Check if username or email exist first
-     */ 
+  const checkExistence = async () => {
     const config1 = {
       method: 'get',
       headers: { 'Authorization': access_token },
@@ -161,7 +157,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     const users1 = await axios(config1)
     if (users1.data.length > 0) {
       alert("Email exists. Login or reset password.")
-      return
+      return true
     } 
 
     const config2 = {
@@ -173,13 +169,13 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     const users2 = await axios(config2)
     if (users2.data.length > 0) {
       alert("Username exists. Please change to a different username.")
-      return 
+      return true
     } 
 
-    /*
-     * username and email are unique. Now verify email by sending a verification link to email.
-     * Call EMAIL_VERIFICATION server to do so.
-     */ 
+    return false
+  }
+
+  const sendVerification = async () => {
     try {
       const reqConfig = {
         method: 'post',
@@ -194,25 +190,55 @@ export default function RegisterForm({triggerOpen, signinUser}) {
       const sendRes = await axios(reqConfig)
       if (sendRes.status === 200) {
         alert(`An email has been sent to ${email} for verification. If you do not receive the verification message within a minute of signing up, please check your Spam folder just in case the verification email got delivered there instead of your inbox. If so, select the verification message and click Not Spam, which will allow future messages to get through.`)
+        return true
       }
     }
     catch (error) {
       alert(error)
-      return
+      return false
     }
+  }
 
+  const checkVerification = async () => {
     try {
       const checkRes = await axios.get(`${email_verification_server}/check?id=${username}`)
       if (checkRes.data.error) {
-        alert(`Timeout: Email has not been verified in 30 seconds. Click Submit to send the verification email again.`)
-        return
+        alert(`Timeout: Email has not been verified in 30 seconds. Check you typed correct email and click Submit to send the verification email again.`)
+        return false
       }
     }
     catch (error) {
       alert(`Timeout: Email has not been verified in 30 seconds. Click Submit to send the verification email again.`)
-      return
+      return false
+    }
+    return true
   }
 
+  const handleRegister = async () => {
+
+    /*
+     * Check if username or email exist first
+     */ 
+    const existence = await checkExistence()
+    if (existence)
+      return
+
+    /*
+     * username and email are unique. Now verify email by sending a verification link to email.
+     * Call EMAIL_VERIFICATION server to do so.
+     */ 
+    const verificationSent = await sendVerification()
+    if (!verificationSent)
+      return
+
+    /*
+     * Wait for user verify the sent email in 30 seconds
+     */
+    const verified = await checkVerification()
+    if (!verified)
+      return
+
+    // Now we can register the user
     let nonceResponse = await axios(register_nonce_url)
 
     if (nonceResponse.status === 200 && nonceResponse.data.status === 'ok') {
