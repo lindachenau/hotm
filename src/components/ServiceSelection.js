@@ -198,6 +198,7 @@ const ServiceSelection = ({
             id="time-picker"
             label="Select booking time"
             value={selectedDate}
+            minutesStep={10}
             onChange={handleDateChange}
             KeyboardButtonProps={{
               'aria-label': 'change time',

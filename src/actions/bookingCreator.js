@@ -8,6 +8,8 @@ export const DEC_ITEM_QTY = 'DEC_ITEM_QTY'
 export const GET_AVAIL_ARTISTS = 'GET_AVAIL_ARTISTS'
 export const RECEIVE_AVAIL_ARTISTS = 'RECEIVE_AVAIL_ARTISTS'
 export const ERROR_AVAIL_ARTISTS = 'ERROR_AVAIL_ARTISTS'
+export const FETCH_ARTISTS = 'FETCH_ARTISTS'
+export const FETCH_SERVICES = 'FETCH_SERVICES'
 export const RESET_BOOKING = 'RESET_BOOKING'
 export const MAKE_BOOKING = 'MAKE_BOOKING'
 export const SEARCH_BOOKING = 'SEARCH_BOOKING'
@@ -78,6 +80,14 @@ export const incItemQty = id => ({
 export const decItemQty = id => ({
   type: DEC_ITEM_QTY,
   itemId: id
+})
+
+export const fetchArtists = () => ({
+  type: FETCH_ARTISTS,
+})
+
+export const fetchServices = () => ({
+  type: FETCH_SERVICES,
 })
 
 export const resetBooking = () => ({

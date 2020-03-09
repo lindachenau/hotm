@@ -93,7 +93,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
     hasErrored: false,
     errorMessage: "",
     data: initialData,
-    bookingInProgress: false
+    bookingInProgress: false //To enable the circular progress indicator after PAY button is pressed 
   })
 
   useEffect(() => {

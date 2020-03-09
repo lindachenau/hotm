@@ -67,6 +67,24 @@ export default function RegisterForm({triggerOpen, signinUser}) {
       didMountRef.current = true
   }, [triggerOpen])
 
+  //Clear register form whenever it's closed
+  useEffect(() => {
+    if (!open) {
+      setUsername('')
+      setPassword('')
+      setConfirmedPassword('')
+      setEmail('')
+      setFirstName('')
+      setLastName('')
+      setCompany('')
+      setAddress('')
+      setCity('')
+      setStateAbbr('')
+      setPostcode('')
+      setPhone('')
+    }
+  }, [open])
+
   const onChangeUsername = event => {
     setUsername(event.target.value)
   }
@@ -162,26 +180,38 @@ export default function RegisterForm({triggerOpen, signinUser}) {
      * username and email are unique. Now verify email by sending a verification link to email.
      * Call EMAIL_VERIFICATION server to do so.
      */ 
-    const reqConfig = {
-      method: 'post',
-      headers: {"Content-Type": "application/json"},
-      url: `${email_verification_server}/send`,
-      data: {
-        id: username,
-        email: email
+    try {
+      const reqConfig = {
+        method: 'post',
+        headers: {"Content-Type": "application/json"},
+        url: `${email_verification_server}/send`,
+        data: {
+          id: username,
+          email: email
+        }
+      }
+
+      const sendRes = await axios(reqConfig)
+      if (sendRes.status === 200) {
+        alert(`An email has been sent to ${email} for verification. If you do not receive the verification message within a minute of signing up, please check your Spam folder just in case the verification email got delivered there instead of your inbox. If so, select the verification message and click Not Spam, which will allow future messages to get through.`)
       }
     }
-
-    const sendRes = await axios(reqConfig)
-    if (sendRes.status === 200) {
-      alert(`An email has been sent to ${email} for verification. Please check your Inbox or Spam!`)
-    }
-
-    const checkRes = await axios.get(`${email_verification_server}/check?id=${username}`)
-    if (checkRes.data.error) {
-      alert(`Timeout: Email has not been verified in 30 seconds. Click Submit to send the verification email again.`)
+    catch (error) {
+      alert(error)
       return
     }
+
+    try {
+      const checkRes = await axios.get(`${email_verification_server}/check?id=${username}`)
+      if (checkRes.data.error) {
+        alert(`Timeout: Email has not been verified in 30 seconds. Click Submit to send the verification email again.`)
+        return
+      }
+    }
+    catch (error) {
+      alert(`Timeout: Email has not been verified in 30 seconds. Click Submit to send the verification email again.`)
+      return
+  }
 
     let nonceResponse = await axios(register_nonce_url)
 
@@ -271,6 +301,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="username"
               type="username"
               fullWidth
+              defaultValue={username}
               onChange={onChangeUsername}
             />
           </Grid>
@@ -281,6 +312,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="email"
               type="email"
               fullWidth
+              defaultValue={email}
               onChange={onChangeEmail}
             />
           </Grid>
@@ -291,6 +323,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="password"
               type="password"
               fullWidth
+              defaultValue={password}
               onChange={onChangePassword}
             />
           </Grid>
@@ -301,6 +334,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="confirm pw"
               type="password"
               fullWidth
+              defaultValue={confirmedPassword}
               onChange={onChangeConfirmedPassword}
             />
           </Grid>
@@ -311,6 +345,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="first name"
               type="firstname"
               fullWidth
+              defaultValue={firstName}
               onChange={onChangeFirstName}
             />
           </Grid>  
@@ -321,6 +356,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="last name"
               type="lastname"
               fullWidth
+              defaultValue={lastName}
               onChange={onChangeLastName}
             />
           </Grid>
@@ -330,6 +366,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="company"
               type="company"
               fullWidth
+              defaultValue={company}
               onChange={onChangeCompany}
             />
           </Grid>
@@ -339,6 +376,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="address"
               type="address"
               fullWidth
+              defaultValue={address}
               onChange={onChangeAddress}
             />
           </Grid>  
@@ -348,6 +386,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="city"
               type="city"
               fullWidth
+              defaultValue={city}
               onChange={onChangeCity}
             />
           </Grid>
@@ -357,6 +396,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="postcode"
               type="postcode"
               fullWidth
+              defaultValue={postcode}
               onChange={onChangePostcode}
             />
           </Grid>
@@ -366,6 +406,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="state abbr."
               type="state"
               fullWidth
+              defaultValue={stateAbbr}
               onChange={onChangeStateAbbr}
             />
           </Grid>
@@ -376,6 +417,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
               label="phone"
               type="phone"
               fullWidth
+              defaultValue={phone}
               onChange={onChangePhone}
             />
           </Grid>  

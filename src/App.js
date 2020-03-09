@@ -10,10 +10,10 @@ import BookingsStoreProvider from './config/BookingsStoreProviderContainer'
 const theme = createMuiTheme({
   palette: {
     primary: {
+      //HOTM peach color
       main: '#f18383'
     },
     secondary: {
-      // main: '#e8e5e5'
       main: '#000'
     }
   },

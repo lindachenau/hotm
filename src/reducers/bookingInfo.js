@@ -9,6 +9,8 @@ import {
   GET_AVAIL_ARTISTS,
   RECEIVE_AVAIL_ARTISTS,
   ERROR_AVAIL_ARTISTS,
+  FETCH_SERVICES,
+  FETCH_ARTISTS,
   SEARCH_BOOKING,
   ADD_BOOKING,
   SAVE_BOOKING,
@@ -265,8 +267,8 @@ export function itemQty(state = {}, action) {
 }
 
 const initActivation = {
-  servicesActive: true,
-  artistsActive: true,
+  servicesTrigger: true,
+  artistsTrigger: true,
   bookingTrigger: false,
   requestMethod: 'get',
   data: {},
@@ -276,6 +278,16 @@ const initActivation = {
 
 export function storeActivation(state = initActivation, action) {
   switch (action.type) {
+    case FETCH_SERVICES: {
+      return Object.assign({}, state, {
+        servicesTrigger: !state.servicesTrigger
+      })
+    }
+    case FETCH_ARTISTS: {
+      return Object.assign({}, state, {
+        artistsTrigger: !state.artistsTrigger
+      })
+    }
     case SEARCH_BOOKING: {
       return Object.assign({}, state, {
         requestMethod: 'get',

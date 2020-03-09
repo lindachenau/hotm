@@ -38,8 +38,8 @@ const initFilter = (fromDate, toDate) => {
   return `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
 }
 
-const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
-  const {servicesActive, artistsActive, requestMethod, data, callMe, bookingTrigger} = storeCtrl
+const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists, fetchServices}) => {
+  const {servicesTrigger, artistsTrigger, requestMethod, data, callMe, bookingTrigger} = storeCtrl
   const {fromDate, toDate} = bookingFilter
   const artistId = bookingFilter.artist ? bookingFilter.artist.id : null
   const clientId = bookingFilter.client ? bookingFilter.client.id : null
@@ -54,7 +54,17 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
   const [clientsFetchTrigger, setClientsFetchTrigger] = useState(false)
   const [clients, setClients] = useState({})
 
-  const servicesData = useAxiosFetch(services_url, [], servicesActive)
+  //Fetch services and artists every 60 minutes in case the data in the backend has changed
+  useEffect(() => {
+    const handle = setInterval(() => {
+      fetchArtists()
+      fetchServices()
+    }, 3600000)
+
+    return () => {clearInterval(handle)}
+  }, [])
+
+  const servicesData = useAxiosFetch(services_url, [], servicesTrigger)
 
   useEffect(() => {
     if (servicesData.data.length !== 0) {
@@ -64,7 +74,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
     }
   }, [servicesData.data])
 
-    //update booking filter
+  //update booking filter
   useEffect(() => {
     let newFilter = `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
     
@@ -77,7 +87,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter}) => {
     setBookingUrl(newFilter)
   }, [fromDate, toDate, artistId, clientId])
 
-  const artistsData = useAxiosFetch(artists_url, [], artistsActive)
+  const artistsData = useAxiosFetch(artists_url, [], artistsTrigger)
 
   useEffect(() => {
     if (artistsData.data.length !== 0) {

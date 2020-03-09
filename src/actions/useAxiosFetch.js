@@ -25,7 +25,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosFetch = (initialUrl, initialData, active) => {
+const useAxiosFetch = (initialUrl, initialData, trigger) => {
   const [url] = useState(initialUrl)
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
@@ -52,15 +52,14 @@ const useAxiosFetch = (initialUrl, initialData, active) => {
         }
       }
     }
-
-    if (active) {
-      fetchData()
-    }
+    
+    fetchData()
 
     return () => {
       didCancel = true
     }
-  }, [url, active])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trigger])
 
   return { ...state }
 }
