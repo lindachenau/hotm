@@ -50,7 +50,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 artists={artists}
                 resetBooking={resetBooking}/>} 
             />
-            <Route exact path='/artist' render={() => 
+            <Route path='/artist' render={() => 
               <ArtistBooking 
                 theme={theme} 
                 services={services} 

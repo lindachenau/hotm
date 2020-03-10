@@ -3,12 +3,12 @@ import axios from "axios"
 import { bookings_url, contact_phone } from '../config/dataLinks'
 
 const convertArrayToObject = (array, key) => {
-  const initialValue = {};
+  const initialValue = {}
   return array.reduce((obj, item) => {
     return {
       ...obj,
       [item[key].toString()]: item,
-    };
+    }
   }, initialValue)
 }
 

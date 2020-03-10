@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { withRouter } from 'react-router-dom';
+import React, { useState } from "react"
+import { withRouter } from 'react-router-dom'
 import BookingCards from '../config/BookingCardsContainer'
 import ArtistBooking from '../pages/ArtistBooking'
 
