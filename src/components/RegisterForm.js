@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import { register_nonce_url, register_url, update_user_meta_url, email_verification_server, user_url, access_token } from '../config/dataLinks'
 import axios from 'axios'
+import EmailVeriForm from './emailVeriForm'
 
 const logo = require('../images/logo.png')
 
@@ -52,6 +53,8 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   const [phone, setPhone] = useState('')
   const classes = useStyles()
   const [disableSubmit, setDisableSubmit] = useState(true)
+  const [triggerEmailConfirm, setTriggerEmailConfirm] = useState(false)
+  const [key, setKey] = useState()
 
   useEffect(() => {
     if (username === '' || password === '' || confirmedPassword === '' || email === '' || firstName === '' || lastName === '' || phone === '')
@@ -182,16 +185,13 @@ export default function RegisterForm({triggerOpen, signinUser}) {
         headers: {"Content-Type": "application/json"},
         url: `${email_verification_server}/send`,
         data: {
-          id: username,
           email: email
         }
       }
 
       const sendRes = await axios(reqConfig)
-      if (sendRes.status === 200) {
-        alert(`An email has been sent to ${email} for verification. If you do not receive the verification message within a minute of signing up, please check your Spam folder just in case the verification email got delivered there instead of your inbox. If so, select the verification message and click Not Spam, which will allow future messages to get through.`)
-        return true
-      }
+      setKey(sendRes.data.code)
+      return true
     }
     catch (error) {
       alert(error)
@@ -199,51 +199,40 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     }
   }
 
-  const checkVerification = async () => {
-    try {
-      const checkRes = await axios.get(`${email_verification_server}/check?id=${username}`)
-      if (checkRes.data.error) {
-        alert(`Timeout: Email has not been verified in 30 seconds. Check you typed correct email and click Submit to send the verification email again.`)
-        return false
-      }
+  const handleConfirm = code => {
+    const secret = code.join('')
+    if (key === secret) {
+      setTriggerEmailConfirm(!triggerEmailConfirm)
+      handleRegister()
     }
-    catch (error) {
-      alert(`Timeout: Email has not been verified in 30 seconds. Click Submit to send the verification email again.`)
-      return false
+    else {
+      alert('The code you entered is incorrect.')
     }
-    return true
   }
 
   const handleRegister = async () => {
-
-    /*
-     * Check if username or email exist first
-     */ 
-    const existence = await checkExistence()
-    if (existence)
+    //get nonce
+    let nonce
+    try {
+      const config = {
+        method: 'get',
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-store"
+        },
+        url: register_nonce_url
+      }
+      const nonceResponse = await axios(config)
+      nonce = nonceResponse.data.nonce
+    }
+    catch (nonceErr) {
+      alert(nonceErr)
       return
+    }
 
-    /*
-     * username and email are unique. Now verify email by sending a verification link to email.
-     * Call EMAIL_VERIFICATION server to do so.
-     */ 
-    const verificationSent = await sendVerification()
-    if (!verificationSent)
-      return
-
-    /*
-     * Wait for user verify the sent email in 30 seconds
-     */
-    const verified = await checkVerification()
-    if (!verified)
-      return
-
-    // Now we can register the user
-    let nonceResponse = await axios(register_nonce_url)
-
-    if (nonceResponse.status === 200 && nonceResponse.data.status === 'ok') {
-      const nonce = nonceResponse.data.nonce
-
+    //register
+    let regResponse
+    try {
       let userFormData = new FormData()
       userFormData.set('username', username)
       userFormData.set('user_pass', password)
@@ -258,202 +247,229 @@ export default function RegisterForm({triggerOpen, signinUser}) {
         data: userFormData
       }
 
-      let regResponse = await axios(config)
-
-      if (regResponse.status === 200 && regResponse.data.status === 'ok') {
-        const cookie = regResponse.data.cookie
-        const user_id = regResponse.data.user_id
-
-        let metaFormData = new FormData()
-        metaFormData.set('cookie', cookie)
-        metaFormData.set('billing_firstname', firstName)
-        metaFormData.set('billing_lastname', lastName)
-        metaFormData.set('billing_company', company)
-        metaFormData.set('billing_address_1', address)
-        metaFormData.set('billing_city', city)
-        metaFormData.set('billing_state', stateAbbr)
-        metaFormData.set('billing_postcode', postcode)
-        metaFormData.set('billing_phone', phone)
-
-        const metaConfig = {
-          method: 'post',
-          headers: {"Content-Type": 'multipart/form-data'},
-          url: update_user_meta_url,
-          data: metaFormData
-        }
-    
-        let metaResponse = await axios(metaConfig)
-
-        if (metaResponse.status === 200 && metaResponse.data.status === 'ok') {
-          const payload = {
-            firstName,
-            lastName,
-            nickName: firstName,
-            email: email,
-            id: user_id,
-            loggedIn: true
-          }
-          signinUser(payload)
-          alert('You are now registered for HOTM online booking!')
-          setOpen(false)
-        }
-        else {
-          alert(metaResponse.data.error)
-        }
-      }
-      else {
+      regResponse = await axios(config)
+      if (regResponse && regResponse.data.status !== 'ok') {
         alert(regResponse.data.error)
+        return
       }
     }
-    else {
-      alert(nonceResponse.data.error)
+    catch (regErr) {
+      alert(regErr)
+    }
+
+    //write metadata
+    try {
+      const cookie = regResponse.data.cookie
+      const user_id = regResponse.data.user_id
+
+      let metaFormData = new FormData()
+      metaFormData.set('cookie', cookie)
+      metaFormData.set('billing_firstname', firstName)
+      metaFormData.set('billing_lastname', lastName)
+      metaFormData.set('billing_company', company)
+      metaFormData.set('billing_address_1', address)
+      metaFormData.set('billing_city', city)
+      metaFormData.set('billing_state', stateAbbr)
+      metaFormData.set('billing_postcode', postcode)
+      metaFormData.set('billing_phone', phone)
+
+      const metaConfig = {
+        method: 'post',
+        headers: {"Content-Type": 'multipart/form-data'},
+        url: update_user_meta_url,
+        data: metaFormData
+      }
+  
+      let metaResponse = await axios(metaConfig)
+      if (metaResponse && metaResponse.data.status !== 'ok') {
+        alert(metaResponse.data.error)
+        return
+      }
+
+      const payload = {
+        firstName,
+        lastName,
+        nickName: firstName,
+        email: email,
+        id: user_id,
+        loggedIn: true
+      }
+      signinUser(payload)
+      alert('You are now registered for HOTM2U online booking!')
+      setOpen(false)
+    }
+    catch (metaErr) {
+      alert(metaErr)
     }
   }
 
+  const handleSubmit = async () => {
+    /*
+     * Check if username or email exist first
+     */ 
+    const existence = await checkExistence()
+    if (existence) return
+
+    /*
+     * username and email are unique. Now verify email by sending a verification link to email.
+     * Call EMAIL_VERIFICATION server to do so.
+     */ 
+    const sent = await sendVerification()
+    
+    if (!sent) return
+
+    //open the confirmation dialog
+    setTriggerEmailConfirm(!triggerEmailConfirm)
+
+  }
+
   return (
-    <Dialog open={open} onBackdropClick={() => setOpen(false)}>
-      <div className={classes.container1}>
-        <div className={classes.grow} />
-        <img className={classes.logo} src={logo} alt="Hair on the move logo" />
-        <div className={classes.grow} />
-      </div>
-      <DialogContent>
-        <Grid container>
-          <Grid item xs={6}>
-            <TextField
-              autoFocus
-              required
-              margin="dense"
-              label="username"
-              type="username"
-              fullWidth
-              defaultValue={username}
-              onChange={onChangeUsername}
-            />
+    <>
+      <Dialog open={open} onBackdropClick={() => setOpen(false)}>
+        <div className={classes.container1}>
+          <div className={classes.grow} />
+          <img className={classes.logo} src={logo} alt="Hair on the move logo" />
+          <div className={classes.grow} />
+        </div>
+        <DialogContent>
+          <Grid container>
+            <Grid item xs={6}>
+              <TextField
+                autoFocus
+                required
+                margin="dense"
+                label="username"
+                type="text"
+                fullWidth
+                defaultValue={username}
+                onChange={onChangeUsername}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                required
+                margin="dense"
+                label="email"
+                type="email"
+                fullWidth
+                defaultValue={email}
+                onChange={onChangeEmail}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                required
+                margin="dense"
+                label="password"
+                type="password"
+                fullWidth
+                defaultValue={password}
+                onChange={onChangePassword}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                required
+                margin="dense"
+                label="confirm pw"
+                type="password"
+                fullWidth
+                defaultValue={confirmedPassword}
+                onChange={onChangeConfirmedPassword}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                required
+                margin="dense"
+                label="first name"
+                type="text"
+                fullWidth
+                defaultValue={firstName}
+                onChange={onChangeFirstName}
+              />
+            </Grid>  
+            <Grid item xs={6}>
+              <TextField
+                required
+                margin="dense"
+                label="last name"
+                type="text"
+                fullWidth
+                defaultValue={lastName}
+                onChange={onChangeLastName}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                margin="dense"
+                label="company"
+                type="text"
+                fullWidth
+                defaultValue={company}
+                onChange={onChangeCompany}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                margin="dense"
+                label="address"
+                type="text"
+                fullWidth
+                defaultValue={address}
+                onChange={onChangeAddress}
+              />
+            </Grid>  
+            <Grid item xs={6}>
+              <TextField
+                margin="dense"
+                label="city"
+                type="text"
+                fullWidth
+                defaultValue={city}
+                onChange={onChangeCity}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                margin="dense"
+                label="postcode"
+                type="text"
+                fullWidth
+                defaultValue={postcode}
+                onChange={onChangePostcode}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                margin="dense"
+                label="state abbr."
+                type="text"
+                fullWidth
+                defaultValue={stateAbbr}
+                onChange={onChangeStateAbbr}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                required
+                margin="dense"
+                label="phone"
+                type="tel"
+                fullWidth
+                defaultValue={phone}
+                onChange={onChangePhone}
+              />
+            </Grid>  
           </Grid>
-          <Grid item xs={6}>
-            <TextField
-              required
-              margin="dense"
-              label="email"
-              type="email"
-              fullWidth
-              defaultValue={email}
-              onChange={onChangeEmail}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              required
-              margin="dense"
-              label="password"
-              type="password"
-              fullWidth
-              defaultValue={password}
-              onChange={onChangePassword}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              required
-              margin="dense"
-              label="confirm pw"
-              type="password"
-              fullWidth
-              defaultValue={confirmedPassword}
-              onChange={onChangeConfirmedPassword}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              required
-              margin="dense"
-              label="first name"
-              type="firstname"
-              fullWidth
-              defaultValue={firstName}
-              onChange={onChangeFirstName}
-            />
-          </Grid>  
-          <Grid item xs={6}>
-            <TextField
-              required
-              margin="dense"
-              label="last name"
-              type="lastname"
-              fullWidth
-              defaultValue={lastName}
-              onChange={onChangeLastName}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              margin="dense"
-              label="company"
-              type="company"
-              fullWidth
-              defaultValue={company}
-              onChange={onChangeCompany}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <TextField
-              margin="dense"
-              label="address"
-              type="address"
-              fullWidth
-              defaultValue={address}
-              onChange={onChangeAddress}
-            />
-          </Grid>  
-          <Grid item xs={6}>
-            <TextField
-              margin="dense"
-              label="city"
-              type="city"
-              fullWidth
-              defaultValue={city}
-              onChange={onChangeCity}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              margin="dense"
-              label="postcode"
-              type="postcode"
-              fullWidth
-              defaultValue={postcode}
-              onChange={onChangePostcode}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              margin="dense"
-              label="state abbr."
-              type="state"
-              fullWidth
-              defaultValue={stateAbbr}
-              onChange={onChangeStateAbbr}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              required
-              margin="dense"
-              label="phone"
-              type="phone"
-              fullWidth
-              defaultValue={phone}
-              onChange={onChangePhone}
-            />
-          </Grid>  
-        </Grid>
-      </DialogContent>
-      <DialogActions className={classes.button1}>
-        <Button variant="contained" onClick={handleRegister} color="primary" fullWidth disabled={disableSubmit}>
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </DialogContent>
+        <DialogActions className={classes.button1}>
+          <Button variant="contained" onClick={handleSubmit} color="primary" fullWidth disabled={disableSubmit}>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <EmailVeriForm email={email} handleConfirm={handleConfirm} triggerOpen={triggerEmailConfirm}/>
+    </>
   )
 }

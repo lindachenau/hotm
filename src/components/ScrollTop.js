@@ -13,4 +13,4 @@ class ScrollToTop extends Component {
     }
   }
 
-  export default withRouter(ScrollToTop);
+export default withRouter(ScrollToTop);

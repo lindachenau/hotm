@@ -62,6 +62,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
     }, 3600000)
 
     return () => {clearInterval(handle)}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const servicesData = useAxiosFetch(services_url, [], servicesTrigger)

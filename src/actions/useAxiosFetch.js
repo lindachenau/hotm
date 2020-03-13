@@ -42,7 +42,16 @@ const useAxiosFetch = (initialUrl, initialData, trigger) => {
       dispatch({ type: "FETCH_INIT" })
  
       try {
-        let result = await axios.get(url)
+        const config = {
+          method: 'get',
+          headers: {
+            "Content-Type": "application/json",
+            "Cache-Control": "no-store"
+          },
+          url: url
+        }
+        
+        let result = await axios(config)
         if (!didCancel) {
           dispatch({ type: "FETCH_SUCCESS", payload: result.data })
         }
