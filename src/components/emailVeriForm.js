@@ -5,13 +5,14 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import Typography from '@material-ui/core/Typography'
-import Input from '@material-ui/core/Input'
+import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(() => ({
   container: {
     display: 'flex',
-    justifyContent: 'center'
+    justifyContent: 'space-between',
+    margin: 20
   },
   button: {
     display: 'flex',
@@ -21,8 +22,6 @@ const useStyles = makeStyles(() => ({
     marginBottom: 20
   },
   digit: {
-    textAlign: 'center',
-    border: '1px solid',
     margin: 2
   }
 }))
@@ -31,10 +30,16 @@ export default function EmailVeriForm({ email, handleConfirm, triggerOpen }) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const [code, setCode] = useState([" ", " ", " ", " ", " ", " "])
+  const digit1 = useRef(null)
+  const digit2 = useRef(null)
+  const digit3 = useRef(null)
+  const digit4 = useRef(null)
+  const digit5 = useRef(null)
 
   const classes = useStyles()
 
   useEffect(() => {
+    //keep closed after mount
     if (didMountRef.current)
       setOpen(!open)
     else
@@ -49,36 +54,46 @@ export default function EmailVeriForm({ email, handleConfirm, triggerOpen }) {
     let newCode = code
     newCode[0] = event.target.value
     setCode(newCode)
+    digit1.current.focus()
   }
 
   const handleDigit1 = event => {
     let newCode = code
     newCode[1] = event.target.value
     setCode(newCode)
+    digit2.current.focus()
   }
 
   const handleDigit2 = event => {
     let newCode = code
     newCode[2] = event.target.value
     setCode(newCode)
+    digit3.current.focus()
   }
 
   const handleDigit3 = event => {
     let newCode = code
     newCode[3] = event.target.value
     setCode(newCode)
+    digit4.current.focus()
   }
 
   const handleDigit4 = event => {
     let newCode = code
     newCode[4] = event.target.value
     setCode(newCode)
+    digit5.current.focus()
   }
 
   const handleDigit5 = event => {
     let newCode = code
     newCode[5] = event.target.value
     setCode(newCode)
+  }
+
+  const oneDigit = {
+    maxLength: "1", 
+    size: "1"
   }
 
   return (
@@ -92,12 +107,12 @@ export default function EmailVeriForm({ email, handleConfirm, triggerOpen }) {
         </Typography>
       </DialogContent> 
       <div  className={classes.container}>
-        <Input autoFocus inputProps={{maxLength: "1", size: "1"}} className={classes.digit} key='code_digit0' onChange={handleDigit0}/>
-        <Input inputProps={{maxLength: "1", size: "1"}} className={classes.digit} key='code_digit1' onChange={handleDigit1}/>
-        <Input inputProps={{maxLength: "1", size: "1"}} className={classes.digit} key='code_digit2' onChange={handleDigit2}/>
-        <Input inputProps={{maxLength: "1", size: "1"}} className={classes.digit} key='code_digit3' onChange={handleDigit3}/>
-        <Input inputProps={{maxLength: "1", size: "1"}} className={classes.digit} key='code_digit4' onChange={handleDigit4}/>
-        <Input inputProps={{maxLength: "1", size: "1"}} className={classes.digit} key='code_digit5' onChange={handleDigit5}/>
+        <TextField variant="outlined" size='small' autoFocus inputProps={oneDigit} className={classes.digit} key='code_digit0' onChange={handleDigit0}/>
+        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit1' onChange={handleDigit1} inputRef={digit1}/>
+        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit2' onChange={handleDigit2} inputRef={digit2}/>
+        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit3' onChange={handleDigit3} inputRef={digit3}/>
+        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit4' onChange={handleDigit4} inputRef={digit4}/>
+        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit5' onChange={handleDigit5} inputRef={digit5}/>
       </div>
       <DialogActions className={classes.button}>
         <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
