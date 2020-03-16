@@ -183,7 +183,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
       const reqConfig = {
         method: 'post',
         headers: {"Content-Type": "application/json"},
-        url: `${email_verification_server}/send`,
+        url: email_verification_server,
         data: {
           email: email
         }

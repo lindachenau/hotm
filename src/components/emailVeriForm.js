@@ -20,9 +20,6 @@ const useStyles = makeStyles(() => ({
     marginRight: 15,
     marginTop: 20,
     marginBottom: 20
-  },
-  digit: {
-    margin: 2
   }
 }))
 
@@ -107,12 +104,12 @@ export default function EmailVeriForm({ email, handleConfirm, triggerOpen }) {
         </Typography>
       </DialogContent> 
       <div  className={classes.container}>
-        <TextField variant="outlined" size='small' autoFocus inputProps={oneDigit} className={classes.digit} key='code_digit0' onChange={handleDigit0}/>
-        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit1' onChange={handleDigit1} inputRef={digit1}/>
-        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit2' onChange={handleDigit2} inputRef={digit2}/>
-        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit3' onChange={handleDigit3} inputRef={digit3}/>
-        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit4' onChange={handleDigit4} inputRef={digit4}/>
-        <TextField variant="outlined" size='small' inputProps={oneDigit} className={classes.digit} key='code_digit5' onChange={handleDigit5} inputRef={digit5}/>
+        <TextField variant="outlined" type='tel' size='small' autoFocus inputProps={oneDigit} key='code_digit0' onChange={handleDigit0}/>
+        <TextField variant="outlined" type='tel' size='small' inputProps={oneDigit} key='code_digit1' onChange={handleDigit1} inputRef={digit1}/>
+        <TextField variant="outlined" type='tel' size='small' inputProps={oneDigit} key='code_digit2' onChange={handleDigit2} inputRef={digit2}/>
+        <TextField variant="outlined" type='tel' size='small' inputProps={oneDigit} key='code_digit3' onChange={handleDigit3} inputRef={digit3}/>
+        <TextField variant="outlined" type='tel' size='small' inputProps={oneDigit} key='code_digit4' onChange={handleDigit4} inputRef={digit4}/>
+        <TextField variant="outlined" type='tel' size='small' inputProps={oneDigit} key='code_digit5' onChange={handleDigit5} inputRef={digit5}/>
       </div>
       <DialogActions className={classes.button}>
         <Button variant="contained" onClick={handleClose} color="primary" fullWidth>

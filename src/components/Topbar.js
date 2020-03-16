@@ -184,6 +184,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
           </React.Fragment>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
+            <span>{ `v${process.env.REACT_APP_VERSION}` }</span>
             {bookingPage && 
             <React.Fragment>
               <AccountBalanceWalletIcon fontSize='small'/>

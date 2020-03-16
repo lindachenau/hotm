@@ -9,8 +9,9 @@ import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
 import { BookingsStoreContext } from './BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import axios from 'axios'
 
-import { stripe_charge_server } from '../config/dataLinks'
+import { stripe_charge_server, email_reminder_server } from '../config/dataLinks'
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
 const useStyles = makeStyles(theme => ({
@@ -38,6 +39,7 @@ function Payment (
     resetBooking, 
     addBooking,
     cancelBooking, 
+    bookingDate,
     bookingInfo, 
     items, 
     itemQty, 
@@ -45,7 +47,8 @@ function Payment (
     priceFactors, 
     bookingValue, 
     userId, 
-    userName
+    userName,
+    clientEmail
   }) {
   const { bookingsData } = useContext(BookingsStoreContext)
   const { bookingInProgress } = bookingsData
@@ -55,6 +58,25 @@ function Payment (
 
   const handleChange = event => {
     setValue(event.target.value);
+  }
+
+  const sendReminder = async () => {
+    try {
+      const config = {
+        method: 'post',
+        headers: {"Content-Type": "application/json"},
+        url: email_reminder_server,
+        data: {
+          email: clientEmail,
+          appointmentDate: bookingDate
+        }
+      }
+
+      await axios(config)
+    }
+    catch (error) {
+      console.error(error)
+    }
   }
 
   const submit = async (token) => {
@@ -71,6 +93,7 @@ function Payment (
 
       if (response.ok) {
         alert("Booking successful!")
+        sendReminder()
         resetBooking()
       }
       else {
@@ -84,7 +107,7 @@ function Payment (
       ...bookingInfo, 
       client_id: userId,
       client_name: userName,
-      client_email: "lenaqunying@outlook.com",
+      client_email: clientEmail,
       booking_artist_name: "",
       booking_artist_email: "",
       with_organic: priceFactors.organic ? 1 : 0,
