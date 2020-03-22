@@ -9,9 +9,10 @@ import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
 import { BookingsStoreContext } from './BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import axios from 'axios'
 
-import { stripe_charge_server, email_reminder_server } from '../config/dataLinks'
+import { stripe_charge_server } from '../config/dataLinks'
+import sendReminder from '../reducers/bookingInfo'
+
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
 const useStyles = makeStyles(theme => ({
@@ -60,25 +61,6 @@ function Payment (
     setValue(event.target.value);
   }
 
-  const sendReminder = async () => {
-    try {
-      const config = {
-        method: 'post',
-        headers: {"Content-Type": "application/json"},
-        url: email_reminder_server,
-        data: {
-          email: clientEmail,
-          appointmentDate: bookingDate
-        }
-      }
-
-      await axios(config)
-    }
-    catch (error) {
-      console.error(error)
-    }
-  }
-
   const submit = async (token) => {
     const charge = async (bookingId) => {
       const response = await fetch(stripe_charge_server, {
@@ -93,7 +75,7 @@ function Payment (
 
       if (response.ok) {
         alert("Booking successful!")
-        sendReminder()
+        sendReminder(clientEmail, bookingDate)
         resetBooking()
       }
       else {

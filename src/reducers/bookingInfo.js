@@ -26,6 +26,9 @@ import {
   SET_CLIENT
 } from '../actions/bookingCreator'
 
+import { email_reminder_server } from '../config/dataLinks'
+import axios from 'axios'
+
 const initPriceFactors = {
   organic: false,
   pensionerRate: false
@@ -377,3 +380,23 @@ export function bookingFilter(state = initBookingFilter, action) {
       return state
   }
 }
+
+const sendReminder = async (clientEmail, bookingDate) => {
+  try {
+    const config = {
+      method: 'post',
+      headers: {"Content-Type": "application/json"},
+      url: email_reminder_server,
+      data: {
+        email: clientEmail,
+        appointmentDate: bookingDate
+      }
+    }
+    await axios(config)
+  }
+  catch (error) {
+    console.error(error)
+  }
+}
+
+export default sendReminder

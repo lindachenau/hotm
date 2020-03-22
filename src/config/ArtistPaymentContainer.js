@@ -5,6 +5,7 @@ import ArtistPayment from '../components/ArtistPayment'
 const mapStateToProps = state => {
   return {
     bookingData: state.storeActivation.bookingData,
+    bookingDate: state.bookingDateAddr.bookingDate,
     comment: state.clientInfo.comment,
     clientName: state.clientInfo.client.name,
     userEmail: state.userInfo.email,

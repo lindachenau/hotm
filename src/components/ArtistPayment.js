@@ -10,6 +10,8 @@ import { BookingsStoreContext } from './BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { stripe_charge_server } from '../config/dataLinks'
+import sendReminder from '../reducers/bookingInfo'
+
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
 const useStyles = makeStyles(theme => ({
@@ -59,7 +61,8 @@ function ArtistPayment({
   comment,
   clientName,
   userEmail, 
-  userName
+  userName,
+  bookingDate
   }) {
   const { bookingsData } = useContext(BookingsStoreContext)
   const { bookingInProgress } = bookingsData
@@ -71,12 +74,13 @@ function ArtistPayment({
     setValue(event.target.value);
   }
 
+  const clientEmail = "lenaqunying@outlook.com" //This is temporary. Currently it's not possible to get user email without user login.
   const updatedBookingData = {
     ...bookingData, 
     booking_artist_name: userName,
     booking_artist_email: userEmail,
     client_name: clientName,
-    client_email: "lenaqunying@outlook.com"
+    client_email: clientEmail
   }
 
   const submit = async (token) => {
@@ -95,6 +99,7 @@ function ArtistPayment({
       if (response.ok) {
         const message = newBooking ? "Booking successful!" : "Checkout successful!"
         alert(message)
+        if (newBooking) sendReminder(clientEmail, bookingDate)
         resetBooking()
       }
       else {

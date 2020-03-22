@@ -93,7 +93,7 @@ export default function ArtistSelection ({theme, changeBookingStage, availArtist
       </Typography>}
       {noArtists &&
       <Typography variant="body1" align="center" color="textPrimary">
-        Sorry, no artists are available
+        Sorry, no artists are available for your booking location and time. Please try a different time.         
       </Typography>}
       <div className={classes.flex}>
         <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(0)}>
