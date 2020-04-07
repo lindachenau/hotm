@@ -53,6 +53,7 @@ const ServiceSelection = ({
   changeSelectedArtist,
   artistBooking,
   newBooking,
+  bookingValue,
   setManageState }) => {
   
   const classes = useStyles()
@@ -97,20 +98,14 @@ const ServiceSelection = ({
     const now = new Date()
     const ahead24hrs = (selectedDate - now) / 3600000 >= 24 
     const bookingHour = selectedDate.getHours()
-    const between8And18 = bookingHour >= 8 && bookingHour <= 18
+    const between8And18 = bookingHour >= 8 && bookingHour < 18
 
     return ahead24hrs && between8And18
   }
 
   const checkBookingRules = () => {
-    let allAddOn = true
-    Object.keys(itemQty).forEach(id => {allAddOn = items[id].addOn && allAddOn})
-
     if (pensionerRate && selectedDate.getDay() !== 1) {
       alert('Sorry, pensioner rate is only available on Mondays.')
-      return false
-    } else if (allAddOn) {
-      alert('Sorry, add-on services* can not be booked on its own.')
       return false
     } else if (!artistBooking && !legalBookingTime()) {
       alert(`Please book appointments between 8am to 6pm at least 24 hours in advance. If you need to book outside these hours, please call ${contact_phone}.`)
@@ -132,7 +127,7 @@ const ServiceSelection = ({
     */
     let url = available_artists_url + '?date=' + moment(selectedDate).format("YYYY-MM-DD") + 
     '&start_time=' + moment(selectedDate).format("HH:mm") + '&services=' + Object.keys(itemQty) +
-    '&quantities=' + Object.values(itemQty) + '&event_addr=' + address
+    '&quantities=' + Object.values(itemQty) + '&event_addr=' + address + '&total_amount=' + bookingValue
     
     getAvailArtist(url)
 

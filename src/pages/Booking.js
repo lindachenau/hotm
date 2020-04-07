@@ -16,7 +16,15 @@ const Booking = ({ bookingStage, changeBookingStage, resetBooking, services, the
   return (
     <React.Fragment>
       <BookingSteps activeStep={bookingStage}/>
-      {bookingStage === 0 ? <ServiceSelection onSubmit={changeBookingStage} services={services} theme={theme} newBooking={true}/> : null}
+      {bookingStage === 0 ? 
+        <ServiceSelection 
+          onSubmit={changeBookingStage} 
+          services={services} 
+          theme={theme} 
+          bookingValue={bookingValue}
+          newBooking={true}/> 
+          : null
+      }
       {bookingStage === 1 ? <ArtistSelection changeBookingStage={changeBookingStage} theme={theme}/> : null}
       {bookingStage === 2 ? 
         <Confirmation 
