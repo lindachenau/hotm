@@ -96,7 +96,9 @@ function ArtistPayment({
         })
       });
 
-      if (response.ok) {
+      const {id, status} = await response.json()
+
+      if (status === 'succeeded') {
         const message = newBooking ? "Booking successful!" : "Checkout successful!"
         alert(message)
         if (newBooking) sendReminder(clientEmail, bookingDate)

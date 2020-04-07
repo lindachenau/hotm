@@ -71,9 +71,11 @@ function Payment (
           description: `${userName}'s deposit for booking on ${bookingInfo.booking_date}`,
           amount: (depositPayable * 100).toFixed(0)
         })
-      });
+      })
 
-      if (response.ok) {
+      const {id, status} = await response.json()
+ 
+      if (status === 'succeeded') {
         alert("Booking successful!")
         sendReminder(clientEmail, bookingDate)
         resetBooking()
@@ -94,7 +96,6 @@ function Payment (
       booking_artist_email: "",
       with_organic: priceFactors.organic ? 1 : 0,
       with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
-      unit_prices: Object.keys(itemQty).map(id => items[id].price),
       total_amount: bookingValue, 
       payment_amount: depositPayable, 
       paid_checkout_total: 0,
