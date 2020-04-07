@@ -111,7 +111,6 @@ function AddPeople ({
       event_address: bookingAddr,
       quantities: Object.values(itemQty),
       services: Object.keys(itemQty).map(id => Number(id)),
-      unit_prices: Object.keys(itemQty).map(id => items[id].price),
       time_on_site: (bookingEnd - bookingDate) / 1000 / 60,
       travel_distance: 0,
       travel_duration: 0,
