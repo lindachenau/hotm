@@ -74,10 +74,10 @@ function Payment (
       })
 
       const {id, status} = await response.json()
- 
+      
       if (status === 'succeeded') {
         alert("Booking successful!")
-        sendReminder(clientEmail, bookingDate)
+        // sendReminder(clientEmail, bookingDate)
         resetBooking()
       }
       else {

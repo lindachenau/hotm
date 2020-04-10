@@ -101,7 +101,7 @@ function ArtistPayment({
       if (status === 'succeeded') {
         const message = newBooking ? "Booking successful!" : "Checkout successful!"
         alert(message)
-        if (newBooking) sendReminder(clientEmail, bookingDate)
+        // if (newBooking) sendReminder(clientEmail, bookingDate)
         resetBooking()
       }
       else {

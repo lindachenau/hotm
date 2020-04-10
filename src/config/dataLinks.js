@@ -10,7 +10,7 @@ export const contact_phone = "1300 816 757"
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v0.10`
+const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v0.11`
 export const services_url = `${HOTM_BOOKING_API}/services`
 export const artists_url = `${HOTM_BOOKING_API}/artists`
 export const bookings_url = `${HOTM_BOOKING_API}/bookings`
