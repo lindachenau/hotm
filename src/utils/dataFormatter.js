@@ -3,14 +3,17 @@ import { getBookingValue } from './getBookingValue'
 export function normaliseArtists(artistArr)
 {
   let artists = {}
+
+  const validStates = ['NSW', 'VIC', 'TAS', 'QLD', 'SA', 'WA']
   
   for (let i = 0; i < artistArr.length; i++ ) {
     //Filter out invalid entries so that artist selection can display the list properly
-    if (artistArr[i].state && artistArr[i].name && artistArr[i].email !== 'tttttt') {
+    let state = artistArr[i].state.toUpperCase()
+    if (validStates.includes(state) && artistArr[i].name) {
       artists[artistArr[i].id.toString()] = {
         id: artistArr[i].id,
         name: artistArr[i].name,
-        state: artistArr[i].state,
+        state: state,
         photo: artistArr[i].photo,
         title: artistArr[i].title,
         bio: artistArr[i].bio,

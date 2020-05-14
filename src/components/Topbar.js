@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 
 const artistMenu = [
   {
-    label: "Personal booking",
+    label: "Client booking",
     pathname: "/",
     icon: <AddIcon />
   },
@@ -57,17 +57,17 @@ const artistMenu = [
     icon: <LinkIcon />
   },
   {
-    label: "Artist booking",
-    pathname: "/artist",
+    label: "Admin booking",
+    pathname: "/admin",
     icon: <CreateIcon />
   },
   {
-    label: "Manage bookings",
-    pathname: "/manage",
+    label: "Edit | Checkout",
+    pathname: "/edit",
     icon: <LibraryBooksIcon />
   },
   {
-    label: "Booking calendar",
+    label: "Calendar view",
     pathname: "/calendar",
     icon: <EventIcon />
   },
@@ -81,7 +81,7 @@ const artistMenu = [
 
 const userMenu = [
   {
-    label: "Personal booking",
+    label: "Client booking",
     pathname: "/",
     icon: <AddIcon />
   },
@@ -106,8 +106,8 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
   const [triggerSignout, setTriggerSignout] = useState(false)
   const [triggerFilter, setTriggerFilter] = useState(false)
   const currentPath = location.pathname
-  const bookingPage = currentPath === '/' || currentPath === '/artist'
-  const eventsPage = currentPath === '/manage' || currentPath === '/calendar'
+  const bookingPage = currentPath === '/' || currentPath === '/admin'
+  const eventsPage = currentPath === '/edit' || currentPath === '/calendar'
   const menu = isArtist ? artistMenu : userMenu
   
   const toggleDrawer = (open) => event => {
@@ -135,16 +135,16 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
 
   switch (currentPath) {
     case '/calendar':
-      title = 'Booking calendar'
+      title = 'Calendar view'
       break
-    case '/manage':
-      title = 'Manage bookings'
+    case '/edit':
+      title = 'Edit bookings'
       break
-    case '/artist':
-      title = 'Artist booking'
+    case '/admin':
+      title = 'Admin booking'
       break
     default:
-      title = 'Personal booking'
+      title = 'Client booking'
   }
 
   return (

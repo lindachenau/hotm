@@ -50,7 +50,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 artists={artists}
                 resetBooking={resetBooking}/>} 
             />
-            <Route path='/artist' render={() => 
+            <Route path='/admin' render={() => 
               <ArtistBooking 
                 theme={theme} 
                 services={services} 
@@ -62,7 +62,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 newBooking={true}
                 resetBooking={resetBooking}/>} 
             />
-            <Route path='/manage' render={() => 
+            <Route path='/edit' render={() => 
               <Manage 
                 events={events} 
                 eventsFetched={eventsFetched}

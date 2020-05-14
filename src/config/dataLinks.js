@@ -35,8 +35,6 @@ export const reset_pw_url = `${home_url}/api/user/retrieve_password/?user_login=
  * miniOrange API Authentication
  */
 export const user_url = `${home_url}/wp-json/wp/v2/users`
-// Use relative path in development mode to make use of proxy
-// export const user_url = "/wp-json/wp/v2/users"
 // Client-ID : Client-Secret authentication
 export const access_token = miniOrangeAccessKey
 
