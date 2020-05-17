@@ -71,6 +71,16 @@ export function normaliseServices(serviceArr)
   }
 }
 
+function localDate(bookingDate, bookingTime)
+{
+  const y = bookingDate.slice(0, 4)
+  const mon = bookingDate.slice(5, 7) - 1 // Jan is 0
+  const d = bookingDate.slice(8)
+  const h = bookingTime.slice(0, 2)
+  const min = bookingTime.slice(3)
+
+  return new Date(y, mon, d, h, min)
+}
 export function getEvents(bookings, artists, clients, servicesMenu)
 {
   let events = []
@@ -101,10 +111,15 @@ export function getEvents(bookings, artists, clients, servicesMenu)
       else
         total = getBookingValue(servicesMenu, priceFactors, itemQty)
 
+      /*
+      * new Date(`${booking.booking_date}T${booking.booking_time}:00`) returns the local time zone on Chrome and Firefox
+      * but returns the value based on the UTC standard
+      */
+
       events.push({
         id: booking.booking_id,
-        start: new Date(`${booking.booking_date}T${booking.booking_time}:00`),
-        end: new Date(`${booking.booking_date}T${booking.booking_end_time}:00`),
+        start: localDate(booking.booking_date, booking.booking_time),
+        end: localDate(booking.booking_date, booking.booking_end_time),
         address: booking.event_address,
         artists: booking.artist_id_list.map(id => artists[id]),
         artistNames: booking.artist_id_list.map(id => artists[id].name).join(', '),
