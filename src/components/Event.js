@@ -10,8 +10,8 @@ export function MonthEvent ({ event }) {
     <div className='rbc-event-label'>
       <span>{ `${moment(event.start).format('LT')} – ${moment(event.end).format('LT')} ` }</span>
       <FaDollarSign/>
-      <span>{ `${event.total} ` }</span>
-      <span>{ event.artistNames}</span>
+      {event.total && <span>{ `${event.total} ` }</span>}
+      {event.artistNames && <span>{ event.artistNames}</span>}
     </div>
   )
 }
@@ -24,15 +24,15 @@ export function DayEvent ({ event }) {
       </>
       <>
         <FaUserAlt/> 
-        <span>{ `${event.client.name} ` }</span> 
+        {event.client && <span>{ `${event.client.name} ` }</span>}
         <FaPhoneSquare/>
-        <span>{ `${event.client.phone} ` }</span>
+        {event.client && <span>{ `${event.client.phone} ` }</span>}
       </>
       <>
         <FaDollarSign/>
-        <span>{ `${event.total} ` }</span>
-        <span>{ event.artistNames}</span>
-        {event.serviceItems.map( item => <div>{ item }</div> )}
+        {event.total && <span>{ `${event.total} ` }</span>}
+        {event.artistNames && <span>{ event.artistNames}</span>}
+        {event.serviceItems && event.serviceItems.map( item => <div>{ item }</div> )}
       </> 
     </div>
   )

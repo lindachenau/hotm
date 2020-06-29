@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
 import { register_nonce_url, register_url, update_user_meta_url, email_verification_server, user_url, access_token } from '../config/dataLinks'
 import axios from 'axios'
-import EmailVeriForm from './emailVeriForm'
+import EmailVeriForm from './EmailVeriForm'
 
 const logo = require('../images/logo.png')
 

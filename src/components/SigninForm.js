@@ -166,7 +166,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
         </div>
         <DialogActions className={classes.button2}>
           <Button variant="contained" onClick={handleRegister} color="primary" fullWidth>
-            Register
+            Create Account
           </Button>
         </DialogActions>
       </Dialog>

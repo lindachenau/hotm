@@ -15,7 +15,8 @@ import moment from 'moment'
  * 
  * services and artists APIs are requested during app initialisation and stored in local states. There
  * won't be further requests during the life of the app. If backend updates services and artists, the app 
- * wouldn't know about it. To get new services and artists, the app must be closed and reopen.
+ * wouldn't know about it. To work around the problem, a timer is set to revalidate services and artists every hour
+ * in the background. If the app is closed and open again, services and artists will be requested from server again.
  * 
  * bookings and clients APIs are requested by demand. Bookings are loaded by the search filter or adding 
  * new bookings. All relevant clients in the loaded bookings will be requested to complete the corresponding
@@ -113,11 +114,16 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
 
   //update client list whenever new bookings are loaded
   useEffect(() => {
-    if (bookingsData.data.length !== 0) {
+    if (bookingsData.isLoading || bookingsData.isUpdating) {
+      setEventsFetched(true)
+    }
+    else if (Object.keys(bookingsData.data).length !== 0) {
       setClientList(getClientListFromBookings(bookingsData.data))
       setEventsFetched(false)
+    } else {
+      setEventsFetched(true)
     }
-  }, [bookingsData.data])
+  }, [bookingsData.data, bookingsData.isLoading, bookingsData.isUpdating])
 
   //fetch new clients whenever the client list is updated
   useEffect(() => {

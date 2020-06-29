@@ -118,6 +118,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
 
       events.push({
         id: booking.booking_id,
+        status: 1,
         start: localDate(booking.booking_date, booking.booking_time),
         end: localDate(booking.booking_date, booking.booking_end_time),
         address: booking.event_address,
