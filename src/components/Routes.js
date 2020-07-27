@@ -12,6 +12,7 @@ const Booking = lazy(() => import('../pages/Booking'))
 const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
 const Manage = lazy(() => import('../pages/Manage'))
 const Calendar = lazy(() => import('../pages/Calendar'))
+const Corporate = lazy(() => import('../pages/Corporate'))
 
 // import Booking from '../pages/Booking'
 // import ArtistBooking from '../pages/ArtistBooking'
@@ -22,6 +23,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
   const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
+  const [artistSignedIn, setArtistSignedIn] = useState(false)
 
   useEffect(() => {
     setBookingValue(getBookingValue(services.items, priceFactors, itemQty))
@@ -35,7 +37,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
     <HashRouter>
       <ScrollToTop>
         <CssBaseline />
-        <Topbar bookingValue={bookingValue} loggedIn={loggedIn} isArtist={isArtist} artists={artists}/>
+        <Topbar bookingValue={bookingValue} loggedIn={loggedIn} isArtist={isArtist} artists={artists} setArtistSignedIn={setArtistSignedIn}/>
         <Suspense fallback={<CircularProgress/>}>
         {servicesFetched &&
           <Switch>
@@ -50,7 +52,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 artists={artists}
                 resetBooking={resetBooking}/>} 
             />
-            <Route path='/admin' render={() => 
+            <Route path='/artist' render={() => 
               <ArtistBooking 
                 theme={theme} 
                 services={services} 
@@ -62,6 +64,24 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 newBooking={true}
                 resetBooking={resetBooking}/>} 
             />
+            <Route path='/corporate' render={() => 
+              <Corporate
+                artists={artists}
+                artistSignedIn={artistSignedIn}
+                events={events} />} 
+            />
+            <Route path='/package' render={() => 
+              <ArtistBooking 
+                theme={theme} 
+                services={services} 
+                bookingStage={bookingStage} 
+                changeBookingStage={changeBookingStage} 
+                bookingValue={bookingValue}
+                depositPayable={depositPayable}
+                artists={artists}
+                newBooking={true}
+                resetBooking={resetBooking}/>} 
+            />                        
             <Route path='/edit' render={() => 
               <Manage 
                 events={events} 

@@ -18,13 +18,16 @@ import CreateIcon from '@material-ui/icons/Create'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import LockIcon from '@material-ui/icons/Lock'
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks'
+import BusinessIcon from '@material-ui/icons/Business'
+import BrushIcon from '@material-ui/icons/Brush'
+import BusinessCenterIcon from '@material-ui/icons/BusinessCenter'
 import FilterListIcon from '@material-ui/icons/FilterList'
 
 import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
 import Filter from '../config/FilterContainer'
-import { home_url, corporate_url } from '../config/dataLinks'
+import CalendarLoader from '../components//CalendarLoader'
+import { home_url } from '../config/dataLinks'
 
 const logo = require('../images/logo192.png')
 
@@ -52,19 +55,23 @@ const artistMenu = [
   },
   {
     label: "Corporate booking",
-    pathname: corporate_url,
-    external: true,
-    icon: <LinkIcon />
+    pathname: "/corporate",
+    icon: <BusinessIcon />
   },
   {
-    label: "Admin booking",
-    pathname: "/admin",
-    icon: <CreateIcon />
+    label: "Package booking",
+    pathname: "/package",
+    icon: <BusinessCenterIcon />
+  },  
+  {
+    label: "Artist booking",
+    pathname: "/artist",
+    icon: <BrushIcon />
   },
   {
     label: "Edit | Checkout",
     pathname: "/edit",
-    icon: <LibraryBooksIcon />
+    icon: <CreateIcon />
   },
   {
     label: "Calendar view",
@@ -86,12 +93,6 @@ const userMenu = [
     icon: <AddIcon />
   },
   {
-    label: "Corporate booking",
-    pathname: corporate_url,
-    external: true,
-    icon: <LinkIcon />
-  },
-  {
     label: "Go to Hair on the Move",
     pathname: home_url,
     external: true,
@@ -99,15 +100,14 @@ const userMenu = [
   }
 ];
 
-function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
+function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtistSignedIn}) {
   const classes = useStyles()
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [triggerSignin, setTriggerSignin] = useState(false)
   const [triggerSignout, setTriggerSignout] = useState(false)
   const [triggerFilter, setTriggerFilter] = useState(false)
   const currentPath = location.pathname
-  const bookingPage = currentPath === '/' || currentPath === '/admin'
-  const eventsPage = currentPath === '/edit' || currentPath === '/calendar'
+  const bookingPage = currentPath === '/'
   const menu = isArtist ? artistMenu : userMenu
   
   const toggleDrawer = (open) => event => {
@@ -140,9 +140,15 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
     case '/edit':
       title = 'Edit bookings'
       break
-    case '/admin':
-      title = 'Admin booking'
+    case '/artist':
+      title = 'Artist booking'
       break
+    case '/corporate':
+      title = 'Corporate booking'
+      break
+    case '/package':
+      title = 'Package booking'
+      break              
     default:
       title = 'Client booking'
   }
@@ -190,7 +196,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
               <AccountBalanceWalletIcon fontSize='small'/>
               <span>{ `$${bookingValue}` }</span>
             </React.Fragment>}
-            {eventsPage && 
+            {!bookingPage && 
             <IconButton
               edge="end"
               color="inherit"
@@ -207,9 +213,10 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists}) {
             </IconButton>
           </div>
         </Toolbar>
-        <SignoutForm triggerOpen={triggerSignout}/> 
-        <SigninForm triggerOpen={triggerSignin} initOpen={false}/>
-        <Filter triggerOpen={triggerFilter} artists={artists}/> 
+        <SignoutForm triggerOpen={triggerSignout} /> 
+        <SigninForm triggerOpen={triggerSignin} initOpen={false} />
+        <Filter triggerOpen={triggerFilter} artists={artists} /> 
+        <CalendarLoader setIsSignIn={setArtistSignedIn} />
       </AppBar>
     </div>
   )

@@ -1,16 +1,16 @@
 import React from 'react'
 import moment from 'moment'
 import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign } from "react-icons/fa"
-/**
- * 
- * event display for Month view in mobile devices 
- */
+
 export function MonthEvent ({ event }) {
   return (
     <div className='rbc-event-label'>
       <span>{ `${moment(event.start).format('LT')} – ${moment(event.end).format('LT')} ` }</span>
-      <FaDollarSign/>
-      {event.total && <span>{ `${event.total} ` }</span>}
+      {event.total && 
+      <>
+        <FaDollarSign/>
+        <span>{ `${event.total} ` }</span>
+      </>}
       {event.artistNames && <span>{ event.artistNames}</span>}
     </div>
   )
@@ -19,21 +19,25 @@ export function MonthEvent ({ event }) {
 export function DayEvent ({ event }) {
   return (
     <div className='rbc-event-label'>
+      {event.address &&
       <>
         <FaMapMarkerAlt/><span>{ event.address }</span>
-      </>
+      </>}
+      {event.client &&
       <>
-        <FaUserAlt/> 
-        {event.client && <span>{ `${event.client.name} ` }</span>}
+        <FaUserAlt/>
+        <span>{ `${event.client.name} ` }</span>
         <FaPhoneSquare/>
-        {event.client && <span>{ `${event.client.phone} ` }</span>}
-      </>
+        <span>{ `${event.client.phone} ` }</span>
+      </>}
+      {event.total && 
       <>
         <FaDollarSign/>
-        {event.total && <span>{ `${event.total} ` }</span>}
-        {event.artistNames && <span>{ event.artistNames}</span>}
+        <span>{ `${event.total} ` }</span>
+      </>}
+        {event.artistNames && <span>{`${event.artistNames} `}</span>}
+        {event.task && <span>{ event.task}</span>}
         {event.serviceItems && event.serviceItems.map( item => <div>{ item }</div> )}
-      </> 
     </div>
   )
 }

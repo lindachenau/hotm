@@ -61,7 +61,7 @@ export default function Filter({
             variant="inline"
             format="dd/MM/yyyy"
             margin="normal"
-            id="date-picker-inline"
+            id="from-date"
             label="Select from date"
             value={fromDate}
             onChange={setFromDate}
@@ -74,7 +74,7 @@ export default function Filter({
             variant="inline"
             format="dd/MM/yyyy"
             margin="normal"
-            id="date-picker-inline"
+            id="to-date"
             label="Select to date"
             value={toDate}
             onChange={setToDate}

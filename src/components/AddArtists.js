@@ -5,8 +5,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 export default function AddArtists({tags, setTags, multiArtists, clearable, artists, label}) {
 
   const artistOptions = Object.values(artists).sort((a, b) => {
-    let artists1 = a.state.toUpperCase() + a.name
-    let artists2 = b.state.toUpperCase() + b.name
+    let artists1 = a.state.toUpperCase() + a.name + a.email
+    let artists2 = b.state.toUpperCase() + b.name + b.email
     if (artists1 < artists2)
       return -1
     else if (artists1 > artists2)
@@ -27,7 +27,7 @@ export default function AddArtists({tags, setTags, multiArtists, clearable, arti
       filterSelectedOptions
       options={artistOptions}
       groupBy={option => option.state.toUpperCase()}
-      getOptionLabel={option => option.name}
+      getOptionLabel={option => `${option.name} - ${option.email}`}
       value={tags}
       onChange={onChangeArtists}
       renderInput={params => (
@@ -39,6 +39,6 @@ export default function AddArtists({tags, setTags, multiArtists, clearable, arti
           fullWidth
         />
       )}
-  />
-)
+    />
+  )
 }

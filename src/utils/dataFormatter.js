@@ -13,6 +13,7 @@ export function normaliseArtists(artistArr)
       artists[artistArr[i].id.toString()] = {
         id: artistArr[i].id,
         name: artistArr[i].name,
+        email: artistArr[i].email,
         state: state,
         photo: artistArr[i].photo,
         title: artistArr[i].title,
@@ -81,6 +82,7 @@ function localDate(bookingDate, bookingTime)
 
   return new Date(y, mon, d, h, min)
 }
+
 export function getEvents(bookings, artists, clients, servicesMenu)
 {
   let events = []
@@ -118,7 +120,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
 
       events.push({
         id: booking.booking_id,
-        status: 1,
+        type: 'hotm',
         start: localDate(booking.booking_date, booking.booking_time),
         end: localDate(booking.booking_date, booking.booking_end_time),
         address: booking.event_address,
@@ -135,5 +137,6 @@ export function getEvents(bookings, artists, clients, servicesMenu)
     }
   }
 
-  return events
+  //sort in ascending order
+  return events.sort(function(a, b) {return a.start - b.start})
 }

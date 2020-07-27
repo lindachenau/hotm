@@ -208,7 +208,7 @@ const ServiceSelection = ({
           Cancel
         </Button>}
         <div className={classes.grow} />
-        <Button variant='text' color='primary' onClick={artistBooking ? handleNext : handleSubmit} size="large" disabled={missingFields()}>
+        <Button variant='text' color='primary' onClick={artistBooking ? handleNext : handleSubmit} disabled={missingFields()}>
           {artistBooking ? 'Next' : 'Submit'}
         </Button>
       </div>
