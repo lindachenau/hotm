@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function CorporateEventForm({theme, triggerOpen, corporate, initOpen, taskList, task, setTask}) {
+export default function CorporateEventForm({theme, triggerOpen, corporate, initOpen, taskList, task, setTask, onSaveEventDetails, onDeleteEvent}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const [location, setLocation] = useState()
@@ -57,11 +57,13 @@ export default function CorporateEventForm({theme, triggerOpen, corporate, initO
     setContact(event.target.value)
   }
 
-  const onSaveEventDetails = () => {
+  const handleSaveEventDetails = () => {
+    onSaveEventDetails(task.name)
     setOpen(false)
   }
 
-  const onDeleteEvent = () => {
+  const handleDeleteEvent = () => {
+    onDeleteEvent()
     setOpen(false)
   }
 
@@ -115,10 +117,10 @@ export default function CorporateEventForm({theme, triggerOpen, corporate, initO
           />          
         </DialogContent>
         <DialogActions className={classes.button}>
-          <Button variant="contained" onClick={onDeleteEvent} color="primary" fullWidth>
+          <Button variant="contained" onClick={handleDeleteEvent} color="primary" fullWidth>
             Delete
           </Button>
-          <Button variant="contained" onClick={onSaveEventDetails} color="primary" fullWidth>
+          <Button variant="contained" onClick={handleSaveEventDetails} color="primary" fullWidth>
             Done
           </Button>
         </DialogActions>         

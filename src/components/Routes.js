@@ -67,8 +67,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
             <Route path='/corporate' render={() => 
               <Corporate
                 artists={artists}
-                artistSignedIn={artistSignedIn}
-                events={events} />} 
+                artistSignedIn={artistSignedIn}/>} 
             />
             <Route path='/package' render={() => 
               <ArtistBooking 

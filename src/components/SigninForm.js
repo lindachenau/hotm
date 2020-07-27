@@ -98,7 +98,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
 
         //Sign in artist to Google for Calendar access
         if (window.gapi) {
-          if (!window.gapi.auth2.getAuthInstance().isSignedIn.get())
+          // if (!window.gapi.auth2.getAuthInstance().isSignedIn.get())
             window.gapi.auth2.getAuthInstance().signIn()
         }
         else {

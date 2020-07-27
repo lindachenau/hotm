@@ -101,13 +101,16 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
   const [artist, setArtist] = useState(null)
   const [corporate, setCorporate] = useState(null)
   const [task, setTask] = useState(null)
+  const [draftEvent, setDraftEvent] = useState(null)
   const [artistEvents, setArtistEvents] = useState([])
   const [fromDate, setFromDate] = useState(new Date())
   const today = new Date()
   const [toDate, setToDate] = useState(new Date(today.setDate(today.getDate() + 7)))
   const calendarId = artist ? artist.email : null
   const [triggerEventForm, setTriggerEventForm] = useState(false)
-
+  const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
+  const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
+  
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -139,22 +142,22 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
     if (artistSignedIn && calendarId) 
       fetchEvents()
 
-  }, [calendarId, fromDate, toDate])  
+  }, [calendarId, fromDate, toDate])
+
+  useEffect(() => {
+    if (draftEvent)
+      setArtistEvents([draftEvent])
+  }, [draftEvent])
 
   const onSelectEvent = (event) => {
     if (event.type !== 'draft')
       return
-      
+    setDraftEvent(event)
     setTriggerEventForm(!triggerEventForm)
   }
 
-  const onSaveEventDetails = (event) => {
-    event.task = task.name
-    console.log("Task", event)
-  }
-
-  const onDeleteEvent = () => {
-
+  const onSaveEventDetails = (task) => {
+    setDraftEvent({...draftEvent, task})
   }
 
   return (
@@ -209,7 +212,7 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
           </div>
           <div className={classes.padding2}>
             <div className={classes.grow} />
-            <Button variant="contained" color="primary">
+            <Button variant="contained" onClick={() => setTriggerSaveAllDrafts(!triggerSaveAllDrafts)} color="primary">
               Save all drafts
             </Button>
             <div className={classes.grow} />
@@ -221,6 +224,9 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
             localizer={localizer}
             artist={artist}
             onSelectEvent={onSelectEvent}
+            triggerSaveAllDrafts={triggerSaveAllDrafts}
+            triggerDeleteEvent={triggerDeleteEvent}
+            eventToDelete={draftEvent? draftEvent.id : null}
           />
         </Grid>
       </Grid>
@@ -233,7 +239,7 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
         task={task}
         setTask={setTask}
         onSaveEventDetails={onSaveEventDetails}
-        onDeleteEvent={onDeleteEvent}
+        onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
       />
     </Container>
   )

@@ -14,7 +14,7 @@ const components = {
   day: {event: DayEvent}
 }
 
-const MyCalendar = ({events, localizer, artist, onSelectEvent}) => {
+const MyCalendar = ({events, localizer, artist, onSelectEvent, triggerSaveAllDrafts, triggerDeleteEvent, eventToDelete}) => {
   const [localEvents, setLocalEvents] = useState(events)
   const [draftId, setDraftId] = useState(1)
   const eventColors = {
@@ -23,6 +23,7 @@ const MyCalendar = ({events, localizer, artist, onSelectEvent}) => {
     'draft': '#037'
   }
 
+  //Merge arr2 into arr1; If item with the same id exists in arr1, the item in arr2 is dropped.
   const mergeArrays = (arr1, arr2) => {
     let merged = []
     const arr = arr1.concat(arr2)
@@ -43,10 +44,21 @@ const MyCalendar = ({events, localizer, artist, onSelectEvent}) => {
     setLocalEvents(mergeArrays(events, localEvents))
   }, [events])
 
+  useEffect(() => {
+    const drafts = localEvents.filter(event => event.type === "draft")
+    const savedDrafts = drafts.map(draft => {return {...draft, type: "hotm"}})
+    setLocalEvents(mergeArrays(savedDrafts, localEvents))
+  }, [triggerSaveAllDrafts])
+
+  useEffect(() => {
+    const events = localEvents.filter(event => event.id !== eventToDelete)
+    setLocalEvents(events)
+  }, [triggerDeleteEvent])
+
   const moveEvent = ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
 
     if (event.type !== 'draft')
-     return
+      return
 
     const idx = localEvents.indexOf(event)
   
