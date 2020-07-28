@@ -15,7 +15,7 @@ const logo = require('../images/logo.png')
 const useStyles = makeStyles(theme => ({
   container1: {
     display: 'flex',
-    margin: 20
+    marginTop: 10
   },
   grow: {
     flexGrow: 1
@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 10
   },
   logo: {
-    maxWidth: '50%',
+    maxWidth: '40%',
     width: 'auto',
     height: 'auto',
     [theme.breakpoints.down('sm')]: {

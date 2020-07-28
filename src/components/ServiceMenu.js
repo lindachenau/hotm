@@ -135,5 +135,4 @@ export default function ServiceMenu({ theme, items, cat, organic, pensioner, ite
       </Table> 
     </Paper>
   )
-
 }

@@ -16,7 +16,7 @@ const logo = require('../images/logo.png')
 const useStyles = makeStyles(theme => ({
   container1: {
     display: 'flex',
-    margin: 20
+    marginTop: 10
   },
   container2: {
     display: 'flex'
@@ -27,16 +27,16 @@ const useStyles = makeStyles(theme => ({
   button1: {
     marginLeft: 15,
     marginRight: 15,
-    marginTop: 20
+    marginTop: 10
   },
   button2: {
     marginLeft: 15,
     marginRight: 15,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 20
   },
   logo: {
-    maxWidth: '50%',
+    maxWidth: '40%',
     width: 'auto',
     height: 'auto',
     [theme.breakpoints.down('sm')]: {
@@ -133,7 +133,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
 
   return (
     <>
-      <Dialog open={open} onBackdropClick={() => setOpen(false)}>
+      <Dialog maxWidth='sm' open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container1}>
           <div className={classes.grow} />
           <img className={classes.logo} src={logo} alt="Hair on the move logo" />
@@ -164,23 +164,23 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
             Sign in
           </Button>
         </DialogActions>
-        <DialogActions className={classes.container2}>
+        <div className={classes.container2}>
           <div className={classes.grow} />
           <Button variant="text" onClick={handleForget} color="primary">
             Forget password?
           </Button>
           <div className={classes.grow} />
-        </DialogActions>
+        </div>
         <div className={classes.container2}>
           <div className={classes.grow} />
-          <p>OR</p>
+          <Typography variant="subtitle2">OR</Typography>
           <div className={classes.grow} />
         </div>
-        <DialogActions className={classes.button2}>
+        <div className={classes.button2}>
           <Button variant="contained" onClick={handleRegister} color="primary" fullWidth>
             Create Account
           </Button>
-        </DialogActions>
+        </div>
       </Dialog>
       <ForgetPWForm triggerOpen={triggerForgetPW}/>
       <RegisterForm triggerOpen={triggerRegister} signinUser={signinUser}/>

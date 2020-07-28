@@ -18,6 +18,8 @@ import Button from '@material-ui/core/Button'
 import AddArtists from '../components/AddArtists'
 import AddCorporate from '../components/DropdownList'
 import CorporateEventForm from '../components/CorporateEventForm'
+import EventDrafts from '../components/EventDrafts'
+import { mergeArrays } from '../utils/arrays'
 
 const localizer = momentLocalizer(moment)
 
@@ -99,10 +101,12 @@ const taskList = [
 const Corporate = ({theme, artists, artistSignedIn}) => {
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
+  const [draftId, setDraftId] = useState(1)
   const [corporate, setCorporate] = useState(null)
   const [task, setTask] = useState(null)
   const [draftEvent, setDraftEvent] = useState(null)
-  const [artistEvents, setArtistEvents] = useState([])
+  const [events, setEvents] = useState([])
+  const [draftEvents, setDraftEvents] = useState([])
   const [fromDate, setFromDate] = useState(new Date())
   const today = new Date()
   const [toDate, setToDate] = useState(new Date(today.setDate(today.getDate() + 7)))
@@ -132,7 +136,7 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
             type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
           }
         })
-        setArtistEvents(artEvents)
+        setEvents(artEvents)
       } catch (err) {
         console.log('Event fetch error: ', err)
       }
@@ -145,8 +149,10 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
   }, [calendarId, fromDate, toDate])
 
   useEffect(() => {
-    if (draftEvent)
-      setArtistEvents([draftEvent])
+    if (draftEvent) {
+      setEvents([draftEvent])
+      setDraftEvents(mergeArrays([draftEvent], draftEvents))
+    }
   }, [draftEvent])
 
   const onSelectEvent = (event) => {
@@ -158,6 +164,56 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
 
   const onSaveEventDetails = (task) => {
     setDraftEvent({...draftEvent, task})
+  }
+
+  const moveEvent = ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
+
+    if (event.type !== 'draft')
+      return
+
+    let allDay = event.allDay
+
+    if (!event.allDay && droppedOnAllDaySlot) {
+      allDay = true
+    } else if (event.allDay && !droppedOnAllDaySlot) {
+      allDay = false
+    }
+
+    const updatedEvent = { ...event, start, end, allDay }
+
+    setEvents([updatedEvent])
+    setDraftEvents(mergeArrays([updatedEvent], draftEvents))
+  }
+
+  const resizeEvent = ({ event, start, end }) => {
+    
+    if (event.type !== 'draft')
+      return
+
+    setEvents([event])
+    setDraftEvents(mergeArrays([event], draftEvents))
+  }
+
+  const newEvent = (event) => {
+
+    //Disable adding new event in month view
+    if (event.slots.length === 1)
+      return
+
+    const newId = `draft-${draftId}`
+    setDraftId(draftId + 1)
+
+    const newEvent = {
+      id: newId,
+      type: 'draft',
+      title: 'New Event',
+      allDay: false,
+      start: event.start,
+      end: event.end,
+      artistNames: artist ? artist.name : ''
+    }
+    setEvents([newEvent])
+    setDraftEvents(mergeArrays([newEvent], draftEvents))
   }
 
   return (
@@ -210,6 +266,12 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
               label="Select artist"
             />
           </div>
+          <div className={classes.padding}>
+            <EventDrafts
+              theme={theme}
+              items={draftEvents}
+            />
+          </div>
           <div className={classes.padding2}>
             <div className={classes.grow} />
             <Button variant="contained" onClick={() => setTriggerSaveAllDrafts(!triggerSaveAllDrafts)} color="primary">
@@ -220,10 +282,13 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
         </Grid>
         <Grid item xs={12} md={10}>                     
           <MyCalendar
-            events={artistEvents}
+            events={events}
             localizer={localizer}
             artist={artist}
             onSelectEvent={onSelectEvent}
+            moveEvent={moveEvent}
+            resizeEvent={resizeEvent}
+            newEvent={newEvent}
             triggerSaveAllDrafts={triggerSaveAllDrafts}
             triggerDeleteEvent={triggerDeleteEvent}
             eventToDelete={draftEvent? draftEvent.id : null}

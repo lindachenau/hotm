@@ -25,6 +25,10 @@ const useStyles = makeStyles(theme => ({
     marginRight: 15,
     marginTop: 20,
     marginBottom: 20
+  },
+  job: {
+    marginTop: 10,
+    marginBottom: 5
   }
 }))
 
@@ -58,7 +62,8 @@ export default function CorporateEventForm({theme, triggerOpen, corporate, initO
   }
 
   const handleSaveEventDetails = () => {
-    onSaveEventDetails(task.name)
+    if (task)
+      onSaveEventDetails(task.name)
     setOpen(false)
   }
 
@@ -97,14 +102,16 @@ export default function CorporateEventForm({theme, triggerOpen, corporate, initO
             variant="outlined"
             onChange={onChangeContact}
           />
-          <AddJobDescription
-            options={taskList}
-            id="task-list"
-            label="Job description"
-            placeholder="job description"
-            setTag={setTask}
-            tag={task}          
-          />
+          <div className={classes.job}>
+            <AddJobDescription
+              options={taskList}
+              id="task-list"
+              label="Job description"
+              placeholder="job description"
+              setTag={setTask}
+              tag={task}          
+            />
+          </div>
           <TextField
             id="outlined-textarea"
             label="Additional instructions"
