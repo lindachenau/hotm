@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react"
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
 import Grid from '@material-ui/core/Grid'
 import Alert from '@material-ui/lab/Alert'
 import DateFnsUtils from '@date-io/date-fns'
@@ -42,23 +40,17 @@ const ServiceSelection = ({
   services,
   itemQty, 
   onSubmit, 
-  organic, 
   pensionerRate, 
   bookingDate, 
   bookingAddr, 
-  toggleOrganic, 
-  togglePensionerRate, 
   submitBooking,
   getAvailArtist,
   changeSelectedArtist,
   artistBooking,
-  newBooking,
-  bookingValue,
-  setManageState }) => {
+  bookingValue }) => {
   
   const classes = useStyles()
   const items = services.items
-  const cats = services.cats
   const [selectedDate, setSelectedDate] = useState(bookingDate)
   const [address, setAddress] = useState(bookingAddr)
   
@@ -107,7 +99,7 @@ const ServiceSelection = ({
     if (pensionerRate && selectedDate.getDay() !== 1) {
       alert('Sorry, pensioner rate is only available on Mondays.')
       return false
-    } else if (!artistBooking && !legalBookingTime()) {
+    } else if (!legalBookingTime()) {
       alert(`Please book appointments between 8am to 6pm at least 24 hours in advance. If you need to book outside these hours, please call ${contact_phone}.`)
       return false
     }
@@ -135,44 +127,10 @@ const ServiceSelection = ({
     onSubmit(1)
   }
 
-  const handleNext = event => {
-    if (!checkBookingRules())
-    return
-
-    submitBooking(selectedDate, new Date(getBookingEnd()), address)
-    onSubmit(1)
-  }
-
-  const handleCancel = () => {
-    setManageState('Default')
-  }
-
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 50}}>
-      <FormControlLabel
-        control={
-          <Switch checked={pensionerRate} onChange={() => togglePensionerRate()} value="pensionerRate" color="primary"/>
-        }
-        label="Monday pensioner rate (less 20%)"
-      />
-      <FormControlLabel
-        control={
-          <Switch checked={organic} onChange={() => toggleOrganic()} value="organic" color="primary"/>
-        }
-        label="Use organic products"
-      />
-      {cats.map( cat => 
-        <ServiceMenu
-          theme={theme}
-          items={items}
-          key={cat.name}
-          cat={cat} 
-          organic={organic}
-          pensioner={pensionerRate}
-          artistBooking={artistBooking}
-        />
-      )}
-      {artistBooking ? null : <Info/>}
+      <ServiceMenu services={services} artistBooking={artistBooking} />
+      <Info/>
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <Grid container justify="space-between">
           <KeyboardDatePicker
@@ -203,13 +161,9 @@ const ServiceSelection = ({
       </MuiPickersUtilsProvider>
       <LocationSearchInput address={address} changeAddr={handleAddrChange}/>
       <div className={classes.flex}>
-        {!newBooking &&
-        <Button variant='text' color='primary' onClick={handleCancel}>
-          Cancel
-        </Button>}
         <div className={classes.grow} />
-        <Button variant='text' color='primary' onClick={artistBooking ? handleNext : handleSubmit} disabled={missingFields()}>
-          {artistBooking ? 'Next' : 'Submit'}
+        <Button variant='text' color='primary' onClick={handleSubmit} disabled={missingFields()}>
+          Submit
         </Button>
       </div>
     </Container>

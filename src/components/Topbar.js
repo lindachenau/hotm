@@ -108,6 +108,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
   const [triggerFilter, setTriggerFilter] = useState(false)
   const currentPath = location.pathname
   const bookingPage = currentPath === '/' || currentPath === '/artist'
+  const retrievalPage = currentPath === '/edit' || currentPath === '/calendar'
   const menu = isArtist ? artistMenu : userMenu
   
   const toggleDrawer = (open) => event => {
@@ -196,7 +197,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
               <AccountBalanceWalletIcon fontSize='small'/>
               <span>{ `$${bookingValue}` }</span>
             </React.Fragment>}
-            {!bookingPage && 
+            {retrievalPage && 
             <IconButton
               edge="end"
               color="inherit"

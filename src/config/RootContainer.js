@@ -11,7 +11,8 @@ const mapStateToProps = state => {
     bookings: state.bookings,
     bookingStage: state.bookingStage.stage,
     loggedIn: state.userInfo.loggedIn,
-    isArtist: state.userInfo.isArtist
+    isArtist: state.userInfo.isArtist,
+    userEmail: state.userInfo.email
   }
 }
 

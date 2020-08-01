@@ -16,11 +16,10 @@ import {
 import Button from '@material-ui/core/Button'
 
 import AddArtists from '../components/AddArtists'
-import LocationSearchInput from '../components/LocationSearchInput'
+import AddPackage from '../components/DropdownList'
 import AddClient from '../components/AddClient'
 import EventForm from '../components/EventForm'
-import ServiceMenu from '../config/ServiceMenuContainer'
-import ArtistBookingItems from '../components/ArtistBookingItems'
+import EventDrafts from '../components/EventDrafts'
 import { mergeArrays, startDate, endDate } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
@@ -39,31 +38,77 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const ArtistBooking = ({
-  theme, 
-  services,
-  itemQty,
-  artists,
-  userEmail,
-  artistSignedIn,
-  resetBooking }) => {
+const packageList = [
+  {
+    name: "Bridal hair & makeup package with 2 artists - 3 people"
+  },
+  {
+    name: "Bridal hair & makeup package with 2 artists - 4 people"
+  },
+  {
+    name: "Bridal hair & makeup package with 2 artists - 5 people"
+  },
+  {
+    name: "Bridal hair & makeup package with 2 artists - 6 people"
+  },
+  {
+    name: "Bridal hair & makeup package with 2 artists - 7 people"
+  },
+  {
+    name: "Bridal hair & makeup package with 4 artists - 8 people"
+  },
+  {
+    name: "Bridal hair & makeup package with 4 artists - 9 people"
+  },
+  {
+    name: "Bridal hair & makeup package with 4 artists - 10 people"
+  },  
+  {
+    name: "White Diamond - Bridal Queen"
+  },
+  {
+    name: "Pink Diamond - Bridal Tribe"
+  },
+  {
+    name: "Champagne Diamond - Bridal Squad"
+  }    
+]
+
+const taskList = [
+  {
+    name: "blow dry"
+  },
+  {
+    name: "hairstyling"
+  },
+  {
+    name: "makeup"
+  },
+  {
+    name: "hairstyling + makeup"
+  },
+  {
+    name: "beauty"
+  }        
+]
+
+const PackageBooking = ({theme, artists, artistSignedIn}) => {
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
   const [draftId, setDraftId] = useState(1)
+  const [bookingPackage, setBookingPackage] = useState(null)
   const [client, setClient] = useState(null)
+  const [task, setTask] = useState(null)
   const [draftEvent, setDraftEvent] = useState(null)
   const [events, setEvents] = useState([])
   const [draftEvents, setDraftEvents] = useState([])
   const [fromDate, setFromDate] = useState(new Date())
-  const [address, setAddress] = useState('')
   const today = new Date()
   const [toDate, setToDate] = useState(new Date(today.setDate(today.getDate() + 7)))
-  const [calendarId, setCalendarId] = useState(null)
-  const [artistBookingItems, setArtistBookingItems] = useState([])
+  const calendarId = artist ? artist.email : null
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
-  const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)  
-  const items = services.items
+  const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
   
   const mergeThenSort = (arr1, arr2) => {
     const events = mergeArrays(arr1, arr2).sort((a, b) => {
@@ -78,39 +123,7 @@ const ArtistBooking = ({
     })
 
     return events
-  }  
-
-  useEffect(() => {
-    const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
-    if (artistSignedIn && theArtist.length > 0) {
-      setArtist(theArtist[0])
-      setCalendarId(theArtist[0].email)
-    }
-  }, [])
-
-
-  const getDuration = () => {
-    let duration = 0
-    for (let id of Object.keys(itemQty)) {
-      let qty = itemQty[id]
-      duration += items[id].timeOnsite * qty
-    }
-
-    return duration
   }
-
-  useEffect(() => {
-    let artItems = []
-    for (let id of Object.keys(itemQty)) {
-      const item = {
-        id: id,
-        description: items[id].description,
-        qty: itemQty[id]
-      }
-      artItems.push(item)
-    }
-    setArtistBookingItems(artItems)
-  }, [itemQty])
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -161,12 +174,13 @@ const ArtistBooking = ({
     if (event.type !== 'draft')
       return
     setDraftEvent(event)
+    setTask(taskList.filter(task => task.name === event.task)[0])
     setTriggerEventForm(!triggerEventForm)
   }
 
-  const onSaveEventDetails = (comment) => {
-    setDraftEvent({...draftEvent, comment})
-  }  
+  const onSaveEventDetails = (task, location, contact, comment) => {
+    setDraftEvent({...draftEvent, task: task, location, contact, comment})
+  }
 
   const moveEvent = ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
 
@@ -203,10 +217,10 @@ const ArtistBooking = ({
     if (event.slots.length === 1)
       return
 
-      const newId = `draft-${draftId}`
-      setDraftId(draftId + 1)
-  
-      const newEvent = {
+    const newId = `draft-${draftId}`
+    setDraftId(draftId + 1)
+
+    const newEvent = {
       id: newId,
       type: 'draft',
       title: 'New Event',
@@ -214,14 +228,19 @@ const ArtistBooking = ({
       start: event.start,
       end: event.end,
       artistNames: artist ? artist.name : '',
-      comment: ''      
+      task: task ? task.name : '',
+      subject: bookingPackage ? bookingPackage.name : '',
+      location: '',
+      contact: client ? `${client.name} - ${client.phone}`: '',
+      comment: ''
+
     }
     setEvents([newEvent])
     setDraftEvents(mergeThenSort([newEvent], draftEvents))
   }
 
   const onNavigate = (date, view) => {
-  if (view === 'month') {
+    if (view === 'month') {
       const end = moment(date).endOf('month').endOf('week')._d
       if (end > toDate)
       setToDate(end)      
@@ -237,21 +256,27 @@ const ArtistBooking = ({
     setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
     alert('Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.')
     setDraftEvents([])
-    resetBooking()
   }
 
   return (
     <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
       <Grid container justify="space-around" spacing={1}>
-        <Grid item xs={12} md={4}>
-          <LocationSearchInput address={address} changeAddr={(address) => {setAddress(address)}}/>  
+        <Grid item xs={12} md={3}>
+          <AddPackage
+            options={packageList}
+            id="package-list"
+            label="Package"
+            placeholder="package"
+            setTag={setBookingPackage}
+            tag={bookingPackage}
+          />
           <div className={classes.padding}>
             <AddClient
               setClient={setClient}
               client={client}
               label="Add client"
             />
-          </div>
+          </div>           
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
               fullWidth
@@ -293,25 +318,26 @@ const ArtistBooking = ({
             />
           </div>
           <div className={classes.padding}>
-            <ArtistBookingItems items={artistBookingItems} duration={getDuration()}/>
+            <EventDrafts
+              theme={theme}
+              items={draftEvents}
+              corporate={false}
+            />
           </div>
           <div className={classes.padding2}>
             <div className={classes.grow} />
             <Button 
-              variant="contained"
-              onClick={handleBook}
+              variant="contained" 
+              onClick={handleBook} 
               color="primary"
-              disabled={draftEvents.length !== 1 || address === '' || client === null || Object.keys(itemQty).length === 0}
+              disabled={draftEvents.length === 0 || bookingPackage === null || artist === null}
             >
-              Book
+              Book all drafts
             </Button>
             <div className={classes.grow} />
-          </div>                    
-          <div className={classes.padding}>
-            <ServiceMenu services={services} artistBooking={true} />
-          </div>
+          </div>          
         </Grid>
-        <Grid item xs={12} md={8}>                     
+        <Grid item xs={12} md={9}>                     
           <MyCalendar
             events={events}
             localizer={localizer}
@@ -330,16 +356,16 @@ const ArtistBooking = ({
       <EventForm 
         theme={theme}
         draftEvent={draftEvent}
-        withLocation={false}
-        withContact={false}
-        withTask={false}
         triggerOpen={triggerEventForm}
         initOpen={false}
+        taskList={taskList}
+        task={task}
+        setTask={setTask}
         onSaveEventDetails={onSaveEventDetails}
         onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
-      />      
+      />
     </Container>
   )
 }
 
-export default withRouter(ArtistBooking)
+export default withRouter(PackageBooking)

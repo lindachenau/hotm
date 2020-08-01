@@ -1,17 +1,18 @@
 import { connect } from 'react-redux'
-import { incItemQty, decItemQty } from '../actions/bookingCreator'
+import { toggleOrganic, togglePensionerRate } from '../actions/bookingCreator'
 import ServiceMenu from '../components/ServiceMenu'
 
 const mapStateToProps = state => {
   return {
-    itemQty: state.itemQty
+    organic: state.priceFactors.organic,
+    pensionerRate: state.priceFactors.pensionerRate
   }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-      incItemQty: id => dispatch(incItemQty(id)),
-      decItemQty: id => dispatch(decItemQty(id))
+      toggleOrganic: () => dispatch(toggleOrganic()),
+      togglePensionerRate: () => dispatch(togglePensionerRate())
     }
 }
 

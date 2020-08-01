@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import moment from 'moment'
 import Table from '@material-ui/core/Table'
 import TableHead from '@material-ui/core/TableHead'
 import TableBody from '@material-ui/core/TableBody'
@@ -21,28 +20,19 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function EventDrafts({ theme, items, corporate }) {
+export default function ArtistBookingItems({ theme, items, duration }) {
   const classes = useStyles(theme)
   const [ listOpen, setListOpen ] = useState(true)
 
   const toggleListOpen = (e) => { setListOpen(!listOpen) }
   
-  const totalHrs = () => {
-    let total = 0
-    items.forEach((item) => {
-      total = total + (item.end - item.start)
-    })
-
-    return (total / 3600000).toFixed(1)
-  }
-
   return (
     <Paper className={classes.paper}>
       <Table size="small" aria-label="a dense table">
         <TableHead className={classes.background}>
           <TableRow>
             <TableCell align="left">
-              {corporate ? `Drafts : ${totalHrs(items)} hrs` : `Drafts`}
+              {`Service items (estimated duration : ${duration} mins)`}
               <IconButton onClick={toggleListOpen} edge='start'>
                 {listOpen ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}
               </IconButton>
@@ -55,10 +45,7 @@ export default function EventDrafts({ theme, items, corporate }) {
               {items.map(item => (
                 <TableRow key={item.id}>
                   <TableCell align="left">
-                    {corporate ? 
-                      `${item.subject} - ${moment(item.start).format("YYYY/MM/DD")} - ${((item.end - item.start) / 3600000).toFixed(1)} hrs : ${item.artistNames} - ${item.task}`
-                      :
-                      `${moment(item.start).format("YYYY/MM/DD")} : ${item.artistNames} - ${item.task}`}
+                    {`${item.description} x ${item.qty}`}
                   </TableCell>
                 </TableRow>
               ))}

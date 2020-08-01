@@ -5,7 +5,7 @@ import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import "react-big-calendar/lib/addons/dragAndDrop/styles.css"
 import { FaCalendarAlt, FaCalendarDay, FaChevronLeft, FaChevronRight, FaRegCalendarCheck } from "react-icons/fa"
 import { GoTasklist } from "react-icons/go"
-import { mergeArrays } from '../utils/arrays'
+import { mergeArrays } from '../utils/misc'
 
 const DragAndDropCalendar = withDragAndDrop(Calendar)
 
@@ -23,6 +23,7 @@ const MyCalendar = ({
   moveEvent,
   resizeEvent,
   newEvent,
+  onNavigate,
   triggerSaveAllDrafts, 
   triggerDeleteEvent, 
   eventToDelete
@@ -64,6 +65,7 @@ const MyCalendar = ({
       selectable
       onSelectSlot={newEvent}
       onSelectEvent={onSelectEvent}
+      onNavigate={onNavigate}
       views={['month', 'day']}
       defaultView={Views.MONTH}
       defaultDate={new Date()}

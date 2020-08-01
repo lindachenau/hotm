@@ -6,7 +6,7 @@ import ServiceSelection from '../config/ServiceSelectionContainer'
 import Confirmation from '../config/ConfirmationContainer'
 import Payment from '../config/PaymentContainer'
 
-const Booking = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
+const ClientBooking = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
 
   useEffect(() => {
     resetBooking()
@@ -47,4 +47,4 @@ const Booking = ({ bookingStage, changeBookingStage, resetBooking, services, the
   )
 }
 
-export default withRouter(Booking)
+export default withRouter(ClientBooking)

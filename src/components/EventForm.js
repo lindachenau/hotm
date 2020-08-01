@@ -7,6 +7,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import CreateIcon from '@material-ui/icons/Create'
 import { makeStyles } from '@material-ui/core/styles'
 import AddJobDescription from '../components/DropdownList'
+import LocationSearchInput from './LocationSearchInput'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -32,20 +33,34 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function CorporateEventForm({theme, triggerOpen, corporate, initOpen, taskList, task, setTask, onSaveEventDetails, onDeleteEvent}) {
+export default function EventForm({
+  theme, 
+  triggerOpen, 
+  draftEvent,
+  withLocation = true,
+  withTask = true,
+  withContact = true,
+  initOpen, 
+  taskList, 
+  task, 
+  setTask, 
+  onSaveEventDetails, 
+  onDeleteEvent}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
-  const [location, setLocation] = useState()
-  const [contact, setContact] = useState()
+  const [location, setLocation] = useState('')
+  const [contact, setContact] = useState('')
   const [comment, setComment] = useState('')
-  
+  const disableDone = location === '' || contact === '' || task === null
+    
   const classes = useStyles(theme)
 
   useEffect(() => {
     if (didMountRef.current) {
       setOpen(true)
-      setLocation(corporate ? corporate.location : '')
-      setContact(corporate ? `${corporate.contactPerson} - ${corporate.contactPhone}` : '')
+      setLocation(draftEvent.location)
+      setContact(draftEvent.contact)
+      setComment(draftEvent.comment)
     }
     else {
       didMountRef.current = true
@@ -53,8 +68,8 @@ export default function CorporateEventForm({theme, triggerOpen, corporate, initO
     }
   }, [triggerOpen, initOpen])
 
-  const onChangeLocation = event => {
-    setLocation(event.target.value)
+  const onChangeLocation = location => {
+    setLocation(location)
   }
 
   const onChangeContact = event => {
@@ -62,8 +77,11 @@ export default function CorporateEventForm({theme, triggerOpen, corporate, initO
   }
 
   const handleSaveEventDetails = () => {
-    if (task)
-      onSaveEventDetails(task.name)
+    if (!withContact && !withLocation && !withTask)
+      onSaveEventDetails(comment)
+    else
+      onSaveEventDetails(task ? task.name : '', location, contact, comment)
+
     setOpen(false)
   }
 
@@ -72,50 +90,43 @@ export default function CorporateEventForm({theme, triggerOpen, corporate, initO
     setOpen(false)
   }
 
-
   return (
     <>
-      <Dialog open={open} onBackdropClick={() => setOpen(false)}>
+      <Dialog fullWidth open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container}>
           <div className={classes.grow} />
           <CreateIcon color='primary' fontSize='large'/>
           <div className={classes.grow} />
         </div>
         <DialogContent>
-          <TextField
-            defaultValue={location}
-            required
-            margin="dense"
-            label="location"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={onChangeLocation}
-          />
+          {withLocation && <LocationSearchInput address={location} changeAddr={onChangeLocation}/>}
+          {withContact &&
             <TextField
-            defaultValue={contact}
-            required
-            margin="dense"
-            label="contact"
-            type="text"
-            fullWidth
-            variant="outlined"
-            onChange={onChangeContact}
-          />
-          <div className={classes.job}>
-            <AddJobDescription
-              options={taskList}
-              id="task-list"
-              label="Job description"
-              placeholder="job description"
-              setTag={setTask}
-              tag={task}          
-            />
-          </div>
+              defaultValue={contact}
+              required
+              margin="dense"
+              label="contact"
+              type="text"
+              fullWidth
+              variant="outlined"
+              onChange={onChangeContact}
+            />}
+          {withTask && 
+            <div className={classes.job}>
+              <AddJobDescription
+                options={taskList}
+                id="task-list"
+                label="Job description"
+                placeholder="job description"
+                setTag={setTask}
+                tag={task}          
+              />
+            </div>}
           <TextField
             id="outlined-textarea"
             label="Additional instructions"
             placeholder="Additional instructions"
+            defaultValue={comment}
             multiline
             className={classes.textField}
             margin="dense"
@@ -127,7 +138,7 @@ export default function CorporateEventForm({theme, triggerOpen, corporate, initO
           <Button variant="contained" onClick={handleDeleteEvent} color="primary" fullWidth>
             Delete
           </Button>
-          <Button variant="contained" onClick={handleSaveEventDetails} color="primary" fullWidth>
+          <Button variant="contained" onClick={handleSaveEventDetails} color="primary" fullWidth disabled={disableDone}>
             Done
           </Button>
         </DialogActions>         

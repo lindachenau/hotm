@@ -133,7 +133,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
 
   return (
     <>
-      <Dialog maxWidth='sm' open={open} onBackdropClick={() => setOpen(false)}>
+      <Dialog fullWidth open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container1}>
           <div className={classes.grow} />
           <img className={classes.logo} src={logo} alt="Hair on the move logo" />

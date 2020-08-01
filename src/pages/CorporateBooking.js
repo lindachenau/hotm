@@ -17,9 +17,9 @@ import Button from '@material-ui/core/Button'
 
 import AddArtists from '../components/AddArtists'
 import AddCorporate from '../components/DropdownList'
-import CorporateEventForm from '../components/CorporateEventForm'
+import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
-import { mergeArrays } from '../utils/arrays'
+import { mergeArrays, startDate, endDate } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
 
@@ -37,22 +37,6 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-function startDate(bookingDate)
-{
-  const y = bookingDate.getFullYear()
-  const mon = bookingDate.getMonth() // Jan is 0
-  const d = bookingDate.getDate()
-  
-  return (new Date(y, mon, d, 0, 0)).toISOString()
-}
-function endDate(bookingDate)
-{
-  const y = bookingDate.getFullYear()
-  const mon = bookingDate.getMonth() // Jan is 0
-  const d = bookingDate.getDate()
-  
-  return (new Date(y, mon, d, 23, 59)).toISOString()
-}
 const corporateList = [
   {
     name: "Virgin 1",
@@ -98,7 +82,7 @@ const taskList = [
   }        
 ]
 
-const Corporate = ({theme, artists, artistSignedIn}) => {
+const CorporateBooking = ({theme, artists, artistSignedIn}) => {
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
   const [draftId, setDraftId] = useState(1)
@@ -115,6 +99,21 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
   const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
   
+  const mergeThenSort = (arr1, arr2) => {
+    const events = mergeArrays(arr1, arr2).sort((a, b) => {
+      let event1 = a.corporate + a.start.valueOf()
+      let event2 = b.corporate + b.start.valueOf()
+      if (event1 < event2)
+        return -1
+      else if (event1 > event2)
+        return 1
+      else
+        return 0
+    })
+
+    return events
+  }
+
   useEffect(() => {
     const fetchEvents = async () => {
       try {
@@ -151,19 +150,25 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
   useEffect(() => {
     if (draftEvent) {
       setEvents([draftEvent])
-      setDraftEvents(mergeArrays([draftEvent], draftEvents))
+      setDraftEvents(mergeThenSort([draftEvent], draftEvents))
     }
   }, [draftEvent])
+
+  useEffect(() => {
+    const events = draftEvents.filter(event => event.id !== draftEvent.id)
+    setDraftEvents(events)
+  }, [triggerDeleteEvent])
 
   const onSelectEvent = (event) => {
     if (event.type !== 'draft')
       return
     setDraftEvent(event)
+    setTask(taskList.filter(task => task.name === event.task)[0])
     setTriggerEventForm(!triggerEventForm)
   }
 
-  const onSaveEventDetails = (task) => {
-    setDraftEvent({...draftEvent, task})
+  const onSaveEventDetails = (task, location, contact, comment) => {
+    setDraftEvent({...draftEvent, task: task, location, contact, comment})
   }
 
   const moveEvent = ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
@@ -182,16 +187,17 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
     const updatedEvent = { ...event, start, end, allDay }
 
     setEvents([updatedEvent])
-    setDraftEvents(mergeArrays([updatedEvent], draftEvents))
+    setDraftEvents(mergeThenSort([updatedEvent], draftEvents))
   }
 
   const resizeEvent = ({ event, start, end }) => {
-    
-    if (event.type !== 'draft')
+    console.log(start, end)
+    if (event.type !== 'draft' || start >= end)
       return
 
-    setEvents([event])
-    setDraftEvents(mergeArrays([event], draftEvents))
+    const resized = {...event, start, end}
+    setEvents([resized])
+    setDraftEvents(mergeThenSort([resized], draftEvents))
   }
 
   const newEvent = (event) => {
@@ -210,16 +216,40 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
       allDay: false,
       start: event.start,
       end: event.end,
-      artistNames: artist ? artist.name : ''
+      artistNames: artist ? artist.name : '',
+      task: task ? task.name : '',
+      subject: corporate ? corporate.name : '',      
+      location: corporate? corporate.location : '',
+      contact: corporate ? `${corporate.contactPerson} - ${corporate.contactPhone}`: '',
+      comment: ''      
     }
     setEvents([newEvent])
-    setDraftEvents(mergeArrays([newEvent], draftEvents))
+    setDraftEvents(mergeThenSort([newEvent], draftEvents))
+  }
+
+  const onNavigate = (date, view) => {
+    if (view === 'month') {
+      const end = moment(date).endOf('month').endOf('week')._d
+      if (end > toDate)
+      setToDate(end)      
+    }
+
+    if (view === 'day') {
+      if (date > toDate)
+        setToDate(date)      
+    }
+  }
+
+  const handleBook = () => {
+    setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
+    alert('Booking successful!')
+    setDraftEvents([])
   }
 
   return (
     <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
       <Grid container justify="space-around" spacing={1}>
-        <Grid item xs={12} md={2}>
+        <Grid item xs={12} md={3}>
           <AddCorporate
             options={corporateList}
             id="corporate-list"
@@ -230,12 +260,13 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
           />             
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
+              fullWidth
               disableToolbar
               variant="inline"
               format="dd/MM/yyyy"
               margin="normal"
               id="from-date"
-              label="Select from date"
+              label="From date for Google Calendar sync"
               value={fromDate}
               onChange={setFromDate}
               KeyboardButtonProps={{
@@ -243,12 +274,13 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
               }}
             />
             <KeyboardDatePicker
+              fullWidth
               disableToolbar
               variant="inline"
               format="dd/MM/yyyy"
               margin="normal"
               id="to-date"
-              label="Select to date"
+              label="To date for Google Calendar sync"
               value={toDate}
               onChange={setToDate}
               KeyboardButtonProps={{
@@ -270,17 +302,23 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
             <EventDrafts
               theme={theme}
               items={draftEvents}
+              corporate={true}
             />
           </div>
           <div className={classes.padding2}>
             <div className={classes.grow} />
-            <Button variant="contained" onClick={() => setTriggerSaveAllDrafts(!triggerSaveAllDrafts)} color="primary">
-              Save all drafts
+            <Button 
+              variant="contained" 
+              onClick={handleBook} 
+              color="primary" 
+              disabled={draftEvents.length === 0 || artist === null || corporate === null}
+            >
+              Book all drafts
             </Button>
             <div className={classes.grow} />
           </div>          
         </Grid>
-        <Grid item xs={12} md={10}>                     
+        <Grid item xs={12} md={9}>                     
           <MyCalendar
             events={events}
             localizer={localizer}
@@ -289,16 +327,17 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
             moveEvent={moveEvent}
             resizeEvent={resizeEvent}
             newEvent={newEvent}
+            onNavigate={onNavigate}
             triggerSaveAllDrafts={triggerSaveAllDrafts}
             triggerDeleteEvent={triggerDeleteEvent}
             eventToDelete={draftEvent? draftEvent.id : null}
           />
         </Grid>
       </Grid>
-      <CorporateEventForm 
+      <EventForm 
         theme={theme}
+        draftEvent={draftEvent}
         triggerOpen={triggerEventForm}
-        corporate={corporate}
         initOpen={false}
         taskList={taskList}
         task={task}
@@ -310,4 +349,4 @@ const Corporate = ({theme, artists, artistSignedIn}) => {
   )
 }
 
-export default withRouter(Corporate)
+export default withRouter(CorporateBooking)

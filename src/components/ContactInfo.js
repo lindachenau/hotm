@@ -49,7 +49,7 @@ export default function ContactInfo({triggerOpen}) {
         </Typography>
         <Typography variant='body2' align='center'>
           This service requires multiple artists. Please call to let us arrange artists for you.
-          All artists travel to any location however additional travel fees, 
+          All artists travel to any location however require additional travel fees, 
           accommodation and food allowances to be discussed prior. 
         </Typography>
       </DialogContent>  

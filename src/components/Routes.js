@@ -8,18 +8,19 @@ import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 //Use route based lazy loading to split the code to smaller chunks
-const Booking = lazy(() => import('../pages/Booking'))
+const ClientBooking = lazy(() => import('../pages/ClientBooking'))
 const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
 const Manage = lazy(() => import('../pages/Manage'))
 const Calendar = lazy(() => import('../pages/Calendar'))
-const Corporate = lazy(() => import('../pages/Corporate'))
+const CorporateBooking = lazy(() => import('../pages/CorporateBooking'))
+const PackageBooking = lazy(() => import('../pages/PackageBooking'))
 
 // import Booking from '../pages/Booking'
 // import ArtistBooking from '../pages/ArtistBooking'
 // import Manage from  '../config/ManageContainer'
 // import Calendar from '../pages/Calendar'
 
-const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist }) => {
+const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
   const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
@@ -42,7 +43,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
         {servicesFetched &&
           <Switch>
             <Route exact path='/' render={() => 
-              <Booking 
+              <ClientBooking 
                 theme={theme} 
                 services={services} 
                 bookingStage={bookingStage} 
@@ -55,31 +56,22 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
             <Route path='/artist' render={() => 
               <ArtistBooking 
                 theme={theme} 
-                services={services} 
-                bookingStage={bookingStage} 
-                changeBookingStage={changeBookingStage} 
-                bookingValue={bookingValue}
-                depositPayable={depositPayable}
+                services={services}
+                itemQty={itemQty}
                 artists={artists}
-                newBooking={true}
-                resetBooking={resetBooking}/>} 
+                userEmail={userEmail}
+                resetBooking={resetBooking}
+                artistSignedIn={artistSignedIn}/>} 
             />
             <Route path='/corporate' render={() => 
-              <Corporate
+              <CorporateBooking
                 artists={artists}
                 artistSignedIn={artistSignedIn}/>} 
             />
             <Route path='/package' render={() => 
-              <ArtistBooking 
-                theme={theme} 
-                services={services} 
-                bookingStage={bookingStage} 
-                changeBookingStage={changeBookingStage} 
-                bookingValue={bookingValue}
-                depositPayable={depositPayable}
+              <PackageBooking
                 artists={artists}
-                newBooking={true}
-                resetBooking={resetBooking}/>} 
+                artistSignedIn={artistSignedIn}/>} 
             />                        
             <Route path='/edit' render={() => 
               <Manage 

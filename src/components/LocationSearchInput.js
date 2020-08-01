@@ -41,10 +41,10 @@ export default function LocationSearchInput ({ address, changeAddr}) {
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
         <Container className={classes.container}>
           <FormControl className={classes.textField}>
-            <InputLabel htmlFor="input-with-icon-adornment">Enter booking location</InputLabel>
+            <InputLabel htmlFor="input-with-icon-adornment">Enter event location</InputLabel>
             <Input
               {...getInputProps({
-                placeholder: 'Booking location ...'
+                placeholder: 'Event location ...'
               })}
               startAdornment={
                 <InputAdornment position="start">
