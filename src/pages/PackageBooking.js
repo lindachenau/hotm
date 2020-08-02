@@ -8,11 +8,6 @@ import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container'
-import DateFnsUtils from '@date-io/date-fns'
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers'
 import Button from '@material-ui/core/Button'
 
 import AddArtists from '../components/AddArtists'
@@ -102,9 +97,9 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
   const [draftEvent, setDraftEvent] = useState(null)
   const [events, setEvents] = useState([])
   const [draftEvents, setDraftEvents] = useState([])
-  const [fromDate, setFromDate] = useState(new Date())
   const today = new Date()
-  const [toDate, setToDate] = useState(new Date(today.setDate(today.getDate() + 7)))
+  const [fromDate, setFromDate] = useState(moment(today).startOf('month').startOf('week')._d)
+  const [toDate, setToDate] = useState(moment(today).endOf('month').endOf('week')._d)
   const calendarId = artist ? artist.email : null
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
@@ -277,36 +272,6 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
               label="Add client"
             />
           </div>           
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
-            <KeyboardDatePicker
-              fullWidth
-              disableToolbar
-              variant="inline"
-              format="dd/MM/yyyy"
-              margin="normal"
-              id="from-date"
-              label="From date for Google Calendar sync"
-              value={fromDate}
-              onChange={setFromDate}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-            />
-            <KeyboardDatePicker
-              fullWidth
-              disableToolbar
-              variant="inline"
-              format="dd/MM/yyyy"
-              margin="normal"
-              id="to-date"
-              label="To date for Google Calendar sync"
-              value={toDate}
-              onChange={setToDate}
-              KeyboardButtonProps={{
-                'aria-label': 'change date',
-              }}
-            />
-          </MuiPickersUtilsProvider>
           <div className={classes.padding}>
             <AddArtists
               artists={artists}

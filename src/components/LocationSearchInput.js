@@ -40,7 +40,7 @@ export default function LocationSearchInput ({ address, changeAddr}) {
     >
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
         <Container className={classes.container}>
-          <FormControl className={classes.textField}>
+          <FormControl required className={classes.textField}>
             <InputLabel htmlFor="input-with-icon-adornment">Enter event location</InputLabel>
             <Input
               {...getInputProps({

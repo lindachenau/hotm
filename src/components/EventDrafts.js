@@ -10,6 +10,7 @@ import Paper from '@material-ui/core/Paper'
 import IconButton from '@material-ui/core/IconButton'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
+import WarningIcon from '@material-ui/icons/Warning'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -36,6 +37,10 @@ export default function EventDrafts({ theme, items, corporate }) {
     return (total / 3600000).toFixed(1)
   }
 
+  const incompleteEvent = (item) => {
+    return item.location === '' || item.contact === '' || item.task === '' || item.artistNames === '' 
+  }
+
   return (
     <Paper className={classes.paper}>
       <Table size="small" aria-label="a dense table">
@@ -55,6 +60,7 @@ export default function EventDrafts({ theme, items, corporate }) {
               {items.map(item => (
                 <TableRow key={item.id}>
                   <TableCell align="left">
+                    {incompleteEvent(item) && <WarningIcon />}
                     {corporate ? 
                       `${item.subject} - ${moment(item.start).format("YYYY/MM/DD")} - ${((item.end - item.start) / 3600000).toFixed(1)} hrs : ${item.artistNames} - ${item.task}`
                       :
