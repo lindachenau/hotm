@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, Suspense, lazy } from "react"
-import { Route, Switch, HashRouter } from "react-router-dom"
+import { Route, Switch, HashRouter, Redirect } from "react-router-dom"
 import ScrollToTop from './ScrollTop'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import Topbar from './Topbar'
@@ -48,27 +48,40 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 artists={artists}
                 resetBooking={resetBooking}/>} 
             />
-            {isArtist && <Route path='/artist' render={() => 
-              <ArtistBooking 
-                theme={theme} 
-                services={services}
-                itemQty={itemQty}
-                artists={artists}
-                userEmail={userEmail}
-                resetBooking={resetBooking}
-                artistSignedIn={artistSignedIn}/>} 
-            />}
-            {isArtist && <Route path='/corporate' render={() => 
-              <CorporateBooking
-                artists={artists}
-                artistSignedIn={artistSignedIn}/>} 
-            />}
-            {isArtist && <Route path='/package' render={() => 
+            <Route path='/artist'> 
+              {isArtist ? 
+                <ArtistBooking 
+                  theme={theme} 
+                  services={services}
+                  itemQty={itemQty}
+                  artists={artists}
+                  userEmail={userEmail}
+                  resetBooking={resetBooking}
+                  artistSignedIn={artistSignedIn}/>
+                :
+                <Redirect to="/" />
+              }
+            </Route>            
+            <Route path='/corporate'>
+              {isArtist ?
+                <CorporateBooking
+                  artists={artists}
+                  artistSignedIn={artistSignedIn}/>
+                :
+                <Redirect to="/" />
+              }
+            </Route>
+            <Route path='/package'>
+            {isArtist ?
               <PackageBooking
                 artists={artists}
-                artistSignedIn={artistSignedIn}/>} 
-            />}                      
-            {isArtist && <Route path='/manage' render={() => 
+                artistSignedIn={artistSignedIn}/>
+              :
+              <Redirect to="/" />
+            }                
+            </Route>
+            <Route path='/manage'>
+            {isArtist ?
               <Manage 
                 events={events} 
                 eventsFetched={eventsFetched}
@@ -77,17 +90,24 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 changeBookingStage={changeBookingStage} 
                 bookingValue={bookingValue}
                 depositPayable={depositPayable}
-                artists={artists}/>} 
-            />}
-            {isArtist && <Route path='/checkout' render={() => 
+                artists={artists}/>
+              :
+              <Redirect to="/" />
+            }                  
+            </Route>
+            <Route path='/checkout'>
+            {isArtist ?
               <Checkout 
                 events={events} 
                 eventsFetched={eventsFetched}
                 services={services} 
                 bookingValue={bookingValue}
                 depositPayable={depositPayable}
-                artists={artists}/>} 
-            />}           
+                artists={artists}/>
+              :
+              <Redirect to="/" />
+            }                
+            </Route>           
           </Switch>}
         </Suspense>
       </ScrollToTop>
