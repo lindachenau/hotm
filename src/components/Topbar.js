@@ -12,7 +12,6 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Drawer from '@material-ui/core/Drawer'
 import { Link as MaterialLink, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
-import EventIcon from '@material-ui/icons/Event'
 import LinkIcon from '@material-ui/icons/Link'
 import CreateIcon from '@material-ui/icons/Create'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
@@ -22,11 +21,12 @@ import BusinessIcon from '@material-ui/icons/Business'
 import BrushIcon from '@material-ui/icons/Brush'
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter'
 import FilterListIcon from '@material-ui/icons/FilterList'
-
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'
+import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
 import Filter from '../config/FilterContainer'
-import CalendarLoader from '../components//CalendarLoader'
+import CalendarLoader from '../components/CalendarLoader'
 import { home_url } from '../config/dataLinks'
 
 const logo = require('../images/logo192.png')
@@ -69,15 +69,15 @@ const artistMenu = [
     icon: <BrushIcon />
   },
   {
-    label: "Edit | Checkout",
-    pathname: "/edit",
-    icon: <CreateIcon />
+    label: "Manage bookings",
+    pathname: "/manage",
+    icon: <AssignmentIndIcon />
   },
   {
-    label: "Calendar view",
-    pathname: "/calendar",
-    icon: <EventIcon />
-  },
+    label: "Checkout a completed job",
+    pathname: "/checkout",
+    icon: <AssignmentTurnedInIcon />
+  },  
   {
     label: "Go to Hair on the Move",
     pathname: home_url,
@@ -108,7 +108,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
   const [triggerFilter, setTriggerFilter] = useState(false)
   const currentPath = location.pathname
   const bookingPage = currentPath === '/' || currentPath === '/artist'
-  const retrievalPage = currentPath === '/edit' || currentPath === '/calendar'
+  const retrievalPage = currentPath === '/manage'
   const menu = isArtist ? artistMenu : userMenu
   
   const toggleDrawer = (open) => event => {
@@ -135,11 +135,8 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
   let title
 
   switch (currentPath) {
-    case '/calendar':
-      title = 'Calendar view'
-      break
-    case '/edit':
-      title = 'Edit bookings'
+    case '/manage':
+      title = 'Manage bookings'
       break
     case '/artist':
       title = 'Artist booking'
@@ -149,7 +146,10 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
       break
     case '/package':
       title = 'Package booking'
-      break              
+      break
+      case '/checkout':
+        title = 'Checkout a completed job'
+        break                              
     default:
       title = 'Client booking'
   }
@@ -158,7 +158,9 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
     <div className={classes.grow}>
       <AppBar color="secondary" position='static'>
         <Toolbar>
-          <img width={60} src={logo} alt="Hair on the move logo" />
+          <Link to="/">
+            <img width={60} src={logo} alt="Hair on the move logo" />
+          </Link>
           <React.Fragment>
             <IconButton onClick={toggleDrawer(true)} color="inherit" aria-label="Menu">
               <MenuIcon />

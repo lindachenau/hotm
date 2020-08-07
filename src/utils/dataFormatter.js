@@ -5,11 +5,13 @@ export function normaliseArtists(artistArr)
   let artists = {}
 
   const validStates = ['NSW', 'VIC', 'TAS', 'QLD', 'SA', 'WA']
+  const validEmails = ['info@lyndlerichards.com', 'lindachenau@gmail.com', 'we@connectmobileapps.com.au', 'grace@connectmobileapps.com.au', 
+  'cmobileapp0@gmail.com', 'jeongjen@gmail.com', 'hello@connectmobilephoneapps.page', 'sootyyu@gmail.com']
   
   for (let i = 0; i < artistArr.length; i++ ) {
     //Filter out invalid entries so that artist selection can display the list properly
     let state = artistArr[i].state.toUpperCase()
-    if (validStates.includes(state) && artistArr[i].name) {
+    if (validStates.includes(state) && artistArr[i].name && validEmails.includes(artistArr[i].email)) {
       artists[artistArr[i].id.toString()] = {
         id: artistArr[i].id,
         name: artistArr[i].name,

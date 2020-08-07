@@ -130,7 +130,9 @@ const ArtistBooking = ({
         })
         setEvents(artEvents)
       } catch (err) {
-        console.log('Event fetch error: ', err)
+        const errMessage = err.result.error.message
+        alert(`Event fetch error: ${errMessage}`)
+        console.log('Event fetch error: ', errMessage)
       }
     }
     

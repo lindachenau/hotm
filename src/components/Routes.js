@@ -11,14 +11,9 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 const ClientBooking = lazy(() => import('../pages/ClientBooking'))
 const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
 const Manage = lazy(() => import('../pages/Manage'))
-const Calendar = lazy(() => import('../pages/Calendar'))
+const Checkout = lazy(() => import('../pages/Checkout'))
 const CorporateBooking = lazy(() => import('../pages/CorporateBooking'))
 const PackageBooking = lazy(() => import('../pages/PackageBooking'))
-
-// import Booking from '../pages/Booking'
-// import ArtistBooking from '../pages/ArtistBooking'
-// import Manage from  '../config/ManageContainer'
-// import Calendar from '../pages/Calendar'
 
 const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
   const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
@@ -53,7 +48,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 artists={artists}
                 resetBooking={resetBooking}/>} 
             />
-            <Route path='/artist' render={() => 
+            {isArtist && <Route path='/artist' render={() => 
               <ArtistBooking 
                 theme={theme} 
                 services={services}
@@ -62,18 +57,18 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 userEmail={userEmail}
                 resetBooking={resetBooking}
                 artistSignedIn={artistSignedIn}/>} 
-            />
-            <Route path='/corporate' render={() => 
+            />}
+            {isArtist && <Route path='/corporate' render={() => 
               <CorporateBooking
                 artists={artists}
                 artistSignedIn={artistSignedIn}/>} 
-            />
-            <Route path='/package' render={() => 
+            />}
+            {isArtist && <Route path='/package' render={() => 
               <PackageBooking
                 artists={artists}
                 artistSignedIn={artistSignedIn}/>} 
-            />                        
-            <Route path='/edit' render={() => 
+            />}                      
+            {isArtist && <Route path='/manage' render={() => 
               <Manage 
                 events={events} 
                 eventsFetched={eventsFetched}
@@ -83,8 +78,16 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                 bookingValue={bookingValue}
                 depositPayable={depositPayable}
                 artists={artists}/>} 
-            />
-            <Route path='/calendar' render={() => <Calendar events={events} />} />
+            />}
+            {isArtist && <Route path='/checkout' render={() => 
+              <Checkout 
+                events={events} 
+                eventsFetched={eventsFetched}
+                services={services} 
+                bookingValue={bookingValue}
+                depositPayable={depositPayable}
+                artists={artists}/>} 
+            />}           
           </Switch>}
         </Suspense>
       </ScrollToTop>

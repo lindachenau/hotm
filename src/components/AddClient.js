@@ -70,7 +70,7 @@ export default function AddClient({client, setClient, label}) {
       return {
         id: client.id,
         name: client.name, 
-        phone: client.meta.billing_phone[0]
+        phone: client.meta.billing_phone[0] ? client.meta.billing_phone[0] : ''
       }
     }))
   }, [data])

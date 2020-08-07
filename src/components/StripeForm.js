@@ -12,6 +12,9 @@ const useStyles = makeStyles(() => ({
   stripe: {
     marginTop: 20,
     marginBottom: 20
+  },
+  card: {
+    marginTop: 10,
   }
 }))
 
@@ -64,6 +67,7 @@ function CardForm ({loggedIn, stripe, handleCharge, payMessage}) {
         <label>
           Card details
           <CardElement
+            className={classes.card}
             onChange={handleChange}
             {...createOptions()}
           />
