@@ -3,6 +3,7 @@ import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { user_url, access_token } from '../config/dataLinks'
+import useDebounce from '../utils/useDebounce'
 import axios from "axios"
 
 const dataFetchReducer = (state, action) => {
@@ -29,6 +30,7 @@ export default function AddClient({client, setClient, label}) {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState(client !== null ? [client] : [])
   const [searchKey, setSearchKey] = useState('')
+  const debouncedSearchKey = useDebounce(searchKey, 500)
   const active = open && searchKey.length >= 3
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -59,11 +61,11 @@ export default function AddClient({client, setClient, label}) {
       }
     }
 
-    if (active && !isLoading) {
+    if (active) {
       fetchData()
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [searchKey])
+  }, [debouncedSearchKey])
 
   useEffect(() => {
     setOptions(data.map(client => {
@@ -92,8 +94,7 @@ export default function AddClient({client, setClient, label}) {
 
   const handleClose = () => {
     setOpen(false)
-    setSearchKey('')
-    // setOptions([])
+    setOptions([])
   }
 
   const getOptionLabel = option => {
@@ -118,7 +119,7 @@ export default function AddClient({client, setClient, label}) {
           label={label}
           fullWidth
           variant="outlined"
-          placeholder="Client name or username"
+          placeholder="Client name or email"
           InputProps={{
             ...params.InputProps,
             endAdornment: (
