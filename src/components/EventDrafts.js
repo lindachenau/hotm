@@ -38,7 +38,7 @@ export default function EventDrafts({ theme, items, corporate }) {
   }
 
   const incompleteEvent = (item) => {
-    return item.location === '' || item.contact === '' || item.task === '' || item.artistNames === '' 
+    return item.location === '' || item.contact === '' || item.task === '' || item.artistName === '' 
   }
 
   return (
@@ -62,9 +62,9 @@ export default function EventDrafts({ theme, items, corporate }) {
                   <TableCell align="left">
                     {incompleteEvent(item) && <WarningIcon />}
                     {corporate ? 
-                      `${item.subject} - ${moment(item.start).format("YYYY/MM/DD")} - ${((item.end - item.start) / 3600000).toFixed(1)} hrs : ${item.artistNames} - ${item.task}`
+                      `${item.subject} - ${moment(item.start).format("YYYY/MM/DD")} - ${((item.end - item.start) / 3600000).toFixed(1)} hrs : ${item.artistName} - ${item.task}`
                       :
-                      `${moment(item.start).format("YYYY/MM/DD")} : ${item.artistNames} - ${item.task}`}
+                      `${moment(item.start).format("YYYY/MM/DD")} : ${item.artistName} - ${item.task}`}
                   </TableCell>
                 </TableRow>
               ))}

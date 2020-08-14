@@ -10,6 +10,8 @@ export const RECEIVE_AVAIL_ARTISTS = 'RECEIVE_AVAIL_ARTISTS'
 export const ERROR_AVAIL_ARTISTS = 'ERROR_AVAIL_ARTISTS'
 export const FETCH_ARTISTS = 'FETCH_ARTISTS'
 export const FETCH_SERVICES = 'FETCH_SERVICES'
+export const FETCH_CORP_CARDS = 'FETCH_CORP_CARDS'
+export const FETCH_ADMIN_TASKS = 'FETCH_ADMIN_TASKS'
 export const RESET_BOOKING = 'RESET_BOOKING'
 export const MAKE_BOOKING = 'MAKE_BOOKING'
 export const SEARCH_BOOKING = 'SEARCH_BOOKING'
@@ -24,6 +26,13 @@ export const SET_FROM_DATE = 'SET_FROM_DATE'
 export const SET_TO_DATE = 'SET_TO_DATE'
 export const SET_ARTIST = 'SET_ARTIST'
 export const SET_CLIENT = 'SET_CLIENT'
+export const SET_CORPORATE = 'SET_CORPORATE'
+export const SET_BOOKING_TYPE = 'SET_BOOKING_TYPE'
+export const BOOKING_TYPE = {
+  C: 'corporate',
+  P: 'package',
+  A: 'artist'
+}
 
 export const toggleOrganic = () => ({
   type: CHANGE_ORGANIC
@@ -90,6 +99,14 @@ export const fetchServices = () => ({
   type: FETCH_SERVICES,
 })
 
+export const fetchCorpCards = () => ({
+  type: FETCH_CORP_CARDS,
+})
+
+export const fetchAdminTasks = () => ({
+  type: FETCH_ADMIN_TASKS,
+})
+
 export const resetBooking = () => ({
   type: RESET_BOOKING,
 })
@@ -98,9 +115,10 @@ export const searchBooking = () => ({
   type : SEARCH_BOOKING
 })
 
-export const addBooking = (bookingInfo, callMe) => ({
+export const addBooking = (bookingInfo, bookingType, callMe) => ({
   type: ADD_BOOKING,
   payload: bookingInfo,
+  bookingType: bookingType,
   callMe
 })
 
@@ -152,5 +170,15 @@ export const setClient = (val) => ({
 
 export const setArtist = (val) => ({
   type: SET_ARTIST,
+  val
+})
+
+export const setCorporate = (val) => ({
+  type: SET_CORPORATE,
+  val
+})
+
+export const setBookingType = (val) => ({
+  type: SET_BOOKING_TYPE,
   val
 })

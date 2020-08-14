@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import MyCalendar from '../components/MyCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
@@ -9,13 +9,14 @@ import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container'
 import Button from '@material-ui/core/Button'
-
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 import AddArtists from '../components/AddArtists'
 import AddPackage from '../components/DropdownList'
 import AddClient from '../components/AddClient'
 import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
 import { mergeArrays, startDate, endDate } from '../utils/misc'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const localizer = momentLocalizer(moment)
 
@@ -33,63 +34,12 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const packageList = [
-  {
-    name: "Bridal hair & makeup package with 2 artists - 3 people"
-  },
-  {
-    name: "Bridal hair & makeup package with 2 artists - 4 people"
-  },
-  {
-    name: "Bridal hair & makeup package with 2 artists - 5 people"
-  },
-  {
-    name: "Bridal hair & makeup package with 2 artists - 6 people"
-  },
-  {
-    name: "Bridal hair & makeup package with 2 artists - 7 people"
-  },
-  {
-    name: "Bridal hair & makeup package with 4 artists - 8 people"
-  },
-  {
-    name: "Bridal hair & makeup package with 4 artists - 9 people"
-  },
-  {
-    name: "Bridal hair & makeup package with 4 artists - 10 people"
-  },  
-  {
-    name: "White Diamond - Bridal Queen"
-  },
-  {
-    name: "Pink Diamond - Bridal Tribe"
-  },
-  {
-    name: "Champagne Diamond - Bridal Squad"
-  }    
-]
-
-const taskList = [
-  {
-    name: "blow dry"
-  },
-  {
-    name: "hairstyling"
-  },
-  {
-    name: "makeup"
-  },
-  {
-    name: "hairstyling + makeup"
-  },
-  {
-    name: "beauty"
-  }        
-]
-
-const PackageBooking = ({theme, artists, artistSignedIn}) => {
+const PackageBooking = ({theme, artists, userEmail, artistSignedIn, addBooking}) => {
+  const { services, adminTasks } = useContext(BookingsStoreContext)
   const classes = useStyles(theme)
+  const [packageList, setPackageList] = useState([])
   const [artist, setArtist] = useState(null)
+  const [booingArtistId, setBooingArtistId] = useState('')
   const [draftId, setDraftId] = useState(1)
   const [bookingPackage, setBookingPackage] = useState(null)
   const [client, setClient] = useState(null)
@@ -121,6 +71,28 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
   }
 
   useEffect(() => {
+    const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
+    if (theArtist.length > 0) {
+      setBooingArtistId(theArtist[0].id)
+    }
+  }, [])  
+
+  useEffect(() => {
+    if (Object.keys(services).length > 0) {
+      let list = []
+      Object.values(services.items).forEach(item => {
+        if (!item.onlineBooking)
+          list.push({
+            id: item.id,
+            name: item.description
+          })
+      })
+
+      setPackageList(list)
+    }
+  }, [services])
+
+  useEffect(() => {
     const fetchEvents = async () => {
       try {
         const events = await window.gapi.client.calendar.events.list({
@@ -137,7 +109,7 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
             id: item.id,
             start: new Date(item.start.dateTime),
             end: new Date(item.end.dateTime),
-            artistNames: artist.name,
+            artistName: artist.name,
             type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
           }
         })
@@ -171,7 +143,7 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
     if (event.type !== 'draft')
       return
     setDraftEvent(event)
-    setTask(taskList.filter(task => task.name === event.task)[0])
+    setTask(adminTasks.filter(task => task.name === event.task)[0])
     setTriggerEventForm(!triggerEventForm)
   }
 
@@ -224,7 +196,8 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
       allDay: false,
       start: event.start,
       end: event.end,
-      artistNames: artist ? artist.name : '',
+      artistName: artist ? artist.name : '',
+      artistId: artist ? artist.id : '',
       task: task ? task.name : '',
       subject: bookingPackage ? bookingPackage.name : '',
       location: '',
@@ -238,21 +211,52 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
 
   const onNavigate = (date, view) => {
     if (view === 'month') {
+      const start = moment(date).startOf('month').startOf('week')._d
       const end = moment(date).endOf('month').endOf('week')._d
+      if (start < fromDate)
+        setFromDate(start)
       if (end > toDate)
-      setToDate(end)      
+        setToDate(end)      
     }
 
     if (view === 'day') {
+      if (date < fromDate)
+        setFromDate(date)
       if (date > toDate)
         setToDate(date)      
     }
   }
 
   const handleBook = () => {
-    setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
-    alert('Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.')
-    setDraftEvents([])
+    const callBack = (bookingId) => {    
+      setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
+      alert('Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.')
+      setDraftEvents([])
+    }
+
+    let bookingData = {}
+    bookingData.booking_type = BOOKING_TYPE.P
+    bookingData.card_or_client_id = client.id
+    bookingData.booked_by_artist_id = booingArtistId
+    bookingData.service_item = bookingPackage.id
+
+    let eventList = []
+    draftEvents.forEach(draft => {
+      const event = {
+        artist_id: draft.artistId,
+        event_location: draft.location,
+        contact: draft.contact,
+        job_description: draft.task,
+        comment: draft.comment,
+        booking_date: moment(draft.start).format("YYYY-MM-DD"),
+        booking_start_time: moment(draft.start).format("HH:mm"),
+        booking_end_time: moment(draft.end).format("HH:mm")
+      }
+      eventList.push(event)
+    })
+
+    bookingData.event_list = eventList
+    addBooking(bookingData, BOOKING_TYPE.P, callBack)    
   }
 
   return (
@@ -261,6 +265,7 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
         <Grid item xs={12} md={3}>
           <AddPackage
             options={packageList}
+            disableClearable={true}
             id="package-list"
             label="Package"
             placeholder="package"
@@ -325,7 +330,7 @@ const PackageBooking = ({theme, artists, artistSignedIn}) => {
         draftEvent={draftEvent}
         triggerOpen={triggerEventForm}
         initOpen={false}
-        taskList={taskList}
+        taskList={adminTasks}
         task={task}
         setTask={setTask}
         onSaveEventDetails={onSaveEventDetails}

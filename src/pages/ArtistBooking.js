@@ -17,6 +17,7 @@ import EventForm from '../components/EventForm'
 import ServiceMenu from '../config/ServiceMenuContainer'
 import ArtistBookingItems from '../components/ArtistBookingItems'
 import { mergeArrays, startDate, endDate } from '../utils/misc'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const localizer = momentLocalizer(moment)
 
@@ -41,9 +42,13 @@ const ArtistBooking = ({
   artists,
   userEmail,
   artistSignedIn,
-  resetBooking }) => {
+  resetBooking,
+  bookingValue,
+  addBooking,
+  priceFactors }) => {
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
+  const [booingArtistId, setBooingArtistId] = useState('')
   const [draftId, setDraftId] = useState(1)
   const [client, setClient] = useState(null)
   const [draftEvent, setDraftEvent] = useState(null)
@@ -79,6 +84,7 @@ const ArtistBooking = ({
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
     if (artistSignedIn && theArtist.length > 0) {
       setArtist(theArtist[0])
+      setBooingArtistId(theArtist[0].id)
       setCalendarId(theArtist[0].email)
     }
   }, [])
@@ -124,7 +130,7 @@ const ArtistBooking = ({
             id: item.id,
             start: new Date(item.start.dateTime),
             end: new Date(item.end.dateTime),
-            artistNames: artist.name,
+            artistName: artist.name,
             type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
           }
         })
@@ -210,7 +216,7 @@ const ArtistBooking = ({
       allDay: false,
       start: event.start,
       end: event.end,
-      artistNames: artist ? artist.name : '',
+      artistName: artist ? artist.name : '',
       comment: ''      
     }
     setEvents([newEvent])
@@ -218,23 +224,56 @@ const ArtistBooking = ({
   }
 
   const onNavigate = (date, view) => {
-  if (view === 'month') {
+    if (view === 'month') {
+      const start = moment(date).startOf('month').startOf('week')._d
       const end = moment(date).endOf('month').endOf('week')._d
+      if (start < fromDate)
+        setFromDate(start)
       if (end > toDate)
-      setToDate(end)      
+        setToDate(end)      
     }
 
     if (view === 'day') {
+      if (date < fromDate)
+        setFromDate(date)
       if (date > toDate)
         setToDate(date)      
     }
   }
 
   const handleBook = () => {
-    setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
-    alert('Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.')
-    setDraftEvents([])
-    resetBooking()
+    const callBack = (bookingId) => {  
+      setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
+      alert('Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.')
+      setDraftEvents([])
+      resetBooking()
+    }
+
+    let bookingData = {}
+    
+    const event = draftEvents[0]
+    bookingData.client_id = client.id
+    bookingData.artist_id_list = [artist.id]
+    bookingData.services = Object.keys(itemQty).map(id => parseInt(id))
+    bookingData.quantities = Object.values(itemQty)
+    bookingData.booking_date = moment(event.start).format("YYYY-MM-DD")
+    bookingData.booking_time = moment(event.start).format("HH:mm")
+    bookingData.booking_end_time = moment(event.end).format("HH:mm")
+    bookingData.with_organic = priceFactors.organic ? 1 : 0
+    bookingData.with_pensioner_rate = priceFactors.pensionerRate ? 1 : 0
+    bookingData.event_address = address
+    bookingData.total_amount = bookingValue
+    bookingData.comment = event.comment
+    bookingData.booking_artist_name = artist.name
+    //All fields below are redundant. They can be removed when API does not make them mandatory.
+    bookingData.time_on_site = getDuration()
+    bookingData.artist_start_time = bookingData.booking_time
+    bookingData.travel_duration = 0
+    bookingData.travel_distance = 0
+    bookingData.payment_amount = 0
+    bookingData.payment_type = 'deposit'
+
+    addBooking(bookingData, BOOKING_TYPE.A, callBack)        
   }
 
   return (

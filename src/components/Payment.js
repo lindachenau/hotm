@@ -11,7 +11,8 @@ import { BookingsStoreContext } from './BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 import { stripe_charge_server } from '../config/dataLinks'
-import sendReminder from '../reducers/bookingInfo'
+// import sendReminder from '../reducers/bookingInfo'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
@@ -105,7 +106,7 @@ function Payment (
       status: ''
     }
 
-    addBooking(bookingData, charge)
+    addBooking(bookingData, BOOKING_TYPE.A, charge)
   }
 
   return (

@@ -1,11 +1,12 @@
 import React, { useState, useEffect, createContext } from "react"
 import useAxiosFetch from '../actions/useAxiosFetch'
 import useAxiosCRUD from '../actions/useAxiosCRUD'
-import { normaliseArtists, normaliseServices } from '../utils/dataFormatter'
-import { bookings_url, user_url, access_token, artists_url, services_url } from '../config/dataLinks'
+import { normaliseArtists, normaliseServices, normaliseCorpCards, normaliseAdminTasks } from '../utils/dataFormatter'
+import { bookings_url, admin_bookings_url, user_url, access_token, artists_url, services_url, corporate_cards_url, admin_tasks_url } from '../config/dataLinks'
 import { getEvents } from '../utils/dataFormatter'
 import axios from 'axios'
 import moment from 'moment'
+import { BOOKING_TYPE } from "../actions/bookingCreator"
 
 
 /*
@@ -39,11 +40,13 @@ const initFilter = (fromDate, toDate) => {
   return `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
 }
 
-const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists, fetchServices}) => {
-  const {servicesTrigger, artistsTrigger, requestMethod, data, callMe, bookingTrigger} = storeCtrl
+const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists, fetchServices, fetchCorpCards, fetchAdminTasks, isArtist}) => {
+  const {servicesTrigger, artistsTrigger, corpCardsTrigger, adminTasksTrigger, requestMethod, bookingType, data, callMe, bookingTrigger} = storeCtrl
   const {fromDate, toDate} = bookingFilter
   const artistId = bookingFilter.artist ? bookingFilter.artist.id : null
   const clientId = bookingFilter.client ? bookingFilter.client.id : null
+  const corporateId = bookingFilter.corporate ? bookingFilter.corporate : null
+  const filteredBookingType = bookingFilter.bookingType.name
   const [bookingUrl, setBookingUrl] = useState(initFilter(fromDate, toDate))
   const [services, setServices] = useState({})
   const [servicesFetched, setServicesFetched] = useState(false)
@@ -54,6 +57,8 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
   const [clientList, setClientList] = useState([])
   const [clientsFetchTrigger, setClientsFetchTrigger] = useState(false)
   const [clients, setClients] = useState({})
+  const [corpCards, setCorpCards] = useState([])
+  const [adminTasks, setAdminTasks] = useState([])
 
   //Fetch services and artists every 60 minutes in case the data in the backend has changed
   useEffect(() => {
@@ -76,18 +81,50 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
     }
   }, [servicesData.data])
 
+  //Fetch corporate cards and admin tasks every 60 minutes in case the data in the backend has changed
+  useEffect(() => {
+    const handle = setInterval(() => {
+      fetchCorpCards()
+      fetchAdminTasks()
+    }, 3600000)
+
+    return () => {clearInterval(handle)}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isArtist])
+
+  const corpCardsData = useAxiosFetch(corporate_cards_url, [], corpCardsTrigger)
+
+  useEffect(() => {
+    if (corpCardsData.data.length !== 0) {
+      setCorpCards(normaliseCorpCards(corpCardsData.data))
+    }
+  }, [corpCardsData.data])
+
+  const adminTasksData = useAxiosFetch(admin_tasks_url, [], adminTasksTrigger)
+
+  useEffect(() => {
+    if (adminTasksData.data.length !== 0) {
+        setAdminTasks(normaliseAdminTasks(adminTasksData.data))
+    }
+  }, [adminTasksData.data])  
+
   //update booking filter
   useEffect(() => {
-    let newFilter = `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
-    
+    const bookingsURL = filteredBookingType === BOOKING_TYPE.A ? bookings_url : admin_bookings_url
+    let newFilter = `${bookingsURL}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
+
     if (artistId)
       newFilter = `${newFilter}&artist_id=${artistId.toString()}`
 
-    if (clientId)
-      newFilter = `${newFilter}&client_id=${clientId.toString()}`
+    if (filteredBookingType === BOOKING_TYPE.A) {
+      if (clientId)
+        newFilter = `${newFilter}&client_id=${clientId.toString()}`
+    } else if (corporateId || clientId) {
+      newFilter = `${newFilter}&corporate_or_client_id=${corporateId ? corporateId : clientId}`
+    }
 
     setBookingUrl(newFilter)
-  }, [fromDate, toDate, artistId, clientId])
+  }, [fromDate, toDate, bookingType, artistId, clientId, corporateId])
 
   const artistsData = useAxiosFetch(artists_url, [], artistsTrigger)
 
@@ -99,7 +136,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
     }
   }, [artistsData.data])
 
-  let bookingsData = useAxiosCRUD(bookingUrl, {}, requestMethod, data, callMe, bookingTrigger)
+  let bookingsData = useAxiosCRUD(bookingUrl, {}, requestMethod, bookingType, data, callMe, bookingTrigger)
 
   const getClientListFromBookings = bookings => {
     let list = []
@@ -167,7 +204,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
   }, [clientsFetchTrigger, bookingsData.data])
 
   return (
-    <BookingsStoreContext.Provider value={{services, servicesFetched, events, eventsFetched, artists, artistsFetched, bookingsData}}>
+    <BookingsStoreContext.Provider value={{services, servicesFetched, corpCards, adminTasks, events, eventsFetched, artists, artistsFetched, bookingsData}}>
       {children}
     </BookingsStoreContext.Provider>
   )

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef,useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -12,6 +12,10 @@ import {
 } from '@material-ui/pickers'
 import AddArtists from './AddArtists'
 import AddClient from './AddClient'
+import AddCorporate from './DropdownList'
+import AddBookingType from './DropdownList'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -19,7 +23,10 @@ const useStyles = makeStyles(theme => ({
     marginRight: 15,
     marginTop: 20,
     marginBottom: 20
-  }
+  },
+  padding: {
+    paddingTop: 10
+  },
 }))
 
 export default function Filter({
@@ -29,15 +36,30 @@ export default function Filter({
   bookingFilter,
   setFromDate,
   setToDate,
+  setBookingType,
   setArtist,
   setClient,
+  setCorporate,
   searchBooking}) {
 
-  const {fromDate, toDate, artist, client} = bookingFilter
+  const { corpCards } = useContext(BookingsStoreContext)
+  const {fromDate, toDate, bookingType, artist, client, corporate} = bookingFilter
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
 
   const classes = useStyles(theme)
+
+  const bookingTypes = [
+    {
+      name: BOOKING_TYPE.C
+    },
+    {
+      name: BOOKING_TYPE.P
+    },
+    {
+      name: BOOKING_TYPE.A
+    }
+  ]  
 
   useEffect(() => {
     if (didMountRef.current)
@@ -83,22 +105,44 @@ export default function Filter({
             }}
           />
         </MuiPickersUtilsProvider>
-        <br/>
-        <br/>
-        <AddArtists
-          artists={artists}
-          multiArtists={false}
-          clearable={false}
-          setTags={setArtist}
-          tags={artist}
-          label="Select artist"
-        />
-        <br/>
-        <AddClient
-          setClient={setClient}
-          client={client}
-          label="Select client"
-        />
+        <div className={classes.padding}>
+          <AddBookingType
+            id="booking-type"
+            disableClearable={true}
+            options={bookingTypes}
+            label="Select booking type"
+            placeholder="Booking type"
+            setTag={setBookingType}
+            tag={bookingType}        
+          />
+        </div>
+        <div className={classes.padding}>
+          <AddArtists
+            artists={artists}
+            multiArtists={false}
+            setTags={setArtist}
+            tags={artist}
+            label="Select artist"
+          />
+        </div>
+        <div className={classes.padding}>
+          {bookingType.name === BOOKING_TYPE.C ?
+            <AddCorporate
+              options={corpCards}
+              id="corporate-list"
+              label="Select corporate"
+              placeholder="corporate"
+              setTag={setCorporate}
+              tag={corporate}
+            />
+            :
+            <AddClient
+              setClient={setClient}
+              client={client}
+              label="Select client"
+            />
+          }                      
+        </div>
       </DialogContent>
       <DialogActions className={classes.button}>
         <Button variant="contained" onClick={handleSearch} color="primary" fullWidth>

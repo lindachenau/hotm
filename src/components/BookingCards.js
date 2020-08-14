@@ -3,7 +3,6 @@ import moment from 'moment'
 import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog } from "react-icons/fa"
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
-import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
 import MobileStepper from '@material-ui/core/MobileStepper'
 import Button from '@material-ui/core/Button'
@@ -22,19 +21,12 @@ const useStyles = makeStyles(theme => ({
     background: "linear-gradient(#f0e8e8, #e0d8d8)",
     marginBottom: 10
   },
-  flex: {
-    display: 'flex',
-    marginTop: 10
-  },
-  grow: {
-    flexGrow: 1,
-  },
   progress: {
     display: 'flex',
     justifyContent: 'center',
     padding: 40
   }
-}));
+}))
 
 function Card ({ event }) {
   const classes = useStyles()
@@ -77,20 +69,10 @@ function Card ({ event }) {
   )
 }
 
-
-const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState, loadBooking, saveBooking, activeStep, setActiveStep}) => {
+const BookingCards = ({events, eventsFetched, activeStep, setActiveStep}) => {
   const classes = useStyles()
-  const { bookingsData } = useContext(BookingsStoreContext)
-  const bookings = bookingsData.data
   const [maxSteps, setMaxSteps] = useState(0)
-  const [completed, setCompleted] = useState(false)
-
-  // disable EDIT and CHECKOUT for completed bookings
-  useEffect(() => {
-    if (events.length > 0)
-      setCompleted(events[activeStep].complete)
-  }, [events, activeStep])
-
+  
   useEffect(() => {
     setMaxSteps(events.length)
   }, [eventsFetched, events.length])
@@ -103,23 +85,8 @@ const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
 
-  const handleEdit = () => {
-    loadBooking({...bookings[events[activeStep].id], client: events[activeStep].client})
-    changeBookingStage(0)
-    setManageState('Edit')
-  }
-
-  const handleCheckout = () => {
-    const bookingId = events[activeStep].id
-    const booking = bookings[bookingId]
-    loadBooking({...booking, client: events[activeStep].client})
-    saveBooking({...booking, payment_type: 'checkout_credit', payment_amount: (booking.total_amount - booking.paid_deposit_total)})
-    changeBookingStage(2)
-    setManageState('Checkout')
-  }
-
   return (
-    <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
+    <>
       {!eventsFetched && <div className={classes.progress}><CircularProgress color='primary' /></div>}
       {eventsFetched && 
       <>
@@ -144,21 +111,13 @@ const BookingCards = ({events, eventsFetched, changeBookingStage, setManageState
               </Button>
             }
           />
-          <div className={classes.flex}>
-            <Button variant="text" color="primary" size='large' onClick={handleEdit} disabled={completed}>
-              Edit
-            </Button>
-            <div className={classes.grow} />
-            <Button variant="text" color="primary" size='large' onClick={handleCheckout} disabled={completed}>
-              Checkout
-            </Button>
-          </div>
+
         </>
         :
         <Typography variant="h6" align="center" color="textPrimary">No booking found</Typography>}
       </>  
       }
-    </Container>
+    </>
   )
 }
 

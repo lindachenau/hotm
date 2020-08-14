@@ -28,6 +28,40 @@ export function normaliseArtists(artistArr)
   return artists
 }
 
+export function normaliseCorpCards(corpCardsArr)
+{
+  let corpCards = []
+  
+  for (let i = 0; i < corpCardsArr.length; i++ ) {
+    const card = {
+      id: corpCardsArr[i].id,
+      name: corpCardsArr[i].corporate_name,
+      location: corpCardsArr[i].event_address,
+      contactPerson: corpCardsArr[i].contact_name,
+      contactPhone: corpCardsArr[i].contact_phone,
+      contactEmail: corpCardsArr[i].contact_email
+    }
+    corpCards.push(card)
+  }
+
+  return corpCards
+}
+
+export function normaliseAdminTasks(adminTasksArr)
+{
+  let adminTasks = []
+  
+  for (let i = 0; i < adminTasksArr.length; i++ ) {
+    const task = {
+      id: adminTasksArr[i].id,
+      name: adminTasksArr[i].description
+    }
+    adminTasks.push(task)
+  }
+
+  return adminTasks
+}
+
 export function normaliseClients(clientArr)
 {
   let clients = {}
@@ -55,6 +89,7 @@ export function normaliseServices(serviceArr)
       let id = items[j].id.toString()
       list.push(id)
       services[id] = {
+        id: items[j].id,
         cat: i,
         description: items[j].description,
         price: items[j].sale_price,
@@ -127,7 +162,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         end: localDate(booking.booking_date, booking.booking_end_time),
         address: booking.event_address,
         artists: booking.artist_id_list.map(id => artists[id]),
-        artistNames: booking.artist_id_list.map(id => artists[id].name).join(', '),
+        artistName: booking.artist_id_list.map(id => artists[id].name).join(', '),
         client: clients[booking.client_id],
         organic: booking.with_organic,
         serviceItems: serviceItems,

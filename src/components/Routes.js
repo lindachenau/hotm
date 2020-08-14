@@ -9,11 +9,11 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 
 //Use route based lazy loading to split the code to smaller chunks
 const ClientBooking = lazy(() => import('../pages/ClientBooking'))
-const ArtistBooking = lazy(() => import('../pages/ArtistBooking'))
-const Manage = lazy(() => import('../pages/Manage'))
+const ArtistBooking = lazy(() => import('../config/ArtistBookingContainer'))
+const Manage = lazy(() => import('../config/ManageContainer'))
 const Checkout = lazy(() => import('../pages/Checkout'))
-const CorporateBooking = lazy(() => import('../pages/CorporateBooking'))
-const PackageBooking = lazy(() => import('../pages/PackageBooking'))
+const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
+const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
 
 const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
   const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
@@ -56,6 +56,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
                   itemQty={itemQty}
                   artists={artists}
                   userEmail={userEmail}
+                  bookingValue={bookingValue}
                   resetBooking={resetBooking}
                   artistSignedIn={artistSignedIn}/>
                 :
@@ -66,6 +67,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
               {isArtist ?
                 <CorporateBooking
                   artists={artists}
+                  userEmail={userEmail}
                   artistSignedIn={artistSignedIn}/>
                 :
                 <Redirect to="/" />
@@ -75,6 +77,7 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
             {isArtist ?
               <PackageBooking
                 artists={artists}
+                userEmail={userEmail}
                 artistSignedIn={artistSignedIn}/>
               :
               <Redirect to="/" />

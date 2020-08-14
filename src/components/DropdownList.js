@@ -2,13 +2,13 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 
-export default function DropdownList({tag, setTag, options, id, label, placeholder}) {
+export default function DropdownList({tag, setTag, disableClearable=false, options, id, label, placeholder}) {
 
   return (
     <Autocomplete
       id={id}
       filterSelectedOptions
-      disableClearable
+      disableClearable={disableClearable}
       options={options}
       getOptionLabel={option => option.name}
       value={tag}

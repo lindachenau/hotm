@@ -11,7 +11,7 @@ export function MonthEvent ({ event }) {
         <FaDollarSign/>
         <span>{ `${event.total} ` }</span>
       </>}
-      {event.artistNames && <span>{ event.artistNames}</span>}
+      {event.artistName && <span>{ event.artistName}</span>}
     </div>
   )
 }
@@ -35,7 +35,7 @@ export function DayEvent ({ event }) {
         <FaDollarSign/>
         <span>{ `${event.total} ` }</span>
       </>}
-        {event.artistNames && <span>{`${event.artistNames} `}</span>}
+        {event.artistName && <span>{`${event.artistName} `}</span>}
         {event.task && <span>{ event.task}</span>}
         {event.serviceItems && event.serviceItems.map( item => <div>{ item }</div> )}
     </div>

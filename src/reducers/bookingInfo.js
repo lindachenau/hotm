@@ -11,6 +11,8 @@ import {
   ERROR_AVAIL_ARTISTS,
   FETCH_SERVICES,
   FETCH_ARTISTS,
+  FETCH_CORP_CARDS,
+  FETCH_ADMIN_TASKS,
   SEARCH_BOOKING,
   ADD_BOOKING,
   SAVE_BOOKING,
@@ -22,8 +24,11 @@ import {
   LOAD_BOOKING,
   SET_FROM_DATE,
   SET_TO_DATE,
+  SET_BOOKING_TYPE,
   SET_ARTIST,
-  SET_CLIENT
+  SET_CLIENT,
+  SET_CORPORATE,
+  BOOKING_TYPE
 } from '../actions/bookingCreator'
 
 import { email_reminder_server } from '../config/dataLinks'
@@ -272,8 +277,11 @@ export function itemQty(state = {}, action) {
 const initActivation = {
   servicesTrigger: true,
   artistsTrigger: true,
+  corpCardsTrigger: true,
+  adminTasksTrigger: true,
   bookingTrigger: false,
   requestMethod: 'get',
+  bookingType: BOOKING_TYPE.A,
   data: {},
   callMe: null,
   bookingData: {}
@@ -291,6 +299,16 @@ export function storeActivation(state = initActivation, action) {
         artistsTrigger: !state.artistsTrigger
       })
     }
+    case FETCH_CORP_CARDS: {
+      return Object.assign({}, state, {
+        corpCardsTrigger: !state.corpCardsTrigger
+      })
+    }
+    case FETCH_ADMIN_TASKS: {
+      return Object.assign({}, state, {
+        adminTasksTrigger: !state.adminTasksTrigger
+      })
+    }       
     case SEARCH_BOOKING: {
       return Object.assign({}, state, {
         requestMethod: 'get',
@@ -302,6 +320,7 @@ export function storeActivation(state = initActivation, action) {
       return Object.assign({}, state, {
         requestMethod: 'post',
         data: action.payload,
+        bookingType: action.bookingType,
         bookingTrigger: !state.bookingTrigger,
         callMe: action.callMe
       })
@@ -350,8 +369,12 @@ const today = new Date()
 const initBookingFilter = {
   fromDate: new Date(),
   toDate: today.setDate(today.getDate() + 7),
+  bookingType: {
+    name: BOOKING_TYPE.A
+  },
   artist: null,
-  client: null
+  client: null,
+  corporate: null
 }
 
 export function bookingFilter(state = initBookingFilter, action) {
@@ -366,6 +389,11 @@ export function bookingFilter(state = initBookingFilter, action) {
         toDate: action.val
       })
     }
+    case SET_BOOKING_TYPE: {
+      return Object.assign({}, state, {
+        bookingType: action.val
+      })
+    }    
     case SET_ARTIST: {
       return Object.assign({}, state, {
         artist: action.val
@@ -376,6 +404,11 @@ export function bookingFilter(state = initBookingFilter, action) {
         client: action.val
       })
     }
+    case SET_CORPORATE: {
+      return Object.assign({}, state, {
+        corporate: action.val
+      })
+    }    
     default:
       return state
   }

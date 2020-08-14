@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { withRouter } from 'react-router-dom';
 import MyCalendar from '../components/MyCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
@@ -9,12 +9,13 @@ import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container'
 import Button from '@material-ui/core/Button'
-
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 import AddArtists from '../components/AddArtists'
 import AddCorporate from '../components/DropdownList'
 import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
 import { mergeArrays, startDate, endDate } from '../utils/misc'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const localizer = momentLocalizer(moment)
 
@@ -32,54 +33,11 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const corporateList = [
-  {
-    name: "Virgin 1",
-    location: "34 Burton Street, Darlinghurst NSW",
-    contactPerson: "Mary Smith", 
-    contactPhone: "0425 234 543"
-  },
-  {
-    name: "Virgin 2",
-    location: "225 George Street, Sydney NSW",
-    contactPerson: "Katie Johnston", 
-    contactPhone: "0425 234 886"
-  },
-  {
-    name: "Dyson 1",
-    location: "65 York Street, Sydney NSW",
-    contactPerson: "Marianne Young", 
-    contactPhone: "0428 234 543"
-  },
-  {
-    name: "Dyson 2",
-    location: "339 Sussex Street, Sydney NSW",
-    contactPerson: "John Huston", 
-    contactPhone: "0427 234 886"
-  }    
-]
-
-const taskList = [
-  {
-    name: "blow dry"
-  },
-  {
-    name: "hairstyling"
-  },
-  {
-    name: "makeup"
-  },
-  {
-    name: "hairstyling + makeup"
-  },
-  {
-    name: "beauty"
-  }        
-]
-
-const CorporateBooking = ({theme, artists, artistSignedIn}) => {
+const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking}) => {
+  const { corpCards, adminTasks } = useContext(BookingsStoreContext)
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
+  const [booingArtistId, setBooingArtistId] = useState('')
   const [draftId, setDraftId] = useState(1)
   const [corporate, setCorporate] = useState(null)
   const [task, setTask] = useState(null)
@@ -110,6 +68,13 @@ const CorporateBooking = ({theme, artists, artistSignedIn}) => {
   }
 
   useEffect(() => {
+    const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
+    if (theArtist.length > 0) {
+      setBooingArtistId(theArtist[0].id)
+    }
+  }, [])
+
+  useEffect(() => {
     const fetchEvents = async () => {
       try {
         const events = await window.gapi.client.calendar.events.list({
@@ -126,7 +91,7 @@ const CorporateBooking = ({theme, artists, artistSignedIn}) => {
             id: item.id,
             start: new Date(item.start.dateTime),
             end: new Date(item.end.dateTime),
-            artistNames: artist.name,
+            artistName: artist.name,
             type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
           }
         })
@@ -160,7 +125,7 @@ const CorporateBooking = ({theme, artists, artistSignedIn}) => {
     if (event.type !== 'draft')
       return
     setDraftEvent(event)
-    setTask(taskList.filter(task => task.name === event.task)[0])
+    setTask(adminTasks.filter(task => task.name === event.task)[0])
     setTriggerEventForm(!triggerEventForm)
   }
 
@@ -213,7 +178,8 @@ const CorporateBooking = ({theme, artists, artistSignedIn}) => {
       allDay: false,
       start: event.start,
       end: event.end,
-      artistNames: artist ? artist.name : '',
+      artistName: artist ? artist.name : '',
+      artistId: artist ? artist.id : '',
       task: task ? task.name : '',
       subject: corporate ? corporate.name : '',      
       location: corporate? corporate.location : '',
@@ -243,9 +209,35 @@ const CorporateBooking = ({theme, artists, artistSignedIn}) => {
   }
 
   const handleBook = () => {
-    setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
-    alert('Booking successful!')
-    setDraftEvents([])
+
+    const callBack = (bookingId) => {
+      setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
+      alert('Booking successful!')
+      setDraftEvents([])      
+    }
+
+    let bookingData = {}
+    bookingData.booking_type = BOOKING_TYPE.C
+    bookingData.card_or_client_id = corporate.id
+    bookingData.booked_by_artist_id = booingArtistId
+
+    let eventList = []
+    draftEvents.forEach(draft => {
+      const event = {
+        artist_id: draft.artistId,
+        event_location: draft.location,
+        contact: draft.contact,
+        job_description: draft.task,
+        comment: draft.comment,
+        booking_date: moment(draft.start).format("YYYY-MM-DD"),
+        booking_start_time: moment(draft.start).format("HH:mm"),
+        booking_end_time: moment(draft.end).format("HH:mm")
+      }
+      eventList.push(event)
+    })
+
+    bookingData.event_list = eventList
+    addBooking(bookingData, BOOKING_TYPE.C, callBack)
   }
 
   return (
@@ -253,9 +245,10 @@ const CorporateBooking = ({theme, artists, artistSignedIn}) => {
       <Grid container justify="space-around" spacing={1}>
         <Grid item xs={12} md={3}>
           <AddCorporate
-            options={corporateList}
+            options={corpCards}
+            disableClearable={true}
             id="corporate-list"
-            label="Corporate"
+            label="Select corporate"
             placeholder="corporate"
             setTag={setCorporate}
             tag={corporate}
@@ -311,7 +304,7 @@ const CorporateBooking = ({theme, artists, artistSignedIn}) => {
         draftEvent={draftEvent}
         triggerOpen={triggerEventForm}
         initOpen={false}
-        taskList={taskList}
+        taskList={adminTasks}
         task={task}
         setTask={setTask}
         onSaveEventDetails={onSaveEventDetails}

@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react"
 import axios from "axios"
-import { bookings_url, contact_phone } from '../config/dataLinks'
+import { bookings_url, admin_bookings_url, contact_phone } from '../config/dataLinks'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const convertArrayToObject = (array, key) => {
   const initialValue = {}
@@ -49,13 +50,13 @@ const dataFetchReducer = (state, action) => {
       return {
         ...state,
         isUpdating: false,
-        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
+        // data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "PUT_SUCCESS":
       return {
         ...state,
         isUpdating: false,
-        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
+        // data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "DELETE_SUCCESS":
       return {
@@ -85,7 +86,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) => {
+const useAxiosCRUD = (url, initialData, method, bookingType, data, callMe, bookingTrigger) => {
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -135,7 +136,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
       const config = {
         method: 'post',
         headers: {"Content-Type": "application/json"},
-        url: bookings_url,
+        url: bookingType === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
         data: data
       }
 
@@ -145,7 +146,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         const error = result.data.error
         if (!didCancel) {
           if (error) {
-            alert(`${error} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
+            alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
@@ -158,7 +159,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         }
       } catch (err) {
         if (!didCancel) {
-          alert(`${err} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
+          alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
           dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
         }
       }
@@ -171,7 +172,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
       const config = {
         method: 'put',
         headers: {"Content-Type": "application/json"},
-        url: bookings_url,
+        url: bookingType === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
         data: data
       }
 
@@ -181,7 +182,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         const error = result.data.error
         if (!didCancel) {
           if (error) {
-            alert(`${error} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
+            alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
@@ -209,7 +210,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
       const config = {
         method: 'delete',
         headers: {"Content-Type": "application/json"},
-        url: bookings_url,
+        url: bookingType === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
         data: data
       }
 
@@ -221,7 +222,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
           * No need to do anything if no error as data hasn't been written into local Booking Store yet.
           */ 
           if (error) {
-            alert(`${error} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
+            alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           } else {
             dispatch({ type: "DELETE_SUCCESS" })
@@ -229,7 +230,7 @@ const useAxiosCRUD = (url, initialData, method, data, callMe, bookingTrigger) =>
         }
       } catch (err) {
         if (!didCancel) {
-          alert(`${err} Your card is NOT charged. Please call ${contact_phone} to resolve this issue.`)
+          alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
           dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
         }
       }
