@@ -281,7 +281,7 @@ const initActivation = {
   adminTasksTrigger: true,
   bookingTrigger: false,
   requestMethod: 'get',
-  bookingType: BOOKING_TYPE.A,
+  bookingTypeName: BOOKING_TYPE.A,
   data: {},
   callMe: null,
   bookingData: {}
@@ -320,7 +320,7 @@ export function storeActivation(state = initActivation, action) {
       return Object.assign({}, state, {
         requestMethod: 'post',
         data: action.payload,
-        bookingType: action.bookingType,
+        bookingTypeName: action.bookingType,
         bookingTrigger: !state.bookingTrigger,
         callMe: action.callMe
       })

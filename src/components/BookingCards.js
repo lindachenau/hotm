@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext }  from 'react'
 import moment from 'moment'
-import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog } from "react-icons/fa"
+import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog, FaCalendarAlt } from "react-icons/fa"
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
@@ -13,6 +13,7 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CommentIcon from '@material-ui/icons/Comment';
 import { BookingsStoreContext } from './BookingsStoreProvider'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function Card ({ event }) {
+function EventCard ({ event }) {
   const classes = useStyles()
   let itemKey = 0
 
@@ -69,13 +70,36 @@ function Card ({ event }) {
   )
 }
 
-const BookingCards = ({events, eventsFetched, activeStep, setActiveStep}) => {
+function AdminBookingCard ({ booking }) {
+  const classes = useStyles()
+  
+  return (
+    <Paper className={classes.paper} elevation={6}>
+      <Typography variant="h6" align="center" color="textPrimary">
+        { booking.title }
+      </Typography>
+      <div>
+        <br/>
+        <FaUserCog/>
+        <span>{ booking.artistList.map(artist => artist).join(', ')}</span>
+        <br/>
+        <FaCalendarAlt/>
+        <span>{ booking.dateList.map(date => date).join(', ')}</span>
+      </div>
+    </Paper>
+  )
+}
+
+const BookingCards = ({bookingType, events, eventsFetched, adminBookings, adminBookingsFetched, activeStep, setActiveStep}) => {
   const classes = useStyles()
   const [maxSteps, setMaxSteps] = useState(0)
   
   useEffect(() => {
-    setMaxSteps(events.length)
-  }, [eventsFetched, events.length])
+    if (bookingType === BOOKING_TYPE.A)
+      setMaxSteps(events.length)
+    else
+    setMaxSteps(adminBookings.length)
+  }, [eventsFetched, events.length, adminBookingsFetched, adminBookings.length, bookingType])
 
   const handleNext = () => {
     setActiveStep(prevActiveStep => prevActiveStep + 1)
@@ -85,14 +109,17 @@ const BookingCards = ({events, eventsFetched, activeStep, setActiveStep}) => {
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
 
+  const artistBooking = eventsFetched && bookingType === BOOKING_TYPE.A
+  const adminBooking = adminBookingsFetched && (bookingType === BOOKING_TYPE.C || bookingType === BOOKING_TYPE.P)
+
   return (
     <>
-      {!eventsFetched && <div className={classes.progress}><CircularProgress color='primary' /></div>}
-      {eventsFetched && 
+      {!artistBooking && !adminBooking && <div className={classes.progress}><CircularProgress color='primary' /></div>}
+      {(artistBooking || adminBooking) && 
       <>
-        {events.length > 0 ?
+        {(events.length > 0 || adminBookings.length > 0) ?
         <>
-          <Card event={events[activeStep]} />
+          {bookingType === BOOKING_TYPE.A ? <EventCard event={events[activeStep]} /> : <AdminBookingCard booking={adminBookings[activeStep]} />}
           <MobileStepper
             steps={maxSteps}
             position="static"
@@ -100,14 +127,14 @@ const BookingCards = ({events, eventsFetched, activeStep, setActiveStep}) => {
             activeStep={activeStep}
             nextButton={
               <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
-                Next event
+                Next booking
                 <KeyboardArrowRight />
               </Button>
             }
             backButton={
               <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
                 <KeyboardArrowLeft />
-                Prev event
+                Prev booking
               </Button>
             }
           />

@@ -15,8 +15,8 @@ const Checkout = lazy(() => import('../pages/Checkout'))
 const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
 const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
 
-const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
-  const { services, servicesFetched, events, eventsFetched, artists } = useContext(BookingsStoreContext)
+const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
+  const { services, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists } = useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
   const [artistSignedIn, setArtistSignedIn] = useState(false)
@@ -88,12 +88,11 @@ const Routes = ({ theme, bookingStage, changeBookingStage, resetBooking, priceFa
               <Manage 
                 events={events} 
                 eventsFetched={eventsFetched}
-                services={services} 
-                bookingStage={bookingStage} 
-                changeBookingStage={changeBookingStage} 
-                bookingValue={bookingValue}
-                depositPayable={depositPayable}
-                artists={artists}/>
+                adminBookings={adminBookings}
+                adminBookingsFetched={adminBookingsFetched}
+                bookingData={bookingsData}
+                bookingType={bookingType}
+              />
               :
               <Redirect to="/" />
             }                  

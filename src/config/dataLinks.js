@@ -2,7 +2,7 @@ const miniOrangeAccessKey = process.env.REACT_APP_MINIORANGE_ACCESS_KEY
 /*
  * Hair On the Move 2 U Home page
  */
-export const home_url = "https://procomhost.com"
+export const home_url = process.env.REACT_APP_HOTM_BACKEND
 
 export const corporate_url = `${home_url}/contact-us/`
 export const contact_phone = "1300 816 757"

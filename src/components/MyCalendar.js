@@ -35,8 +35,6 @@ const MyCalendar = ({
     'draft': '#037'
   }
 
-
-
   useEffect(() => {
     setLocalEvents(mergeArrays(events, localEvents))
   }, [events])

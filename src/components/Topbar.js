@@ -13,14 +13,13 @@ import Drawer from '@material-ui/core/Drawer'
 import { Link as MaterialLink, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
 import LinkIcon from '@material-ui/icons/Link'
-import CreateIcon from '@material-ui/icons/Create'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import LockIcon from '@material-ui/icons/Lock'
 import BusinessIcon from '@material-ui/icons/Business'
 import BrushIcon from '@material-ui/icons/Brush'
 import BusinessCenterIcon from '@material-ui/icons/BusinessCenter'
-import FilterListIcon from '@material-ui/icons/FilterList'
+import SearchIcon from '@material-ui/icons/Search'
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 import SigninForm from '../config/SigninFormContainer'
@@ -190,10 +189,11 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
                 </List>
               </div>
             </Drawer>
+            <span>&nbsp;</span>
+            <span>{ `v${process.env.REACT_APP_VERSION}` }</span>
           </React.Fragment>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <span>{ `v${process.env.REACT_APP_VERSION}` }</span>
             {bookingPage && 
             <React.Fragment>
               <AccountBalanceWalletIcon fontSize='small'/>
@@ -201,11 +201,12 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
             </React.Fragment>}
             {retrievalPage && 
             <IconButton
-              edge="end"
+              edge="start"
               color="inherit"
               onClick={handleFilter}
             >
-              <FilterListIcon/>
+              <SearchIcon/>
+              <Typography variant='body1'>bookings</Typography>
             </IconButton>}
             <IconButton
               edge="end"

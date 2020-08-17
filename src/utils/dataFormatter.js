@@ -1,4 +1,6 @@
 import { getBookingValue } from './getBookingValue'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { id } from 'date-fns/locale'
 
 export function normaliseArtists(artistArr)
 {
@@ -12,8 +14,9 @@ export function normaliseArtists(artistArr)
     //Filter out invalid entries so that artist selection can display the list properly
     let state = artistArr[i].state.toUpperCase()
     if (validStates.includes(state) && artistArr[i].name && validEmails.includes(artistArr[i].email)) {
-      artists[artistArr[i].id.toString()] = {
-        id: artistArr[i].id,
+      const id = artistArr[i].id
+      artists[id.toString()] = {
+        id: id,
         name: artistArr[i].name,
         email: artistArr[i].email,
         state: state,
@@ -30,18 +33,19 @@ export function normaliseArtists(artistArr)
 
 export function normaliseCorpCards(corpCardsArr)
 {
-  let corpCards = []
+  let corpCards = {}
   
   for (let i = 0; i < corpCardsArr.length; i++ ) {
+    const id = corpCardsArr[i].id
     const card = {
-      id: corpCardsArr[i].id,
+      id: id,
       name: corpCardsArr[i].corporate_name,
       location: corpCardsArr[i].event_address,
       contactPerson: corpCardsArr[i].contact_name,
       contactPhone: corpCardsArr[i].contact_phone,
       contactEmail: corpCardsArr[i].contact_email
     }
-    corpCards.push(card)
+    corpCards[id.toString()] = card
   }
 
   return corpCards
@@ -67,8 +71,9 @@ export function normaliseClients(clientArr)
   let clients = {}
   
   for (let i = 0; i < clientArr.length; i++ ) {
-    clients[clientArr[i].id.toString()] = {
-      id: clientArr[i].id,
+    const id = clientArr[i].id
+    clients[id.toString()] = {
+      id: id,
       name: clientArr[i].name,
       phone: clientArr[i].phone
     }
@@ -118,6 +123,34 @@ function localDate(bookingDate, bookingTime)
   const min = bookingTime.slice(3)
 
   return new Date(y, mon, d, h, min)
+}
+
+export function getAdminBookings(bookingType, bookings, artists, clients, servicesMenu, corpCards)
+{
+  let adminBookings = []
+
+  for (const id in bookings) {
+    const booking = bookings[id]
+    const cId = booking.card_or_client_id.toString()
+    // debugger
+    const title = bookingType.name === BOOKING_TYPE.C ? corpCards[cId].name : `${clients[cId].name} - ${servicesMenu[booking.service_item.toString()].description}`
+
+    let artistList = []
+    let dateList = []
+    booking.event_list.forEach(event => {
+      artistList.push(artists[event.artist_id].name)
+      dateList.push(event.booking_date)
+    })
+    adminBookings.push({
+      id: booking.booking_id,
+      title: title,
+      artistList: artistList,
+      dateList: dateList
+    })
+  }
+
+  //sort in ascending order
+  return adminBookings.sort(function(a, b) {return a.dateList[0] - b.dateList[0]})
 }
 
 export function getEvents(bookings, artists, clients, servicesMenu)
