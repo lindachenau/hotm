@@ -133,24 +133,26 @@ export function getAdminBookings(bookingType, bookings, artists, clients, servic
     const booking = bookings[id]
     const cId = booking.card_or_client_id.toString()
     // debugger
-    const title = bookingType.name === BOOKING_TYPE.C ? corpCards[cId].name : `${clients[cId].name} - ${servicesMenu[booking.service_item.toString()].description}`
-
-    let artistList = []
-    let dateList = []
+    const title = bookingType.name === BOOKING_TYPE.C ? corpCards[cId].name : `${servicesMenu[booking.service_item.toString()].description}`
+    const contact = bookingType.name === BOOKING_TYPE.C ? `${corpCards[cId].contactPerson} - ${corpCards[cId].contactPhone}` : `${clients[cId].name} - ${clients[cId].phone}`
+    let eventList = []
     booking.event_list.forEach(event => {
-      artistList.push(artists[event.artist_id].name)
-      dateList.push(event.booking_date)
+      if (artists[event.artist_id]) {
+        const eventDetail = `${event.booking_date} / ${artists[event.artist_id].name} / ${event.job_description}`
+        eventList.push(eventDetail)
+      }
     })
     adminBookings.push({
       id: booking.booking_id,
       title: title,
-      artistList: artistList,
-      dateList: dateList
+      contact: contact,
+      totalHours: booking.total_hours_booked,
+      eventList: eventList
     })
   }
 
   //sort in ascending order
-  return adminBookings.sort(function(a, b) {return a.dateList[0] - b.dateList[0]})
+  return adminBookings.sort(function(a, b) {return a.eventList[0] - b.eventList[0]})
 }
 
 export function getEvents(bookings, artists, clients, servicesMenu)

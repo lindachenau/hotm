@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useContext }  from 'react'
+import React, { useState, useEffect }  from 'react'
 import moment from 'moment'
-import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog, FaCalendarAlt } from "react-icons/fa"
+import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog } from "react-icons/fa"
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
@@ -11,8 +11,7 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import EmojiNatureIcon from '@material-ui/icons/EmojiNature'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import CommentIcon from '@material-ui/icons/Comment';
-import { BookingsStoreContext } from './BookingsStoreProvider'
+import CommentIcon from '@material-ui/icons/Comment'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const useStyles = makeStyles(theme => ({
@@ -80,11 +79,13 @@ function AdminBookingCard ({ booking }) {
       </Typography>
       <div>
         <br/>
-        <FaUserCog/>
-        <span>{ booking.artistList.map(artist => artist).join(', ')}</span>
+        <span>{`Contact: ${booking.contact}`}</span>
         <br/>
-        <FaCalendarAlt/>
-        <span>{ booking.dateList.map(date => date).join(', ')}</span>
+        <span>{`Total hours booked: ${booking.totalHours}`}</span>
+        <br/>
+        <ul>
+          {booking.eventList.map(event => <li>{event}</li>)}
+        </ul>
       </div>
     </Paper>
   )
@@ -114,10 +115,12 @@ const BookingCards = ({bookingType, events, eventsFetched, adminBookings, adminB
 
   return (
     <>
-      {!artistBooking && !adminBooking && <div className={classes.progress}><CircularProgress color='primary' /></div>}
+      {!eventsFetched && !adminBookingsFetched && <div className={classes.progress}><CircularProgress color='primary' /></div>}
       {(artistBooking || adminBooking) && 
       <>
-        {(events.length > 0 || adminBookings.length > 0) ?
+        {(artistBooking && events.length === 0) || (adminBooking && adminBookings.length === 0) ?
+        <Typography variant="h6" align="center" color="textPrimary">No booking found</Typography>
+        :
         <>
           {bookingType === BOOKING_TYPE.A ? <EventCard event={events[activeStep]} /> : <AdminBookingCard booking={adminBookings[activeStep]} />}
           <MobileStepper
@@ -138,10 +141,7 @@ const BookingCards = ({bookingType, events, eventsFetched, adminBookings, adminB
               </Button>
             }
           />
-
-        </>
-        :
-        <Typography variant="h6" align="center" color="textPrimary">No booking found</Typography>}
+        </>}
       </>  
       }
     </>

@@ -128,7 +128,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
       if (clientId)
         newFilter = `${newFilter}&client_id=${clientId.toString()}`
     } else if (corporateId || clientId) {
-      newFilter = `${newFilter}&corporate_or_client_id=${corporateId ? corporateId : clientId}`
+      newFilter = `${newFilter}&card_or_client_id=${corporateId ? corporateId : clientId}`
     }
 
     setBookingUrl(newFilter)
@@ -161,6 +161,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
   useEffect(() => {
     if (bookingsData.isLoading) {
       setEventsFetched(false)
+      setClients({})
     }
     else if (Object.keys(bookingsData.data).length !== 0) {
       
@@ -178,7 +179,6 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
   //fetch new clients whenever the client list is updated
   useEffect(() => {
     if (clientList.length > 0) {
-      setClients({})
       Promise.allSettled(clientList.map(id => {
         const config = {
           method: 'get',
@@ -207,9 +207,15 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [clientList])
 
+  //negate all fetched bookings when a new search starts
+  useEffect(() => {
+    setEventsFetched(false)
+    setAdminBookingsFetched(false)
+  }, [bookingTrigger])
+
   //regenerate events whenever clients or bookings data are updated
   useEffect(() => {
-    if (artistsFetched && servicesFetched && Object.keys(clients).length > 0) {
+    if (artistsFetched && servicesFetched && (Object.keys(clients).length > 0 || bookingType.name === BOOKING_TYPE.C)) {
       if (bookingType.name === BOOKING_TYPE.A) {
         setEvents(getEvents(bookingsData.data, artists, clients, services.items))
         setEventsFetched(true)
