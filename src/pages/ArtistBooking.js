@@ -9,14 +9,14 @@ import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container'
 import Button from '@material-ui/core/Button'
-
 import AddArtists from '../components/AddArtists'
 import LocationSearchInput from '../components/LocationSearchInput'
 import AddClient from '../components/AddClient'
 import EventForm from '../components/EventForm'
 import ServiceMenu from '../config/ServiceMenuContainer'
 import ArtistBookingItems from '../components/ArtistBookingItems'
-import { mergeArrays, startDate, endDate } from '../utils/misc'
+import EventManager from '../components/EventManager'
+import { mergeThenSort, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const localizer = momentLocalizer(moment)
@@ -36,7 +36,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const ArtistBooking = ({
-  theme, 
+  location,
+  theme,
+  artistBooking,
   services,
   itemQty,
   artists,
@@ -45,6 +47,7 @@ const ArtistBooking = ({
   resetBooking,
   bookingValue,
   addBooking,
+  loadBooking,
   priceFactors }) => {
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
@@ -64,28 +67,38 @@ const ArtistBooking = ({
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
   const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)  
   const items = services.items
-  
-  const mergeThenSort = (arr1, arr2) => {
-    const events = mergeArrays(arr1, arr2).sort((a, b) => {
-      let event1 = a.start.valueOf()
-      let event2 = b.start.valueOf()
-      if (event1 < event2)
-        return -1
-      else if (event1 > event2)
-        return 1
-      else
-        return 0
-    })
-
-    return events
-  }  
+  // This component has 3 modes of operations - book, edit and view. edit and view are redirected from "Manage bookings".
+  const [mode, setMode] = useState('book')
+  const [saveModified, setSaveModified] = useState(false)
 
   useEffect(() => {
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
     if (artistSignedIn && theArtist.length > 0) {
       setArtist(theArtist[0])
       setBooingArtistId(theArtist[0].id)
-      setCalendarId(theArtist[0].email)
+
+      if (!location.state )
+        setCalendarId(theArtist[0].email)
+      else if (location.state.edit) {
+        setMode('edit')
+        setCalendarId(artistBooking.artists[0].email)
+        setAddress(artistBooking.address)
+        setClient(artistBooking.client)
+        setArtist(artistBooking.artists[0])
+        loadBooking(artistBooking.origBooking)
+        const entry = {
+          id: artistBooking.id,
+          type: 'draft',
+          title: 'HOTM Booking',
+          allDay: false,
+          start: artistBooking.start,
+          end: artistBooking.end,
+          artistName: artistBooking.artistName,
+          comment: artistBooking.comment            
+        }
+  
+        setEvents([entry])        
+      }
     }
   }, [])
 
@@ -113,93 +126,6 @@ const ArtistBooking = ({
     setArtistBookingItems(artItems)
   }, [itemQty])
 
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const events = await window.gapi.client.calendar.events.list({
-          'calendarId': calendarId,
-          'timeMin': startDate(fromDate),
-          'timeMax': endDate(toDate),
-          'showDeleted': false,
-          'singleEvents': true,
-          'orderBy': 'startTime'
-        })
-
-        const artEvents = events.result.items.map((item) => {
-          return {
-            id: item.id,
-            start: new Date(item.start.dateTime),
-            end: new Date(item.end.dateTime),
-            artistName: artist.name,
-            type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
-          }
-        })
-        setEvents(artEvents)
-      } catch (err) {
-        const errMessage = err.result.error.message
-        alert(`Event fetch error: ${errMessage}`)
-        console.log('Event fetch error: ', errMessage)
-      }
-    }
-    
-    //Artist is signed in to Google Calendar & with a valid calendar
-    if (artistSignedIn && calendarId) 
-      fetchEvents()
-
-  }, [calendarId, fromDate, toDate])
-
-  useEffect(() => {
-    if (draftEvent) {
-      setEvents([draftEvent])
-      setDraftEvents(mergeThenSort([draftEvent], draftEvents))
-    }
-  }, [draftEvent])
-
-  useEffect(() => {
-    const events = draftEvents.filter(event => event.id !== draftEvent.id)
-    setDraftEvents(events)
-  }, [triggerDeleteEvent])
-
-  const onSelectEvent = (event) => {
-    if (event.type !== 'draft')
-      return
-    setDraftEvent(event)
-    setTriggerEventForm(!triggerEventForm)
-  }
-
-  const onSaveEventDetails = (comment) => {
-    setDraftEvent({...draftEvent, comment})
-  }  
-
-  const moveEvent = ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
-
-    if (event.type !== 'draft')
-      return
-
-    let allDay = event.allDay
-
-    if (!event.allDay && droppedOnAllDaySlot) {
-      allDay = true
-    } else if (event.allDay && !droppedOnAllDaySlot) {
-      allDay = false
-    }
-
-    const updatedEvent = { ...event, start, end, allDay }
-
-    setEvents([updatedEvent])
-    setDraftEvents(mergeThenSort([updatedEvent], draftEvents))
-  }
-
-  const resizeEvent = ({ event, start, end }) => {
-    console.log(start, end)
-    if (event.type !== 'draft' || start >= end)
-      return
-
-    const resized = {...event, start, end}
-    setEvents([resized])
-    setDraftEvents(mergeThenSort([resized], draftEvents))
-  }
-
   const newEvent = (event) => {
 
     //Disable adding new event in month view
@@ -217,28 +143,18 @@ const ArtistBooking = ({
       start: event.start,
       end: event.end,
       artistName: artist ? artist.name : '',
+      artistId: artist ? artist.id : '',
       comment: ''      
     }
     setEvents([newEvent])
     setDraftEvents(mergeThenSort([newEvent], draftEvents))
   }
 
-  const onNavigate = (date, view) => {
-    if (view === 'month') {
-      const start = moment(date).startOf('month').startOf('week')._d
-      const end = moment(date).endOf('month').endOf('week')._d
-      if (start < fromDate)
-        setFromDate(start)
-      if (end > toDate)
-        setToDate(end)      
-    }
-
-    if (view === 'day') {
-      if (date < fromDate)
-        setFromDate(date)
-      if (date > toDate)
-        setToDate(date)      
-    }
+  const onSelectEvent = (event) => {
+    if (event.type !== 'draft')
+      return
+    setDraftEvent(event)
+    setTriggerEventForm(!triggerEventForm)
   }
 
   const handleBook = () => {
@@ -283,6 +199,7 @@ const ArtistBooking = ({
           <LocationSearchInput address={address} changeAddr={(address) => {setAddress(address)}}/>  
           <div className={classes.padding}>
             <AddClient
+              disabled={mode !== 'book'}
               setClient={setClient}
               client={client}
               label="Add client"
@@ -290,6 +207,7 @@ const ArtistBooking = ({
           </div>
           <div className={classes.padding}>
             <AddArtists
+              disabled={mode === 'view'}
               artists={artists}
               multiArtists={false}
               clearable={false}
@@ -309,7 +227,7 @@ const ArtistBooking = ({
               color="primary"
               disabled={draftEvents.length !== 1 || address === '' || client === null || Object.keys(itemQty).length === 0}
             >
-              Book
+              {mode === 'book' ? 'Book' : 'Save'}
             </Button>
             <div className={classes.grow} />
           </div>                    
@@ -323,10 +241,10 @@ const ArtistBooking = ({
             localizer={localizer}
             artist={artist}
             onSelectEvent={onSelectEvent}
-            moveEvent={moveEvent}
-            resizeEvent={resizeEvent}
+            moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
+            resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
             newEvent={newEvent}
-            onNavigate={onNavigate}
+            onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate)}
             triggerSaveAllDrafts={triggerSaveAllDrafts}
             triggerDeleteEvent={triggerDeleteEvent}
             eventToDelete={draftEvent? draftEvent.id : null}
@@ -335,15 +253,32 @@ const ArtistBooking = ({
       </Grid>
       <EventForm 
         theme={theme}
+        mode={mode}
+        setSaveModified={setSaveModified}
         draftEvent={draftEvent}
         withLocation={false}
         withContact={false}
         withTask={false}
         triggerOpen={triggerEventForm}
         initOpen={false}
-        onSaveEventDetails={onSaveEventDetails}
+        onSaveEventDetails={(task, location, contact, comment) => onSaveEventDetails(task, location, contact, comment, draftEvent, setDraftEvent)}
         onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
-      />      
+      />
+      <EventManager
+        mode={mode}
+        saveModified={saveModified}
+        setSaveModified={setSaveModified}
+        artistSignedIn={artistSignedIn}
+        artist={artist}
+        calendarId={calendarId}
+        fromDate={fromDate}
+        toDate={toDate}
+        setEvents={setEvents}
+        draftEvent={draftEvent}
+        draftEvents={draftEvents}
+        setDraftEvents={setDraftEvents}     
+        triggerDeleteEvent={triggerDeleteEvent}
+      />        
     </Container>
   )
 }

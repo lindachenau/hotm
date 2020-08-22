@@ -26,7 +26,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-export default function AddClient({client, setClient, label}) {
+export default function AddClient({client, setClient, label, disabled=false}) {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState(client !== null ? [client] : [])
   const [searchKey, setSearchKey] = useState('')
@@ -103,6 +103,7 @@ export default function AddClient({client, setClient, label}) {
 
   return (
     <Autocomplete
+      disabled={disabled}
       id="asynchronous-client"
       open={open}
       onOpen={handleOpen}

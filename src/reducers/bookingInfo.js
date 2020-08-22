@@ -15,7 +15,6 @@ import {
   FETCH_ADMIN_TASKS,
   SEARCH_BOOKING,
   ADD_BOOKING,
-  SAVE_BOOKING,
   UPDATE_BOOKING,
   CANCEL_BOOKING,
   RESET_BOOKING,
@@ -341,15 +340,6 @@ export function storeActivation(state = initActivation, action) {
         data: action.payload,
         bookingTrigger: !state.bookingTrigger,
         callMe: null
-      })
-    }
-    /*
-     * Save booking information in an object as required by submission format for later use.
-     * This is different from LOAD_BOOKING which initializes the booking state from an existing booking.
-     */
-    case SAVE_BOOKING: {
-      return Object.assign({}, state, {
-        bookingData: action.payload
       })
     }
     case RESET_BOOKING: {

@@ -15,8 +15,9 @@ import AddCorporate from '../components/DropdownList'
 import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
 import EventManager from '../components/EventManager'
-import { onSelectEvent, resizeEvent, moveEvent, newEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
+import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { localDate } from '../utils/dataFormatter'
 
 const localizer = momentLocalizer(moment)
 
@@ -34,7 +35,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking}) => {
+const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking}) => {
   const { corpCards, adminTasks } = useContext(BookingsStoreContext)
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
@@ -52,6 +53,9 @@ const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
   const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
+  // This component has 3 modes of operations - book, edit and view. edit and view are redirected from "Manage bookings".
+  const [mode, setMode] = useState('book')
+  const [saveModified, setSaveModified] = useState(false)
   
   useEffect(() => {
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
@@ -59,6 +63,74 @@ const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking
       setBooingArtistId(theArtist[0].id)
     }
   }, [])
+
+  useEffect(() => {
+    if (location.state && location.state.view)
+      setMode('view')
+    else if (location.state && location.state.edit)
+      setMode('edit')
+  }, [])
+
+  useEffect(() => {
+    if (mode !== 'book') {
+      console.log(adminBooking)
+      setCorporate(corpCards.filter(card => card.id === adminBooking.cId)[0])
+      let events = []
+      adminBooking.origEventList.map((event) => {
+        const entry = {
+          id: event.event_id,
+          type: 'draft',
+          title: 'HOTM Booking',
+          allDay: false,
+          start: localDate(event.booking_date, event.booking_start_time),
+          end: localDate(event.booking_date, event.booking_end_time),
+          artistName: artists[event.artist_id].name,
+          artistId: artists[event.artist_id].id,
+          task: event.job_description,
+          subject: adminBooking.title,      
+          location: event.event_location,
+          contact: event.contact,
+          comment: event.comment            
+        }
+        events.push(entry)
+      })
+      setEvents(events)
+    }
+  }, [mode])
+
+  const newEvent = (event) => {
+
+    //Disable adding new event in month view and before artist and corporate selection
+    if (event.slots.length === 1)
+      return
+
+    //Disable adding new event before artist and corporate selection
+    if (artist === null || corporate === null) {
+      alert('Select artist and corporate before creating an event.')
+      return
+    }             
+  
+    const newId = `draft-${draftId}`
+    setDraftId(draftId + 1)
+  
+    const newEvent = {
+      id: newId,
+      type: 'draft',
+      title: 'New Event',
+      allDay: false,
+      start: event.start,
+      end: event.end,
+      artistName: artist.name,
+      artistId: artist.id,
+      task: task ? task.name : '',
+      subject: corporate.name,      
+      location: corporate.location,
+      contact: `${corporate.contactPerson} - ${corporate.contactPhone}`,
+      comment: ''      
+    }
+    setEvents([newEvent])
+    setDraftEvents(mergeThenSort([newEvent], draftEvents))
+  }
   
   const handleBook = () => {
 
@@ -97,6 +169,7 @@ const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking
       <Grid container justify="space-around" spacing={1}>
         <Grid item xs={12} md={3}>
           <AddCorporate
+            disabled={mode !== 'book'}
             options={corpCards}
             disableClearable={true}
             id="corporate-list"
@@ -107,6 +180,7 @@ const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking
           />             
           <div className={classes.padding}>
             <AddArtists
+              disabled={mode === 'view'}
               artists={artists}
               multiArtists={false}
               clearable={false}
@@ -124,14 +198,17 @@ const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking
           </div>
           <div className={classes.padding2}>
             <div className={classes.grow} />
+            {mode === 'view' ?
+            null
+            :
             <Button 
               variant="contained" 
               onClick={handleBook} 
               color="primary" 
-              disabled={draftEvents.length === 0 || artist === null || corporate === null}
+              disabled={draftEvents.length === 0 || corporate === null}
             >
-              Book all drafts
-            </Button>
+              {mode === 'book' ? 'Book all drafts' : 'Save modified drafts'}
+            </Button>}
             <div className={classes.grow} />
           </div>          
         </Grid>
@@ -143,7 +220,7 @@ const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking
             onSelectEvent={(event) => onSelectEvent(event, setDraftEvent, adminTasks, setTask, triggerEventForm, setTriggerEventForm)}
             moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
             resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
-            newEvent={(event) => newEvent(event, draftId, setDraftId, setEvents, draftEvents, setDraftEvents, artist, task, corporate)}
+            newEvent={newEvent}
             onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate)}
             triggerSaveAllDrafts={triggerSaveAllDrafts}
             triggerDeleteEvent={triggerDeleteEvent}
@@ -153,6 +230,8 @@ const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking
       </Grid>
       <EventForm 
         theme={theme}
+        mode={mode}
+        setSaveModified={setSaveModified}
         draftEvent={draftEvent}
         triggerOpen={triggerEventForm}
         initOpen={false}
@@ -163,6 +242,9 @@ const CorporateBooking = ({theme, artists, userEmail, artistSignedIn, addBooking
         onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
       />
       <EventManager
+        mode={mode}
+        saveModified={saveModified}
+        setSaveModified={setSaveModified}
         artistSignedIn={artistSignedIn}
         artist={artist}
         calendarId={calendarId}

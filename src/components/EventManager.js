@@ -3,6 +3,9 @@ import { startDate, endDate } from '../utils/misc'
 import { mergeThenSort } from '../utils/eventFunctions'
 
 const EventManager = ({
+  mode,
+  saveModified,
+  setSaveModified,
   artistSignedIn,
   artist,
   calendarId, 
@@ -33,6 +36,7 @@ const EventManager = ({
             start: new Date(item.start.dateTime),
             end: new Date(item.end.dateTime),
             artistName: artist.name,
+            artistId: artist.id,
             type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
           }
         })
@@ -52,9 +56,10 @@ const EventManager = ({
   
 
   useEffect(() => {
-    if (draftEvent) {
+    if (draftEvent && (mode === 'book' || (mode === 'edit' && saveModified))) {
       setEvents([draftEvent])
       setDraftEvents(mergeThenSort([draftEvent], draftEvents))
+      setSaveModified(false)
     }
   }, [draftEvent])
 

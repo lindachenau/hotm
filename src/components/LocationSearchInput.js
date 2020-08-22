@@ -28,7 +28,7 @@ const searchOptions = {
   }
 }
 
-export default function LocationSearchInput ({ address, changeAddr}) {
+export default function LocationSearchInput ({ address, changeAddr, disabled=false}) {
   const classes = useStyles()
 
   return (
@@ -51,6 +51,7 @@ export default function LocationSearchInput ({ address, changeAddr}) {
                   <AddLocationIcon />
                 </InputAdornment>
               }
+              disabled={disabled}
             />
           </FormControl>
           <div>

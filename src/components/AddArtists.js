@@ -2,7 +2,7 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 
-export default function AddArtists({tags, setTags, multiArtists, clearable, artists, label}) {
+export default function AddArtists({tags, setTags, multiArtists, clearable, disabled=false, artists, label}) {
 
   const artistOptions = Object.values(artists).sort((a, b) => {
     let artists1 = a.state.toUpperCase() + a.name + a.email
@@ -23,6 +23,7 @@ export default function AddArtists({tags, setTags, multiArtists, clearable, arti
     <Autocomplete
       multiple={multiArtists}
       id="artist-list"
+      disabled={disabled}
       disableClearable={clearable}
       filterSelectedOptions
       options={artistOptions}

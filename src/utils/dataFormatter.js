@@ -114,7 +114,7 @@ export function normaliseServices(serviceArr)
   }
 }
 
-function localDate(bookingDate, bookingTime)
+export function localDate(bookingDate, bookingTime)
 {
   const y = bookingDate.slice(0, 4)
   const mon = bookingDate.slice(5, 7) - 1 // Jan is 0
@@ -147,7 +147,11 @@ export function getAdminBookings(bookingType, bookings, artists, clients, servic
       title: title,
       contact: contact,
       totalHours: booking.total_hours_booked,
-      eventList: eventList
+      serviceItem: booking.service_item,
+      eventList: eventList,
+      cId: booking.card_or_client_id,
+      client: clients[booking.card_or_client_id],
+      origEventList: booking.event_list
     })
   }
 
@@ -204,7 +208,8 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         depositPaid: booking.paid_deposit_total,
         complete: complete,
         comment: booking.comment,
-        total: total
+        total: total,
+        origBooking: booking
       })
     }
   }

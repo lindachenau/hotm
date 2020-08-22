@@ -34,7 +34,9 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function EventForm({
-  theme, 
+  theme,
+  mode,
+  setSaveModified,
   triggerOpen, 
   draftEvent,
   withLocation = true,
@@ -82,6 +84,9 @@ export default function EventForm({
     else
       onSaveEventDetails(task ? task.name : '', location, contact, comment)
 
+    if (mode === 'edit')
+      setSaveModified(true)
+
     setOpen(false)
   }
 
@@ -93,15 +98,23 @@ export default function EventForm({
   return (
     <>
       <Dialog fullWidth open={open} onBackdropClick={() => setOpen(false)}>
-        <div className={classes.container}>
-          <div className={classes.grow} />
-          <CreateIcon color='primary' fontSize='large'/>
-          <div className={classes.grow} />
-        </div>
+        {mode !== 'view' &&
+          <div className={classes.container}>
+            <div className={classes.grow} />
+            <CreateIcon color='primary' fontSize='large'/>
+            <div className={classes.grow} />
+          </div>}
         <DialogContent>
-          {withLocation && <LocationSearchInput address={location} changeAddr={onChangeLocation}/>}
+          {withLocation && 
+            <LocationSearchInput
+              disabled={mode === 'view'}
+              address={location} 
+              changeAddr={onChangeLocation}
+            />}
           {withContact &&
             <TextField
+              disabled={mode === 'view'}
+              id='contact'
               defaultValue={contact}
               required
               margin="dense"
@@ -114,6 +127,7 @@ export default function EventForm({
           {withTask && 
             <div className={classes.job}>
               <AddJobDescription
+                disabled={mode === 'view'}
                 options={taskList}
                 id="task-list"
                 label="Job description"
@@ -123,7 +137,8 @@ export default function EventForm({
               />
             </div>}
           <TextField
-            id="outlined-textarea"
+            disabled={mode === 'view'}
+            id="comment"
             label="Additional instructions"
             placeholder="Additional instructions"
             defaultValue={comment}
@@ -134,14 +149,15 @@ export default function EventForm({
             onChange={(event) => setComment(event.target.value)}
           />          
         </DialogContent>
-        <DialogActions className={classes.button}>
-          <Button variant="contained" onClick={handleDeleteEvent} color="primary" fullWidth>
-            Delete
-          </Button>
-          <Button variant="contained" onClick={handleSaveEventDetails} color="primary" fullWidth disabled={disableDone}>
-            Done
-          </Button>
-        </DialogActions>         
+        {mode !== 'view' &&
+          <DialogActions className={classes.button}>
+            <Button variant="contained" onClick={handleDeleteEvent} color="primary" fullWidth>
+              Delete
+            </Button>
+            <Button variant="contained" onClick={handleSaveEventDetails} color="primary" fullWidth disabled={disableDone}>
+              Save
+            </Button>
+          </DialogActions>}        
       </Dialog>
     </>
   )

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react"
-import { withRouter } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from "react"
+import { Redirect, withRouter } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import IconButton from '@material-ui/core/IconButton'
@@ -20,12 +20,20 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, loadBooking, saveBooking, bookingsData, bookingType}) => {
+const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, loadBooking, bookingsData, bookingType, prevActiveStep, setPrevActiveStep}) => {
   // bookingType = bookingFilter.bookingType.name
-  const [activeStep, setActiveStep] = useState(0)
+  const [activeStep, setActiveStep] = useState(prevActiveStep)
+  const didMountRef = useRef(false)
   const classes = useStyles()
   const [completed, setCompleted] = useState(false)
+  const [browsing, setBrowsing] = useState(true)
   const bookings = bookingsData ? bookingsData.data : null
+  const [location, setLocation] = useState({})
+  const pathnames = {
+    corporate: '/corporate',
+    package: '/package',
+    artist:'/artist'
+  }
 
   // disable EDIT and CHECKOUT for completed bookings
   // useEffect(() => {
@@ -33,51 +41,73 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, lo
   //     setCompleted(events[activeStep].complete)
   // }, [events, activeStep])
 
-  // const handleEdit = () => {
-  //   loadBooking({...bookings[events[activeStep].id], client: events[activeStep].client})
-  // }
+  const handleView = () => {
+    setPrevActiveStep(activeStep)
+    setLocation({
+      pathname: pathnames[bookingType],
+      state: {view : true}
+    })
+    setBrowsing(false)
+    // loadBooking({...bookings[events[activeStep].id], client: events[activeStep].client})
+  }
 
-  // const handleCheckout = () => {
-  //   const bookingId = events[activeStep].id
-  //   const booking = bookings[bookingId]
-  //   loadBooking({...booking, client: events[activeStep].client})
-  //   saveBooking({...booking, payment_type: 'checkout_credit', payment_amount: (booking.total_amount - booking.paid_deposit_total)})
-  // }
+  const handleEdit = () => {
+    setPrevActiveStep(activeStep)
+    setLocation({
+      pathname: pathnames[bookingType],
+      state: {edit : true}
+    })
+    setBrowsing(false)    
+    // loadBooking({...bookings[events[activeStep].id], client: events[activeStep].client})
+  }
+
+  const handlePayment = () => {}
+
+  const handleDelete = () => {}
 
   useEffect(() => {
-    setActiveStep(0)
-  }, [bookingType])
+    // Don't reset on mount
+    if (didMountRef.current)
+      setActiveStep(0)
+    else
+      didMountRef.current = true
+  }, [eventsFetched, adminBookingsFetched])
 
   return (
-    <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
-      <BookingCards
-        bookingType={bookingType}
-        adminBookings={adminBookings}
-        adminBookingsFetched={adminBookingsFetched}
-        events={events} 
-        eventsFetched={eventsFetched} 
-        activeStep={activeStep}
-        setActiveStep={setActiveStep}
-      />
-      <div className={classes.flex}>
-        {bookingType !== BOOKING_TYPE.A && 
-        <IconButton edge="start" color="primary">
-          <DescriptionIcon/>
-        </IconButton>}
-        <div className={classes.grow} />
-        <IconButton edge="start" color="primary">
-          <EditIcon/>
-        </IconButton>
-        <div className={classes.grow} />
-        <IconButton edge="start" color="primary">
-          <PaymentIcon/>
-        </IconButton>
-        <div className={classes.grow} />
-        <IconButton edge="start" color="primary">
-          <DeleteForeverIcon/>
-        </IconButton>           
-      </div>            
-    </Container>    
+    <>
+      {browsing ?
+      <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
+        <BookingCards
+          bookingType={bookingType}
+          adminBookings={adminBookings}
+          adminBookingsFetched={adminBookingsFetched}
+          events={events} 
+          eventsFetched={eventsFetched} 
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}
+        />
+        <div className={classes.flex}>
+          {bookingType !== BOOKING_TYPE.A && 
+          <IconButton edge="start" color="primary" onClick={handleView}>
+            <DescriptionIcon/>
+          </IconButton>}
+          <div className={classes.grow} />
+          <IconButton edge="start" color="primary" onClick={handleEdit}>
+            <EditIcon/>
+          </IconButton>
+          <div className={classes.grow} />
+          <IconButton edge="start" color="primary" onClick={handlePayment}>
+            <PaymentIcon/>
+          </IconButton>
+          <div className={classes.grow} />
+          <IconButton edge="start" color="primary" onClick={handleDelete}>
+            <DeleteForeverIcon/>
+          </IconButton>           
+        </div>            
+      </Container>
+      :
+      <Redirect to={location} />}
+    </>  
   )
 }
 

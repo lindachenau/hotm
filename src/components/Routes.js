@@ -20,6 +20,7 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
   const [artistSignedIn, setArtistSignedIn] = useState(false)
+  const [prevActiveStep, setPrevActiveStep] = useState(0)
 
   useEffect(() => {
     setBookingValue(getBookingValue(services.items, priceFactors, itemQty))
@@ -58,7 +59,9 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                   userEmail={userEmail}
                   bookingValue={bookingValue}
                   resetBooking={resetBooking}
-                  artistSignedIn={artistSignedIn}/>
+                  artistSignedIn={artistSignedIn}
+                  artistBooking={events[prevActiveStep]}
+                />
                 :
                 <Redirect to="/" />
               }
@@ -68,7 +71,9 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 <CorporateBooking
                   artists={artists}
                   userEmail={userEmail}
-                  artistSignedIn={artistSignedIn}/>
+                  artistSignedIn={artistSignedIn}
+                  adminBooking={adminBookings[prevActiveStep]}
+                />
                 :
                 <Redirect to="/" />
               }
@@ -78,7 +83,9 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
               <PackageBooking
                 artists={artists}
                 userEmail={userEmail}
-                artistSignedIn={artistSignedIn}/>
+                artistSignedIn={artistSignedIn}
+                adminBooking={adminBookings[prevActiveStep]}
+              />
               :
               <Redirect to="/" />
             }                
@@ -92,6 +99,8 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 adminBookingsFetched={adminBookingsFetched}
                 bookingData={bookingsData}
                 bookingType={bookingType}
+                prevActiveStep={prevActiveStep}
+                setPrevActiveStep={setPrevActiveStep}
               />
               :
               <Redirect to="/" />

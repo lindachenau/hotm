@@ -49,34 +49,6 @@ export const resizeEvent = (event, start, end, setEvents, draftEvents, setDraftE
   setDraftEvents(mergeThenSort([resized], draftEvents))
 }
 
-export const newEvent = (event, draftId, setDraftId, setEvents, draftEvents, setDraftEvents, artist, task, corporate) => {
-
-  //Disable adding new event in month view
-  if (event.slots.length === 1)
-    return
-
-  const newId = `draft-${draftId}`
-  setDraftId(draftId + 1)
-
-  const newEvent = {
-    id: newId,
-    type: 'draft',
-    title: 'New Event',
-    allDay: false,
-    start: event.start,
-    end: event.end,
-    artistName: artist ? artist.name : '',
-    artistId: artist ? artist.id : '',
-    task: task ? task.name : '',
-    subject: corporate ? corporate.name : '',      
-    location: corporate? corporate.location : '',
-    contact: corporate ? `${corporate.contactPerson} - ${corporate.contactPhone}`: '',
-    comment: ''      
-  }
-  setEvents([newEvent])
-  setDraftEvents(mergeThenSort([newEvent], draftEvents))
-}
-
 export const onNavigate = (date, view, fromDate, setFromDate, toDate, setToDate) => {
   if (view === 'month') {
     const start = moment(date).startOf('month').startOf('week')._d
