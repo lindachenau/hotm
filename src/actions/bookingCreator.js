@@ -114,22 +114,25 @@ export const searchBooking = () => ({
   type : SEARCH_BOOKING
 })
 
-export const addBooking = (bookingInfo, bookingType, callMe) => ({
+export const addBooking = (bookingInfo, bookingTypeName, callMe) => ({
   type: ADD_BOOKING,
   payload: bookingInfo,
-  bookingType: bookingType,
+  bookingTypeNme: bookingTypeName,
   callMe
 })
 
-export const updateBooking = (bookingInfo, callMe) => ({
+export const updateBooking = (bookingInfo, bookingTypeName, callMe) => ({
   type: UPDATE_BOOKING,
   payload: bookingInfo,
+  bookingTypeName: bookingTypeName,
   callMe
 })
 
-export const cancelBooking = (bookingInfo) => ({
+export const cancelBooking = (bookingInfo, bookingTypeName, callMe=null) => ({
   type: CANCEL_BOOKING,
-  payload: bookingInfo
+  payload: bookingInfo,
+  bookingTypeName: bookingTypeName,
+  callMe
 })
 
 export const assignArtists = (artistIds) => ({

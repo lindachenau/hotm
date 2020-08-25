@@ -79,14 +79,6 @@ export function bookingDateAddr(state = initDateAddr, action) {
         bookingAddr: action.bookingAddr
       }
     }
-    case LOAD_BOOKING: {
-      const booking = action.booking
-      return {
-        bookingDate: new Date(`${booking.booking_date}T${booking.booking_time}:00`),
-        bookingEnd: new Date(`${booking.booking_date}T${booking.booking_end_time}:00`),
-        bookingAddr: booking.event_address
-      }
-    }
     case RESET_BOOKING: {
       return initDateAddr
     }
@@ -118,42 +110,8 @@ export function assignedArtists(state = [], action) {
     case ASSIGN_ARTISTS: {
       return action.artistIds
     }
-    case LOAD_BOOKING: {
-      return action.booking.artist_id_list
-    }
     case RESET_BOOKING: {
       return []
-    }
-    default:
-      return state
-  }
-}
-
-const initClientInfo = {
-  client: null,
-  comment: '',
-  balance: null,
-  paidDeposit: null,
-  bookingId : null
-}
-export function clientInfo(state = initClientInfo, action) {
-  switch (action.type) {
-    case LOAD_BOOKING: { 
-      return Object.assign({}, {
-        client: action.booking.client,
-        comment: action.booking.comment,
-        balance: action.booking.total_amount - action.booking.paid_deposit_total,
-        paidDeposit: action.booking.paid_deposit_total,
-        bookingId: action.booking.booking_id
-      })
-    }
-    case ASSIGN_CLIENT: {
-      return Object.assign({}, state, {
-        client: action.client
-      })
-    }
-    case RESET_BOOKING: {
-      return initClientInfo
     }
     default:
       return state
@@ -319,7 +277,7 @@ export function storeActivation(state = initActivation, action) {
       return Object.assign({}, state, {
         requestMethod: 'post',
         data: action.payload,
-        bookingTypeName: action.bookingType,
+        bookingTypeName: action.bookingTypeName,
         bookingTrigger: !state.bookingTrigger,
         callMe: action.callMe
       })
@@ -329,6 +287,7 @@ export function storeActivation(state = initActivation, action) {
       return Object.assign({}, state, {
         requestMethod: 'put',
         data: action.payload,
+        bookingTypeName: action.bookingTypeName,
         bookingTrigger: !state.bookingTrigger,
         callMe: action.callMe
       })

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react';
+import { Redirect, withRouter } from 'react-router-dom';
 import MyCalendar from '../components/MyCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
 import '../components/CalendarToolbar.css'
@@ -18,6 +18,8 @@ import ArtistBookingItems from '../components/ArtistBookingItems'
 import EventManager from '../components/EventManager'
 import { mergeThenSort, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const localizer = momentLocalizer(moment)
 
@@ -33,6 +35,11 @@ const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1
   },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: 20
+  }  
 }))
 
 const ArtistBooking = ({
@@ -47,6 +54,7 @@ const ArtistBooking = ({
   resetBooking,
   bookingValue,
   addBooking,
+  updateBooking,
   loadBooking,
   priceFactors }) => {
   const classes = useStyles(theme)
@@ -70,7 +78,10 @@ const ArtistBooking = ({
   // This component has 3 modes of operations - book, edit and view. edit and view are redirected from "Manage bookings".
   const [mode, setMode] = useState('book')
   const [saveModified, setSaveModified] = useState(false)
-
+  const [browsing, setBrowsing] = useState(false)
+  const { bookingsData } = useContext(BookingsStoreContext)
+  const { bookingInProgress } = bookingsData
+  
   useEffect(() => {
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
     if (artistSignedIn && theArtist.length > 0) {
@@ -97,11 +108,11 @@ const ArtistBooking = ({
           comment: artistBooking.comment            
         }
   
-        setEvents([entry])        
+        setEvents([entry])
+        setDraftEvents([entry])      
       }
     }
   }, [])
-
 
   const getDuration = () => {
     let duration = 0
@@ -158,16 +169,21 @@ const ArtistBooking = ({
   }
 
   const handleBook = () => {
-    const callBack = (bookingId) => {  
+    const callBack = (bookingId) => {
+      const message = mode === 'book' ? 'Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.' :
+        'Updating successful'
       setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
-      alert('Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.')
+      alert(message)
       setDraftEvents([])
       resetBooking()
+      if (mode === 'edit')
+        setBrowsing(true)
     }
 
     let bookingData = {}
     
     const event = draftEvents[0]
+
     bookingData.client_id = client.id
     bookingData.artist_id_list = [artist.id]
     bookingData.services = Object.keys(itemQty).map(id => parseInt(id))
@@ -189,97 +205,115 @@ const ArtistBooking = ({
     bookingData.payment_amount = 0
     bookingData.payment_type = 'deposit'
 
-    addBooking(bookingData, BOOKING_TYPE.A, callBack)        
+    if (mode === 'book') {
+      addBooking(bookingData, BOOKING_TYPE.A, callBack)
+    }
+    else {
+      bookingData.booking_id = artistBooking.id
+      updateBooking(bookingData, BOOKING_TYPE.A, callBack)
+    }
   }
 
   return (
-    <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
-      <Grid container justify="space-around" spacing={1}>
-        <Grid item xs={12} md={4}>
-          <LocationSearchInput address={address} changeAddr={(address) => {setAddress(address)}}/>  
-          <div className={classes.padding}>
-            <AddClient
-              disabled={mode !== 'book'}
-              setClient={setClient}
-              client={client}
-              label="Add client"
+    <>
+    {browsing ?
+      <Redirect to={'/manage'} />
+      :
+      <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
+        <Grid container justify="space-around" spacing={1}>
+          <Grid item xs={12} md={4}>
+            <LocationSearchInput address={address} changeAddr={(address) => {setAddress(address)}}/>  
+            <div className={classes.padding}>
+              <AddClient
+                disabled={mode !== 'book'}
+                setClient={setClient}
+                client={client}
+                label="Add client"
+              />
+            </div>
+            <div className={classes.padding}>
+              <AddArtists
+                disabled={mode === 'view'}
+                artists={artists}
+                multiArtists={false}
+                clearable={false}
+                setTags={setArtist}
+                tags={artist}
+                label="Select artist"
+              />
+            </div>
+            <div className={classes.padding}>
+              <ArtistBookingItems items={artistBookingItems} duration={getDuration()}/>
+            </div>
+            {bookingInProgress ? 
+              <div className={classes.progress}><CircularProgress color='primary' /></div>
+              :
+              <div className={classes.padding2}>
+                <div className={classes.grow} />
+                <Button 
+                  variant="contained"
+                  onClick={handleBook}
+                  color="primary"
+                  disabled={
+                    draftEvents.length !== 1 || 
+                    address === '' || 
+                    client === null || 
+                    Object.keys(itemQty).length === 0}
+                >
+                  {mode === 'book' ? 'Book' : 'Save'}
+                </Button>
+                <div className={classes.grow} />
+                </div>}                   
+            <div className={classes.padding}>
+              <ServiceMenu services={services} artistBooking={true} />
+            </div>
+          </Grid>
+          <Grid item xs={12} md={8}>                     
+            <MyCalendar
+              events={events}
+              localizer={localizer}
+              artist={artist}
+              onSelectEvent={onSelectEvent}
+              moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
+              resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
+              newEvent={newEvent}
+              onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate)}
+              triggerSaveAllDrafts={triggerSaveAllDrafts}
+              triggerDeleteEvent={triggerDeleteEvent}
+              eventToDelete={draftEvent? draftEvent.id : null}
             />
-          </div>
-          <div className={classes.padding}>
-            <AddArtists
-              disabled={mode === 'view'}
-              artists={artists}
-              multiArtists={false}
-              clearable={false}
-              setTags={setArtist}
-              tags={artist}
-              label="Select artist"
-            />
-          </div>
-          <div className={classes.padding}>
-            <ArtistBookingItems items={artistBookingItems} duration={getDuration()}/>
-          </div>
-          <div className={classes.padding2}>
-            <div className={classes.grow} />
-            <Button 
-              variant="contained"
-              onClick={handleBook}
-              color="primary"
-              disabled={draftEvents.length !== 1 || address === '' || client === null || Object.keys(itemQty).length === 0}
-            >
-              {mode === 'book' ? 'Book' : 'Save'}
-            </Button>
-            <div className={classes.grow} />
-          </div>                    
-          <div className={classes.padding}>
-            <ServiceMenu services={services} artistBooking={true} />
-          </div>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={8}>                     
-          <MyCalendar
-            events={events}
-            localizer={localizer}
-            artist={artist}
-            onSelectEvent={onSelectEvent}
-            moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
-            resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
-            newEvent={newEvent}
-            onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate)}
-            triggerSaveAllDrafts={triggerSaveAllDrafts}
-            triggerDeleteEvent={triggerDeleteEvent}
-            eventToDelete={draftEvent? draftEvent.id : null}
-          />
-        </Grid>
-      </Grid>
-      <EventForm 
-        theme={theme}
-        mode={mode}
-        setSaveModified={setSaveModified}
-        draftEvent={draftEvent}
-        withLocation={false}
-        withContact={false}
-        withTask={false}
-        triggerOpen={triggerEventForm}
-        initOpen={false}
-        onSaveEventDetails={(task, location, contact, comment) => onSaveEventDetails(task, location, contact, comment, draftEvent, setDraftEvent)}
-        onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
-      />
-      <EventManager
-        mode={mode}
-        saveModified={saveModified}
-        setSaveModified={setSaveModified}
-        artistSignedIn={artistSignedIn}
-        artist={artist}
-        calendarId={calendarId}
-        fromDate={fromDate}
-        toDate={toDate}
-        setEvents={setEvents}
-        draftEvent={draftEvent}
-        draftEvents={draftEvents}
-        setDraftEvents={setDraftEvents}     
-        triggerDeleteEvent={triggerDeleteEvent}
-      />        
-    </Container>
+        <EventForm 
+          theme={theme}
+          mode={mode}
+          setSaveModified={setSaveModified}
+          draftEvent={draftEvent}
+          withLocation={false}
+          withContact={false}
+          withTask={false}
+          triggerOpen={triggerEventForm}
+          initOpen={false}
+          onSaveEventDetails={(task, location, contact, comment) => onSaveEventDetails(task, location, contact, comment, draftEvent, setDraftEvent)}
+          onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
+        />
+        <EventManager
+          mode={mode}
+          saveModified={saveModified}
+          setSaveModified={setSaveModified}
+          artistSignedIn={artistSignedIn}
+          artist={artist}
+          calendarId={calendarId}
+          fromDate={fromDate}
+          toDate={toDate}
+          setEvents={setEvents}
+          draftEvent={draftEvent}
+          draftEvents={draftEvents}
+          setDraftEvents={setDraftEvents}     
+          triggerDeleteEvent={triggerDeleteEvent}
+        />        
+      </Container>}
+    </>
   )
 }
 

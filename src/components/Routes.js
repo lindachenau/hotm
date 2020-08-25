@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 //Use route based lazy loading to split the code to smaller chunks
 const ClientBooking = lazy(() => import('../pages/ClientBooking'))
 const ArtistBooking = lazy(() => import('../config/ArtistBookingContainer'))
-const Manage = lazy(() => import('../config/ManageContainer'))
+const Manage = lazy(() => import('../pages/Manage'))
 const Checkout = lazy(() => import('../pages/Checkout'))
 const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
 const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))

@@ -64,8 +64,24 @@ const EventManager = ({
   }, [draftEvent])
 
   useEffect(() => {
-    const events = draftEvents.filter(event => event.id !== draftEvent.id)
-    setDraftEvents(events)
+    if (mode === 'book') {
+      const events = draftEvents.filter(event => event.id !== draftEvent.id)
+      setDraftEvents(events)
+    } else {
+      if (draftEvents.length > 0) {
+        let eventList = []
+        draftEvents.forEach(event => {
+          const entry = Object.assign({}, event)
+          if (entry.id === draftEvent.id)
+            entry.toBeDeleted = true
+          eventList.push(entry)
+        })
+        setDraftEvents(eventList)
+      } else {
+        draftEvent.toBeDeleted = true
+        setDraftEvents([draftEvent])
+      }
+    }
   }, [triggerDeleteEvent])
 
   return null

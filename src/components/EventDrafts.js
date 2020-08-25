@@ -11,6 +11,7 @@ import IconButton from '@material-ui/core/IconButton'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
 import WarningIcon from '@material-ui/icons/Warning'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -61,6 +62,7 @@ export default function EventDrafts({ theme, items, corporate }) {
                 <TableRow key={item.id}>
                   <TableCell align="left">
                     {incompleteEvent(item) && <WarningIcon />}
+                    {item.toBeDeleted && <DeleteForeverIcon />}
                     {corporate ? 
                       `${item.subject} - ${moment(item.start).format("YYYY/MM/DD")} - ${((item.end - item.start) / 3600000).toFixed(1)} hrs : ${item.artistName} - ${item.task}`
                       :

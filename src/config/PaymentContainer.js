@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => {
   return {
     resetBooking: () => dispatch(resetBooking()),
     addBooking: (bookingInfo, bookingType, callMe) => dispatch(addBooking(bookingInfo, bookingType, callMe)),
-    cancelBooking: (bookingInfo) => dispatch(cancelBooking(bookingInfo)),
+    cancelBooking: (bookingInfo, bookingType, callMe) => dispatch(cancelBooking(bookingInfo, bookingType, callMe)),
   }
 }
 

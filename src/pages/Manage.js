@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, loadBooking, bookingsData, bookingType, prevActiveStep, setPrevActiveStep}) => {
+const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, bookingType, prevActiveStep, setPrevActiveStep}) => {
   // bookingType = bookingFilter.bookingType.name
   const [activeStep, setActiveStep] = useState(prevActiveStep)
   const didMountRef = useRef(false)
@@ -48,7 +48,6 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, lo
       state: {view : true}
     })
     setBrowsing(false)
-    // loadBooking({...bookings[events[activeStep].id], client: events[activeStep].client})
   }
 
   const handleEdit = () => {
@@ -57,8 +56,7 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, lo
       pathname: pathnames[bookingType],
       state: {edit : true}
     })
-    setBrowsing(false)    
-    // loadBooking({...bookings[events[activeStep].id], client: events[activeStep].client})
+    setBrowsing(false)
   }
 
   const handlePayment = () => {}

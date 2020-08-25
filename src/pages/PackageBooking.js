@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import MyCalendar from '../components/MyCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
 import '../components/CalendarToolbar.css'
@@ -19,7 +19,7 @@ import EventManager from '../components/EventManager'
 import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
-import { eachDayOfInterval } from 'date-fns';
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const localizer = momentLocalizer(moment)
 
@@ -35,9 +35,14 @@ const useStyles = makeStyles(theme => ({
   grow: {
     flexGrow: 1
   },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: 20
+  }      
 }))
 
-const PackageBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking}) => {
+const PackageBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking, updateBooking}) => {
   const { services, adminTasks } = useContext(BookingsStoreContext)
   const classes = useStyles(theme)
   const [packageList, setPackageList] = useState([])
@@ -60,6 +65,9 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
   // This component has 3 modes of operations - book, edit and view. edit and view are redirected from "Manage bookings".
   const [mode, setMode] = useState('book')
   const [saveModified, setSaveModified] = useState(false)
+  const [browsing, setBrowsing] = useState(false)
+  const { bookingsData } = useContext(BookingsStoreContext)
+  const { bookingInProgress } = bookingsData  
 
   useEffect(() => {
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
@@ -153,10 +161,14 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
   }  
 
   const handleBook = () => {
-    const callBack = (bookingId) => {    
+    const callBack = (bookingId) => {
+      const message = mode === 'book' ? 'Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.' :
+      'Updating successful'      
       setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
-      alert('Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.')
+      alert(message)
       setDraftEvents([])
+      if (mode === 'edit')
+      setBrowsing(true)      
     }
 
     let bookingData = {}
@@ -177,114 +189,132 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
         booking_start_time: moment(draft.start).format("HH:mm"),
         booking_end_time: moment(draft.end).format("HH:mm")
       }
+      if (mode === 'edit')
+        event.event_id = draft.id
+
       eventList.push(event)
     })
 
     bookingData.event_list = eventList
-    addBooking(bookingData, BOOKING_TYPE.P, callBack)    
+    
+    if (mode === 'book') {
+      addBooking(bookingData, BOOKING_TYPE.P, callBack)
+    }
+    else {
+      bookingData.booking_id = adminBooking.id
+      updateBooking(bookingData, BOOKING_TYPE.P, callBack)
+    }         
   }
 
   return (
-    <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
-      <Grid container justify="space-around" spacing={1}>
-        <Grid item xs={12} md={3}>
-          <AddPackage
-            disabled={mode !== 'book'}
-            options={packageList}
-            disableClearable={true}
-            id="package-list"
-            label="Package"
-            placeholder="package"
-            setTag={setBookingPackage}
-            tag={bookingPackage}
-          />
-          <div className={classes.padding}>
-            <AddClient
+    <>
+    {browsing ?
+      <Redirect to={'/manage'} />
+      :    
+      <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
+        <Grid container justify="space-around" spacing={1}>
+          <Grid item xs={12} md={3}>
+            <AddPackage
               disabled={mode !== 'book'}
-              setClient={setClient}
-              client={client}
-              label="Add client"
+              options={packageList}
+              disableClearable={true}
+              id="package-list"
+              label="Package"
+              placeholder="package"
+              setTag={setBookingPackage}
+              tag={bookingPackage}
             />
-          </div>           
-          <div className={classes.padding}>
-            <AddArtists
-              disabled={mode === 'view'}
-              artists={artists}
-              multiArtists={false}
-              clearable={false}
-              setTags={setArtist}
-              tags={artist}
-              label="Select artist"
+            <div className={classes.padding}>
+              <AddClient
+                disabled={mode !== 'book'}
+                setClient={setClient}
+                client={client}
+                label="Add client"
+              />
+            </div>           
+            <div className={classes.padding}>
+              <AddArtists
+                disabled={mode === 'view'}
+                artists={artists}
+                multiArtists={false}
+                clearable={false}
+                setTags={setArtist}
+                tags={artist}
+                label="Select artist"
+              />
+            </div>
+            <div className={classes.padding}>
+              <EventDrafts
+                theme={theme}
+                items={draftEvents}
+                corporate={false}
+              />
+            </div>
+            {bookingInProgress ? 
+              <div className={classes.progress}><CircularProgress color='primary' /></div>
+              :              
+              <div className={classes.padding2}>
+                <div className={classes.grow} />
+                {mode === 'view' ?
+                null
+                :
+                <Button 
+                  variant="contained" 
+                  onClick={handleBook} 
+                  color="primary"
+                  disabled={draftEvents.length === 0 || bookingPackage === null}
+                >
+                  {mode === 'book' ? 'Book all drafts' : 'Save modified drafts'}
+                </Button>}
+                <div className={classes.grow} />
+            </div>}          
+          </Grid>
+          <Grid item xs={12} md={9}>                     
+            <MyCalendar
+              events={events}
+              localizer={localizer}
+              artist={artist}
+              onSelectEvent={(event) => onSelectEvent(event, setDraftEvent, adminTasks, setTask, triggerEventForm, setTriggerEventForm)}
+              moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
+              resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
+              newEvent={newEvent}
+              onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate)}
+              triggerSaveAllDrafts={triggerSaveAllDrafts}
+              triggerDeleteEvent={triggerDeleteEvent}
+              eventToDelete={draftEvent? draftEvent.id : null}
             />
-          </div>
-          <div className={classes.padding}>
-            <EventDrafts
-              theme={theme}
-              items={draftEvents}
-              corporate={false}
-            />
-          </div>
-          <div className={classes.padding2}>
-            <div className={classes.grow} />
-            {mode === 'view' ?
-            null
-            :
-            <Button 
-              variant="contained" 
-              onClick={handleBook} 
-              color="primary"
-              disabled={draftEvents.length === 0 || bookingPackage === null}
-            >
-              {mode === 'book' ? 'Book all drafts' : 'Save modified drafts'}
-            </Button>}
-            <div className={classes.grow} />
-          </div>          
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={9}>                     
-          <MyCalendar
-            events={events}
-            localizer={localizer}
-            artist={artist}
-            onSelectEvent={(event) => onSelectEvent(event, setDraftEvent, adminTasks, setTask, triggerEventForm, setTriggerEventForm)}
-            moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
-            resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
-            newEvent={newEvent}
-            onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate)}
-            triggerSaveAllDrafts={triggerSaveAllDrafts}
-            triggerDeleteEvent={triggerDeleteEvent}
-            eventToDelete={draftEvent? draftEvent.id : null}
-          />
-        </Grid>
-      </Grid>
-      <EventForm 
-        theme={theme}
-        mode={mode}
-        setSaveModified={setSaveModified}
-        draftEvent={draftEvent}
-        triggerOpen={triggerEventForm}
-        initOpen={false}
-        taskList={adminTasks}
-        task={task}
-        setTask={setTask}
-        onSaveEventDetails={(task, location, contact, comment) => onSaveEventDetails(task, location, contact, comment, draftEvent, setDraftEvent)}
-        onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
-      />
-      <EventManager
-        mode={mode}
-        saveModified={saveModified}
-        setSaveModified={setSaveModified}
-        artistSignedIn={artistSignedIn}
-        artist={artist}
-        calendarId={calendarId}
-        fromDate={fromDate}
-        toDate={toDate}
-        setEvents={setEvents}
-        draftEvent={draftEvent}
-        draftEvents={draftEvents}
-        setDraftEvents={setDraftEvents}     
-        triggerDeleteEvent={triggerDeleteEvent}
-      />      
-    </Container>
+        <EventForm 
+          theme={theme}
+          mode={mode}
+          setSaveModified={setSaveModified}
+          draftEvent={draftEvent}
+          triggerOpen={triggerEventForm}
+          initOpen={false}
+          taskList={adminTasks}
+          task={task}
+          setTask={setTask}
+          onSaveEventDetails={(task, location, contact, comment) => onSaveEventDetails(task, location, contact, comment, draftEvent, setDraftEvent)}
+          onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
+        />
+        <EventManager
+          mode={mode}
+          saveModified={saveModified}
+          setSaveModified={setSaveModified}
+          artistSignedIn={artistSignedIn}
+          artist={artist}
+          calendarId={calendarId}
+          fromDate={fromDate}
+          toDate={toDate}
+          setEvents={setEvents}
+          draftEvent={draftEvent}
+          draftEvents={draftEvents}
+          setDraftEvents={setDraftEvents}     
+          triggerDeleteEvent={triggerDeleteEvent}
+        />      
+      </Container>}
+    </>
   )
 }
 

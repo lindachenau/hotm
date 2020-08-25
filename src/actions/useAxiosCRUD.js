@@ -50,13 +50,13 @@ const dataFetchReducer = (state, action) => {
       return {
         ...state,
         isUpdating: false,
-        // data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
+        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "PUT_SUCCESS":
       return {
         ...state,
         isUpdating: false,
-        // data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
+        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "DELETE_SUCCESS":
       return {
@@ -168,7 +168,6 @@ const useAxiosCRUD = (url, initialData, method, bookingType, data, callMe, booki
 
     const updateData = async (data) => {
       dispatch({ type: "UPDATE_INIT"})
-
       const config = {
         method: 'put',
         headers: {"Content-Type": "application/json"},

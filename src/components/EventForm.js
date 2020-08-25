@@ -80,7 +80,7 @@ export default function EventForm({
 
   const handleSaveEventDetails = () => {
     if (!withContact && !withLocation && !withTask)
-      onSaveEventDetails(comment)
+      onSaveEventDetails(" ", " ", " ", comment)
     else
       onSaveEventDetails(task ? task.name : '', location, contact, comment)
 

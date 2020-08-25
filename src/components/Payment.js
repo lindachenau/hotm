@@ -84,7 +84,7 @@ function Payment (
       else {
         alert("Your card was declined.")
         const payload = { 'booking_id': bookingId }
-        cancelBooking(payload)
+        cancelBooking(payload, BOOKING_TYPE.A)
       }
     }
 
