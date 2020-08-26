@@ -27,7 +27,6 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
   const classes = useStyles()
   const [completed, setCompleted] = useState(false)
   const [browsing, setBrowsing] = useState(true)
-  const bookings = bookingsData ? bookingsData.data : null
   const [location, setLocation] = useState({})
   const pathnames = {
     corporate: '/corporate',

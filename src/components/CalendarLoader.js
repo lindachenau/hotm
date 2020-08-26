@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 const CLIENT_ID = process.env.REACT_APP_GC_CLIENT_ID
 const API_KEY = process.env.REACT_APP_GC_API_KEY     
@@ -38,7 +38,7 @@ const CalendarLoader = ({ setIsSignIn }) => {
   }
 
   handleClientLoad()
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return null

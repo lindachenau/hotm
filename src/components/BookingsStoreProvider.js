@@ -174,6 +174,7 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
     } else {
       setEventsFetched(true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookingsData.data, bookingsData.isLoading])
 
   //fetch new clients whenever the client list is updated

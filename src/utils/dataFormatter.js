@@ -1,6 +1,5 @@
 import { getBookingValue } from './getBookingValue'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
-import { id } from 'date-fns/locale'
 
 export function normaliseArtists(artistArr)
 {

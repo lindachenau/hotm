@@ -41,6 +41,7 @@ export default function EmailVeriForm({ email, handleConfirm, triggerOpen }) {
       setOpen(!open)
     else
       didMountRef.current = true
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerOpen])
 
   const handleClose = () => {

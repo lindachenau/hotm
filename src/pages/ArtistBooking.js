@@ -59,7 +59,6 @@ const ArtistBooking = ({
   priceFactors }) => {
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
-  const [booingArtistId, setBooingArtistId] = useState('')
   const [draftId, setDraftId] = useState(1)
   const [client, setClient] = useState(null)
   const [draftEvent, setDraftEvent] = useState(null)
@@ -86,7 +85,6 @@ const ArtistBooking = ({
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
     if (artistSignedIn && theArtist.length > 0) {
       setArtist(theArtist[0])
-      setBooingArtistId(theArtist[0].id)
 
       if (!location.state )
         setCalendarId(theArtist[0].email)
@@ -112,6 +110,7 @@ const ArtistBooking = ({
         setDraftEvents([entry])      
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getDuration = () => {

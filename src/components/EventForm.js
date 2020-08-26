@@ -68,6 +68,7 @@ export default function EventForm({
       didMountRef.current = true
       setOpen(initOpen)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [triggerOpen, initOpen])
 
   const onChangeLocation = location => {

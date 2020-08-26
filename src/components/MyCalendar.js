@@ -37,17 +37,20 @@ const MyCalendar = ({
 
   useEffect(() => {
     setLocalEvents(mergeArrays(events, localEvents))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events])
 
   useEffect(() => {
     const drafts = localEvents.filter(event => event.type === "draft")
     const savedDrafts = drafts.map(draft => {return {...draft, type: "hotm"}})
     setLocalEvents(mergeArrays(savedDrafts, localEvents))
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerSaveAllDrafts])
 
   useEffect(() => {
     const events = localEvents.filter(event => event.id !== eventToDelete)
     setLocalEvents(events)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerDeleteEvent])
 
   return (

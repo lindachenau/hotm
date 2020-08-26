@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { startDate, endDate } from '../utils/misc'
 import { mergeThenSort } from '../utils/eventFunctions'
 
@@ -51,7 +51,7 @@ const EventManager = ({
     //Artist is signed in to Google Calendar & with a valid calendar
     if (artistSignedIn && calendarId) 
       fetchEvents()
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarId, fromDate, toDate])
   
 
@@ -61,6 +61,7 @@ const EventManager = ({
       setDraftEvents(mergeThenSort([draftEvent], draftEvents))
       setSaveModified(false)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [draftEvent])
 
   useEffect(() => {
@@ -82,6 +83,7 @@ const EventManager = ({
         setDraftEvents([draftEvent])
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerDeleteEvent])
 
   return null

@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }      
 }))
 
-const PackageBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking, updateBooking}) => {
+const PackageBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking, updateBooking, cancelBooking}) => {
   const { services, adminTasks } = useContext(BookingsStoreContext)
   const classes = useStyles(theme)
   const [packageList, setPackageList] = useState([])
@@ -74,6 +74,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
     if (theArtist.length > 0) {
       setBooingArtistId(theArtist[0].id)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])  
 
   useEffect(() => {
@@ -96,6 +97,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
       setMode('view')
     else if (location.state && location.state.edit)
       setMode('edit')
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])  
 
   useEffect(() => {
@@ -103,7 +105,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
       setBookingPackage(packageList.filter(item => item.id === adminBooking.serviceItem)[0])
       setClient(adminBooking.client)
       let events = []
-      adminBooking.origEventList.map((event) => {
+      adminBooking.origEventList.forEach((event) => {
         const entry = {
           id: event.event_id,
           type: 'draft',
@@ -123,6 +125,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
       })
       setEvents(events)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode])
 
   const newEvent = (event) => {
@@ -174,36 +177,59 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
     let bookingData = {}
     bookingData.booking_type = BOOKING_TYPE.P
     bookingData.card_or_client_id = client.id
-    bookingData.booked_by_artist_id = booingArtistId
     bookingData.service_item = bookingPackage.id
+    if (mode === 'book')
+      bookingData.booked_by_artist_id = booingArtistId
+    else
+      bookingData.modified_by_artist_id = booingArtistId
 
     let eventList = []
+    let deleteList = []
     draftEvents.forEach(draft => {
-      const event = {
-        artist_id: draft.artistId,
-        event_location: draft.location,
-        contact: draft.contact,
-        job_description: draft.task,
-        comment: draft.comment,
-        booking_date: moment(draft.start).format("YYYY-MM-DD"),
-        booking_start_time: moment(draft.start).format("HH:mm"),
-        booking_end_time: moment(draft.end).format("HH:mm")
-      }
-      if (mode === 'edit')
-        event.event_id = draft.id
+      if (draft.toBeDeleted && !draft.id.toString().includes('draft')) {
+        const event = {
+          event_id: draft.id
+        }
+        deleteList.push(event)
+      } else {      
+        const event = {
+          artist_id: draft.artistId,
+          event_location: draft.location,
+          contact: draft.contact,
+          job_description: draft.task,
+          comment: draft.comment,
+          booking_date: moment(draft.start).format("YYYY-MM-DD"),
+          booking_start_time: moment(draft.start).format("HH:mm"),
+          booking_end_time: moment(draft.end).format("HH:mm")
+        }
+        if (mode === 'edit' && !draft.id.toString().includes('draft'))
+          event.event_id = draft.id
 
-      eventList.push(event)
+        eventList.push(event)        
+      }
     })
 
-    bookingData.event_list = eventList
-    
     if (mode === 'book') {
+      bookingData.event_list = eventList
       addBooking(bookingData, BOOKING_TYPE.P, callBack)
     }
     else {
       bookingData.booking_id = adminBooking.id
-      updateBooking(bookingData, BOOKING_TYPE.P, callBack)
-    }         
+      if (deleteList.length > 0) {
+        bookingData.event_list = deleteList
+        if (eventList.length > 0) {
+          cancelBooking(bookingData, BOOKING_TYPE.P)
+          bookingData.event_list = eventList      
+          updateBooking(bookingData, BOOKING_TYPE.P, callBack)
+        }
+        else {
+          cancelBooking(bookingData, BOOKING_TYPE.P, callBack)
+        }
+      } else if (eventList.length > 0) {
+        bookingData.event_list = eventList      
+        updateBooking(bookingData, BOOKING_TYPE.P, callBack)
+      }
+    }        
   }
 
   return (

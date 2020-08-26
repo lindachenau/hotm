@@ -19,7 +19,6 @@ export const ADD_BOOKING = 'ADD_BOOKING'
 export const UPDATE_BOOKING = 'UPDATE_BOOKING'
 export const CANCEL_BOOKING = 'CANCEL_BOOKING'
 export const ASSIGN_ARTISTS = 'ASSIGN_ARTISTS'
-export const ASSIGN_CLIENT = 'ASSIGN_CLIENT'
 export const LOAD_BOOKING = 'LOAD_BOOKING'
 export const SET_FROM_DATE = 'SET_FROM_DATE'
 export const SET_TO_DATE = 'SET_TO_DATE'
@@ -138,11 +137,6 @@ export const cancelBooking = (bookingInfo, bookingTypeName, callMe=null) => ({
 export const assignArtists = (artistIds) => ({
   type: ASSIGN_ARTISTS,
   artistIds
-})
-
-export const assignClient = (client) => ({
-  type: ASSIGN_CLIENT,
-  client
 })
 
 export const loadBooking = (booking) => ({

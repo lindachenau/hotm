@@ -81,6 +81,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
     if (theArtist.length > 0) {
       setBooingArtistId(theArtist[0].id)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 
   useEffect(() => {
@@ -88,13 +89,14 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
       setMode('view')
     else if (location.state && location.state.edit)
       setMode('edit')
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 
   useEffect(() => {
     if (mode !== 'book') {
       setCorporate(corpCards.filter(card => card.id === adminBooking.cId)[0])
       let events = []
-      adminBooking.origEventList.map((event) => {
+      adminBooking.origEventList.forEach((event) => {
         const entry = {
           id: event.event_id,
           type: 'draft',
@@ -114,6 +116,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
       })
       setEvents(events)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [mode])
 
   const newEvent = (event) => {
@@ -164,12 +167,15 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
     let bookingData = {}
     bookingData.booking_type = BOOKING_TYPE.C
     bookingData.card_or_client_id = corporate.id
-    bookingData.booked_by_artist_id = booingArtistId
+    if (mode === 'book')
+      bookingData.booked_by_artist_id = booingArtistId
+    else
+      bookingData.modified_by_artist_id = booingArtistId
 
     let eventList = []
     let deleteList = []
     draftEvents.forEach(draft => {
-      if (draft.toBeDeleted) {
+      if (draft.toBeDeleted && !draft.id.toString().includes('draft')) {
         const event = {
           event_id: draft.id
         }
