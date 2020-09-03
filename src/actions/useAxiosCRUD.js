@@ -86,7 +86,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosCRUD = (url, initialData, method, bookingType, data, callMe, bookingTrigger) => {
+const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, bookingTrigger) => {
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -132,11 +132,10 @@ const useAxiosCRUD = (url, initialData, method, bookingType, data, callMe, booki
 
     const createData = async (data) => {
       dispatch({ type: "UPDATE_INIT"})
-
       const config = {
         method: 'post',
         headers: {"Content-Type": "application/json"},
-        url: bookingType === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
+        url: bookingTypeName === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
         data: data
       }
 
@@ -171,7 +170,7 @@ const useAxiosCRUD = (url, initialData, method, bookingType, data, callMe, booki
       const config = {
         method: 'put',
         headers: {"Content-Type": "application/json"},
-        url: bookingType === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
+        url: bookingTypeName === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
         data: data
       }
 
@@ -209,7 +208,7 @@ const useAxiosCRUD = (url, initialData, method, bookingType, data, callMe, booki
       const config = {
         method: 'delete',
         headers: {"Content-Type": "application/json"},
-        url: bookingType === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
+        url: bookingTypeName === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
         data: data
       }
 

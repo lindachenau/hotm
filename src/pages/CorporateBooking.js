@@ -167,11 +167,8 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
     let bookingData = {}
     bookingData.booking_type = BOOKING_TYPE.C
     bookingData.card_or_client_id = corporate.id
-    if (mode === 'book')
-      bookingData.booked_by_artist_id = booingArtistId
-    else
-      bookingData.modified_by_artist_id = booingArtistId
-
+    bookingData.booking_artist_id = booingArtistId
+    
     let eventList = []
     let deleteList = []
     draftEvents.forEach(draft => {
@@ -268,7 +265,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
                 <Button 
                   variant="contained" 
                   onClick={handleBook} 
-                  color="primary" 
+                  color="secondary" 
                   disabled={draftEvents.length === 0 || corporate === null}
                 >
                   {mode === 'book' ? 'Book all drafts' : 'Save modified drafts'}

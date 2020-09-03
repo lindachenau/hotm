@@ -28,6 +28,9 @@ const useStyles = makeStyles(theme => ({
   background: {
     backgroundColor: theme.palette.primary.main
   },
+  foreground: {
+    color: 'white'
+  },  
   priceField: {
     display: 'none',
     [theme.breakpoints.up('sm')]: {
@@ -67,18 +70,18 @@ export default function ServicePerCat({ theme, items, cat, organic, pensioner, i
       <Table size="small" aria-label="a dense table">
         <TableHead className={classes.background}>
           <TableRow>
-            <TableCell align="left" style={{width: "60%"}}>
+            <TableCell align="left" style={{width: "60%"}} className={classes.foreground}>
               {cat.name.toUpperCase()}
-              <IconButton onClick={toggleListOpen} edge='start'>
+              <IconButton onClick={toggleListOpen} edge='start' color="inherit">
                 {listOpen ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}
               </IconButton>
             </TableCell>
-            <TableCell align="right" style={{width: "30%", padding: 0}}>
+            <TableCell align="right" style={{width: "30%", padding: 0}} className={classes.foreground}>
               <div className={classes.priceField}>
                 <AttachMoneyIcon fontSize="small" color="inherit"/>
               </div>
             </TableCell>
-            <TableCell align="right" style={{width: "10%"}}>
+            <TableCell align="right" style={{width: "10%"}} className={classes.foreground}>
               <IconButton color="inherit">
                 <Badge badgeContent={totalItems(cat, itemQty)} showZero>
                   <ShoppingCartIcon/>

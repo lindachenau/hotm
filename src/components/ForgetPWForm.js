@@ -90,10 +90,10 @@ export default function ForgetPWForm({triggerOpen}) {
         />
       </DialogContent>
       <DialogActions className={classes.button}>
-        <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
+        <Button variant="contained" onClick={handleClose} color="secondary" fullWidth>
           Cancel
         </Button>
-        <Button variant="contained" onClick={handleResetPW} color="primary" fullWidth>
+        <Button variant="contained" onClick={handleResetPW} color="secondary" fullWidth>
           Submit
         </Button>
       </DialogActions>

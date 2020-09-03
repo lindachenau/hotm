@@ -30,9 +30,9 @@ const MyCalendar = ({
 }) => {
   const [localEvents, setLocalEvents] = useState(events)
   const eventColors = {
-    'hotm': '#f18383',
-    'private': '#73f',
-    'draft': '#037'
+    'hotm': '#e382b1',
+    'private': '#917dab',
+    'draft': '#325f9c'
   }
 
   useEffect(() => {

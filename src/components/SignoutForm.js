@@ -74,10 +74,10 @@ export default function SignoutForm({firstName, lastName, email, triggerOpen, si
         </Typography>
       </DialogContent>  
       <DialogActions className={classes.button}>
-        <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
+        <Button variant="contained" onClick={handleClose} color="secondary" fullWidth>
           Cancel
         </Button>
-        <Button variant="contained" onClick={handleSignout} color="primary" fullWidth>
+        <Button variant="contained" onClick={handleSignout} color="secondary" fullWidth>
           Sign out
         </Button>
       </DialogActions>

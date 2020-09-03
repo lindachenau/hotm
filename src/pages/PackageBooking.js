@@ -178,11 +178,8 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
     bookingData.booking_type = BOOKING_TYPE.P
     bookingData.card_or_client_id = client.id
     bookingData.service_item = bookingPackage.id
-    if (mode === 'book')
-      bookingData.booked_by_artist_id = booingArtistId
-    else
-      bookingData.modified_by_artist_id = booingArtistId
-
+    bookingData.booking_artist_id = booingArtistId
+    
     let eventList = []
     let deleteList = []
     draftEvents.forEach(draft => {
@@ -287,7 +284,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
                 <Button 
                   variant="contained" 
                   onClick={handleBook} 
-                  color="primary"
+                  color="secondary"
                   disabled={draftEvents.length === 0 || bookingPackage === null}
                 >
                   {mode === 'book' ? 'Book all drafts' : 'Save modified drafts'}

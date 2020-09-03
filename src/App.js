@@ -11,10 +11,16 @@ const theme = createMuiTheme({
   palette: {
     primary: {
       //HOTM peach color
-      main: '#f18383'
+      // main: '#f18383'
+      main: '#e382b1',
+      contrastText: "#fff"
     },
     secondary: {
-      main: '#000'
+      main: '#ace8e6',
+      contrastText: "#325f9c"
+    },
+    text: {
+      primary: '#325f9c'
     }
   },
   // typography: {

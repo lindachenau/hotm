@@ -11,7 +11,7 @@ import axios from 'axios'
 import ForgetPWForm from './ForgetPWForm'
 import RegisterForm from './RegisterForm'
 
-const logo = require('../images/logo.png')
+const logo = require('../images/hblc_logo_512.png')
 
 const useStyles = makeStyles(theme => ({
   container1: {
@@ -160,7 +160,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
           />
         </DialogContent>
         <DialogActions className={classes.button1}>
-          <Button variant="contained" onClick={handleSignin} color="primary" fullWidth>
+          <Button variant="contained" onClick={handleSignin} color="secondary" fullWidth>
             Sign in
           </Button>
         </DialogActions>
@@ -177,7 +177,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
           <div className={classes.grow} />
         </div>
         <div className={classes.button2}>
-          <Button variant="contained" onClick={handleRegister} color="primary" fullWidth>
+          <Button variant="contained" onClick={handleRegister} color="secondary" fullWidth>
             Create Account
           </Button>
         </div>

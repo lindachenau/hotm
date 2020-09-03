@@ -28,7 +28,7 @@ import Filter from '../config/FilterContainer'
 import CalendarLoader from '../components/CalendarLoader'
 import { home_url } from '../config/dataLinks'
 
-const logo = require('../images/logo192.png')
+const logo = require('../images/hblc_logo_192_white_bg.png')
 
 const useStyles = makeStyles(theme => ({
   grow: {
@@ -213,7 +213,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
               color="default"
               onClick={handleUser}
             >
-              {loggedIn ? <AccountCircleIcon color='primary'/> : <LockIcon style={{color: 'white'}}/>}
+              {loggedIn ? <AccountCircleIcon color='primary'/> : <LockIcon style={{color: '#325f9c'}}/>}
             </IconButton>
           </div>
         </Toolbar>

@@ -59,6 +59,7 @@ const ArtistBooking = ({
   priceFactors }) => {
   const classes = useStyles(theme)
   const [artist, setArtist] = useState(null)
+  const [booingArtistId, setBooingArtistId] = useState('')
   const [draftId, setDraftId] = useState(1)
   const [client, setClient] = useState(null)
   const [draftEvent, setDraftEvent] = useState(null)
@@ -81,6 +82,14 @@ const ArtistBooking = ({
   const { bookingsData } = useContext(BookingsStoreContext)
   const { bookingInProgress } = bookingsData
   
+  useEffect(() => {
+    const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
+    if (theArtist.length > 0) {
+      setBooingArtistId(theArtist[0].id)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])  
+
   useEffect(() => {
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
     if (artistSignedIn && theArtist.length > 0) {
@@ -195,7 +204,7 @@ const ArtistBooking = ({
     bookingData.event_address = address
     bookingData.total_amount = bookingValue
     bookingData.comment = event.comment
-    bookingData.booking_artist_name = artist.name
+    bookingData.booking_artist_id = booingArtistId
     //All fields below are redundant. They can be removed when API does not make them mandatory.
     bookingData.time_on_site = getDuration()
     bookingData.artist_start_time = bookingData.booking_time
@@ -252,7 +261,7 @@ const ArtistBooking = ({
                 <Button 
                   variant="contained"
                   onClick={handleBook}
-                  color="primary"
+                  color="secondary"
                   disabled={
                     draftEvents.length !== 1 || 
                     address === '' || 

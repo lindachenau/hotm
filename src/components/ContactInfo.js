@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef} from 'react'
 import Dialog from '@material-ui/core/Dialog'
+import Link from '@material-ui/core/Link'
 import DialogContent from '@material-ui/core/DialogContent'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
@@ -45,7 +46,9 @@ export default function ContactInfo({triggerOpen}) {
       </div>
       <DialogContent className={classes.container2}>
         <Typography variant='h6' align='center'>
-          {contact_phone}
+          <Link href={`tel:+${contact_phone}`}>
+            {contact_phone}
+          </Link>
         </Typography>
         <Typography variant='body2' align='center'>
           This service requires multiple artists. Please call to let us arrange artists for you.

@@ -116,7 +116,7 @@ export const searchBooking = () => ({
 export const addBooking = (bookingInfo, bookingTypeName, callMe) => ({
   type: ADD_BOOKING,
   payload: bookingInfo,
-  bookingTypeNme: bookingTypeName,
+  bookingTypeName: bookingTypeName,
   callMe
 })
 

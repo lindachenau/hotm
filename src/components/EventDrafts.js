@@ -20,6 +20,9 @@ const useStyles = makeStyles(theme => ({
   },
   background: {
     backgroundColor: theme.palette.primary.main
+  },
+  foreground: {
+    color: 'white'
   }
 }))
 
@@ -47,9 +50,9 @@ export default function EventDrafts({ theme, items, corporate }) {
       <Table size="small" aria-label="a dense table">
         <TableHead className={classes.background}>
           <TableRow>
-            <TableCell align="left">
+            <TableCell align="left" className={classes.foreground}>
               {corporate ? `Drafts : ${totalHrs(items)} hrs` : `Drafts`}
-              <IconButton onClick={toggleListOpen} edge='start'>
+              <IconButton onClick={toggleListOpen} edge='start' color="inherit">
                 {listOpen ? <ArrowDropUpIcon/> : <ArrowDropDownIcon/>}
               </IconButton>
             </TableCell>

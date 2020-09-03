@@ -75,7 +75,7 @@ function CardForm ({loggedIn, stripe, handleCharge, payMessage}) {
         <div className={classes.stripe} role="alert">
           {errorMessage}
         </div>
-        <Button variant="contained" color="primary" fullWidth type='submit' disabled={!loggedIn}>{payMessage}</Button>
+        <Button variant="contained" color="secondary" fullWidth type='submit' disabled={!loggedIn}>{payMessage}</Button>
       </form>
     </div>
   )

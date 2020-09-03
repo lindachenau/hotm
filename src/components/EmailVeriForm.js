@@ -113,10 +113,10 @@ export default function EmailVeriForm({ email, handleConfirm, triggerOpen }) {
         <TextField variant="outlined" type='tel' size='small' inputProps={oneDigit} key='code_digit5' onChange={handleDigit5} inputRef={digit5}/>
       </div>
       <DialogActions className={classes.button}>
-        <Button variant="contained" onClick={handleClose} color="primary" fullWidth>
+        <Button variant="contained" onClick={handleClose} color="secondary" fullWidth>
           Cancel
         </Button>
-        <Button variant="contained" onClick={() => handleConfirm(code)} color="primary" fullWidth>
+        <Button variant="contained" onClick={() => handleConfirm(code)} color="secondary" fullWidth>
           Confirm
         </Button>
       </DialogActions>

@@ -464,7 +464,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
           </Grid>
         </DialogContent>
         <DialogActions className={classes.button1}>
-          <Button variant="contained" onClick={handleSubmit} color="primary" fullWidth disabled={disableSubmit}>
+          <Button variant="contained" onClick={handleSubmit} color="secondary" fullWidth disabled={disableSubmit}>
             Submit
           </Button>
         </DialogActions>

@@ -4,7 +4,7 @@ import { BookingsStoreProvider } from '../components/BookingsStoreProvider'
 
 const mapStateToProps = state => {
   return {
-    storeCtrl : state.storeActivation,
+    storeActivation : state.storeActivation,
     bookingFilter: state.bookingFilter,
     isArtist: state.userInfo.isArtist,
   }

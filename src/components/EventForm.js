@@ -152,10 +152,10 @@ export default function EventForm({
         </DialogContent>
         {mode !== 'view' &&
           <DialogActions className={classes.button}>
-            <Button variant="contained" onClick={handleDeleteEvent} color="primary" fullWidth>
+            <Button variant="contained" onClick={handleDeleteEvent} color="secondary" fullWidth>
               Delete
             </Button>
-            <Button variant="contained" onClick={handleSaveEventDetails} color="primary" fullWidth disabled={disableDone}>
+            <Button variant="contained" onClick={handleSaveEventDetails} color="secondary" fullWidth disabled={disableDone}>
               Save
             </Button>
           </DialogActions>}        

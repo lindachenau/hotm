@@ -145,7 +145,7 @@ export default function Filter({
         </div>
       </DialogContent>
       <DialogActions className={classes.button}>
-        <Button variant="contained" onClick={handleSearch} color="primary" fullWidth>
+        <Button variant="contained" onClick={handleSearch} color="secondary" fullWidth>
           Search
         </Button>
       </DialogActions>

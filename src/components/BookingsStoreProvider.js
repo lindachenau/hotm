@@ -39,8 +39,8 @@ const initFilter = (fromDate, toDate) => {
   return `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
 }
 
-const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists, fetchServices, fetchCorpCards, fetchAdminTasks, isArtist}) => {
-  const {servicesTrigger, artistsTrigger, corpCardsTrigger, adminTasksTrigger, requestMethod, data, callMe, bookingTrigger, bookingTypeName} = storeCtrl
+const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchArtists, fetchServices, fetchCorpCards, fetchAdminTasks, isArtist}) => {
+  const {servicesTrigger, artistsTrigger, corpCardsTrigger, adminTasksTrigger, bookingTrigger, requestMethod, bookingTypeName, data, callMe} = storeActivation
   const {fromDate, toDate, bookingType} = bookingFilter
   const artistId = bookingFilter.artist ? bookingFilter.artist.id : null
   const clientId = bookingFilter.client ? bookingFilter.client.id : null
@@ -146,36 +146,31 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
 
   let bookingsData = useAxiosCRUD(bookingUrl, {}, requestMethod, bookingTypeName, data, callMe, bookingTrigger)
 
-  const getClientListFromBookings = (bookings, id_name) => {
-    let list = []
-    for (let key in bookings) {
-      let client_id = bookings[key][id_name]
-      if (!list.includes(client_id))
-        list.push(client_id)
-    }
-
-    return list
-  }
-
   //update client list whenever new bookings are loaded
   useEffect(() => {
-    if (bookingsData.isLoading) {
-      setEventsFetched(false)
-      setClients({})
+
+    const getClientListFromBookings = (bookings, id_name) => {
+      let list = []
+      for (let key in bookings) {
+        let client_id = bookings[key][id_name]
+        if (!list.includes(client_id))
+          list.push(client_id)
+      }
+  
+      return list
     }
-    else if (Object.keys(bookingsData.data).length !== 0) {
-      
-      if (bookingType.name === BOOKING_TYPE.A || bookingType.name === BOOKING_TYPE.P) {
+
+    if (requestMethod === 'get') {
+      if (Object.keys(bookingsData.data).length === 0) {
+        // No booking found
+        setEventsFetched(true)
+      } else if (bookingType.name === BOOKING_TYPE.A || bookingType.name === BOOKING_TYPE.P) {
         const id_name = bookingType.name === BOOKING_TYPE.A ? 'client_id' : 'card_or_client_id'
         setClientList(getClientListFromBookings(bookingsData.data, id_name))
       }
-      
-      setEventsFetched(false)
-    } else {
-      setEventsFetched(true)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bookingsData.data, bookingsData.isLoading])
+  }, [bookingsData.data])
 
   //fetch new clients whenever the client list is updated
   useEffect(() => {
@@ -210,8 +205,12 @@ const BookingsStoreProvider = ({children, storeCtrl, bookingFilter, fetchArtists
 
   //negate all fetched bookings when a new search starts
   useEffect(() => {
-    setEventsFetched(false)
-    setAdminBookingsFetched(false)
+    if (requestMethod === 'get') {
+      setEventsFetched(false)
+      setAdminBookingsFetched(false)
+      setClients({})
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [bookingTrigger])
 
   //regenerate events whenever clients or bookings data are updated
