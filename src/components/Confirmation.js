@@ -35,6 +35,9 @@ const useStyles = makeStyles(theme => ({
   background: {
     backgroundColor: theme.palette.primary.main
   },
+  foreground: {
+    color: 'white'
+  },  
   priceField: {
     display: 'none',
     [theme.breakpoints.up('sm')]: {
@@ -90,7 +93,7 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
         <Table size="small" aria-label="a dense table">
           <TableHead className={classes.background}>
             <TableRow>
-              <TableCell align="left" style={{width: "70%"}}>
+              <TableCell align="left" style={{width: "70%"}} className={classes.foreground}>
                 <b>Booking location</b>
               </TableCell>
             </TableRow>
@@ -107,7 +110,7 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
         <Table size="small" aria-label="a dense table">
           <TableHead className={classes.background}>
             <TableRow>
-              <TableCell align="left" style={{width: "70%"}}>
+              <TableCell align="left" style={{width: "70%"}} className={classes.foreground}>
                 <b>Selected artist</b>
               </TableCell>
             </TableRow>
@@ -124,7 +127,7 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
         <Table size="small" aria-label="a dense table">
           <TableHead className={classes.background}>
             <TableRow>
-              <TableCell align="left" style={{width: "70%"}}>
+              <TableCell align="left" style={{width: "70%"}} className={classes.foreground}>
                 <b>Services requested</b>
               </TableCell>
               <TableCell align="right" style={{width: "20%", padding: 0}}>

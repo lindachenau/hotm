@@ -24,8 +24,8 @@ export const onSelectEvent = (event, setDraftEvent, adminTasks, setTask, trigger
   setTriggerEventForm(!triggerEventForm)
 }
 
-export const onSaveEventDetails = (task, location, contact, comment, draftEvent, setDraftEvent) => {
-  setDraftEvent({...draftEvent, task: task, location, contact, comment})
+export const onSaveEventDetails = (task, address, contact, comment, draftEvent, setDraftEvent) => {
+  setDraftEvent({...draftEvent, task: task, address, contact, comment})
 }
 
 export const moveEvent = (event, start, end, setEvents, draftEvents, setDraftEvents) => {
@@ -49,7 +49,8 @@ export const resizeEvent = (event, start, end, setEvents, draftEvents, setDraftE
   setDraftEvents(mergeThenSort([resized], draftEvents))
 }
 
-export const onNavigate = (date, view, fromDate, setFromDate, toDate, setToDate) => {
+export const onNavigate = (date, view, fromDate, setFromDate, toDate, setToDate, setToday) => {
+  setToday(date)
   if (view === 'month') {
     const start = moment(date).startOf('month').startOf('week')._d
     const end = moment(date).endOf('month').endOf('week')._d

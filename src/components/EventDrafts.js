@@ -42,7 +42,7 @@ export default function EventDrafts({ theme, items, corporate }) {
   }
 
   const incompleteEvent = (item) => {
-    return item.location === '' || item.contact === '' || item.task === '' || item.artistName === '' 
+    return item.address === '' || item.contact === '' || item.task === '' || item.artistName === '' 
   }
 
   return (

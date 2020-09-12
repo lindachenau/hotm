@@ -71,7 +71,8 @@ function EventCard ({ event }) {
 
 function AdminBookingCard ({ booking }) {
   const classes = useStyles()
-  
+  let itemKey = 0
+
   return (
     <Paper className={classes.paper} elevation={6}>
       <Typography variant="h6" align="center" color="textPrimary">
@@ -84,7 +85,7 @@ function AdminBookingCard ({ booking }) {
         <span>{`Total hours booked: ${booking.totalHours}`}</span>
         <br/>
         <ul>
-          {booking.eventList.map(event => <li>{event}</li>)}
+          {booking.eventList.map(event => <li key={itemKey++}>{event}</li>)}
         </ul>
       </div>
     </Paper>

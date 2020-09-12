@@ -18,7 +18,7 @@ const components = {
 const MyCalendar = ({
   events, 
   localizer, 
-  artist, 
+  defaultDate, 
   onSelectEvent,
   moveEvent,
   resizeEvent,
@@ -69,7 +69,7 @@ const MyCalendar = ({
       onNavigate={onNavigate}
       views={['month', 'day']}
       defaultView={Views.MONTH}
-      defaultDate={new Date()}
+      date={defaultDate}
       scrollToTime={new Date(2019, 1, 1, 6)}
       messages={{
         month: <FaCalendarAlt />, 

@@ -37,6 +37,7 @@ const EventManager = ({
             end: new Date(item.end.dateTime),
             artistName: artist.name,
             artistId: artist.id,
+            address: item.location ? item.location : '',
             type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
           }
         })

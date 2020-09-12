@@ -10,7 +10,7 @@ import { register_nonce_url, register_url, update_user_meta_url, email_verificat
 import axios from 'axios'
 import EmailVeriForm from './EmailVeriForm'
 
-const logo = require('../images/logo.png')
+const logo = require('../images/hblc_logo_512.png')
 
 const useStyles = makeStyles(theme => ({
   container1: {

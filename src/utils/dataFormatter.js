@@ -39,7 +39,7 @@ export function normaliseCorpCards(corpCardsArr)
     const card = {
       id: id,
       name: corpCardsArr[i].corporate_name,
-      location: corpCardsArr[i].event_address,
+      address: corpCardsArr[i].event_address,
       contactPerson: corpCardsArr[i].contact_name,
       contactPhone: corpCardsArr[i].contact_phone,
       contactEmail: corpCardsArr[i].contact_email
@@ -196,7 +196,8 @@ export function getEvents(bookings, artists, clients, servicesMenu)
       events.push({
         id: booking.booking_id,
         type: 'hotm',
-        start: localDate(booking.booking_date, booking.booking_time),
+        start: localDate(booking.booking_date, booking.artist_start_time),
+        bookingTime: localDate(booking.booking_date, booking.booking_time),
         end: localDate(booking.booking_date, booking.booking_end_time),
         address: booking.event_address,
         artists: booking.artist_id_list.map(id => artists[id]),

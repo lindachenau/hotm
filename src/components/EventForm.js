@@ -8,6 +8,12 @@ import CreateIcon from '@material-ui/icons/Create'
 import { makeStyles } from '@material-ui/core/styles'
 import AddJobDescription from '../components/DropdownList'
 import LocationSearchInput from './LocationSearchInput'
+import DateFnsUtils from '@date-io/date-fns'
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -50,17 +56,18 @@ export default function EventForm({
   onDeleteEvent}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
-  const [location, setLocation] = useState('')
+  const [address, setAddress] = useState('')
   const [contact, setContact] = useState('')
   const [comment, setComment] = useState('')
-  const disableDone = location === '' || contact === '' || task === null
+  const disableDone = address === '' || contact === '' || task === null
+  const [selectedDate, setSelectedDate] = useState(null)
     
   const classes = useStyles(theme)
 
   useEffect(() => {
     if (didMountRef.current) {
       setOpen(true)
-      setLocation(draftEvent.location)
+      setAddress(draftEvent.address)
       setContact(draftEvent.contact)
       setComment(draftEvent.comment)
     }
@@ -71,8 +78,8 @@ export default function EventForm({
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [triggerOpen, initOpen])
 
-  const onChangeLocation = location => {
-    setLocation(location)
+  const onChangeLocation = address => {
+    setAddress(address)
   }
 
   const onChangeContact = event => {
@@ -83,7 +90,7 @@ export default function EventForm({
     if (!withContact && !withLocation && !withTask)
       onSaveEventDetails(" ", " ", " ", comment)
     else
-      onSaveEventDetails(task ? task.name : '', location, contact, comment)
+      onSaveEventDetails(task ? task.name : '', address, contact, comment)
 
     if (mode === 'edit')
       setSaveModified(true)
@@ -96,6 +103,10 @@ export default function EventForm({
     setOpen(false)
   }
 
+  const handleDateChange = date => {
+    setSelectedDate(date);
+  }  
+
   return (
     <>
       <Dialog fullWidth open={open} onBackdropClick={() => setOpen(false)}>
@@ -106,10 +117,62 @@ export default function EventForm({
             <div className={classes.grow} />
           </div>}
         <DialogContent>
+          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <KeyboardDatePicker
+              fullWidth
+              disableToolbar
+              variant="inline"
+              format="dd/MM/yyyy"
+              margin="normal"
+              id="date-picker-inline"
+              label="Select booking date"
+              value={selectedDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+            />
+            <KeyboardTimePicker
+              fullWidth
+              margin="normal"
+              id="time-picker"
+              label="Select travel start time"
+              value={selectedDate}
+              minutesStep={10}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change time',
+              }}
+            />
+            <KeyboardTimePicker
+              fullWidth
+              margin="normal"
+              id="time-picker"
+              label="Select booking start time"
+              value={selectedDate}
+              minutesStep={10}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change time',
+              }}
+            />
+            <KeyboardTimePicker
+              fullWidth
+              margin="normal"
+              id="time-picker"
+              label="Select booking end time"
+              value={selectedDate}
+              minutesStep={10}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+                'aria-label': 'change time',
+              }}
+            />                        
+          </MuiPickersUtilsProvider>          
           {withLocation && 
             <LocationSearchInput
               disabled={mode === 'view'}
-              address={location} 
+              address={address} 
               changeAddr={onChangeLocation}
             />}
           {withContact &&

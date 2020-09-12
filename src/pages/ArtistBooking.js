@@ -66,9 +66,9 @@ const ArtistBooking = ({
   const [events, setEvents] = useState([])
   const [draftEvents, setDraftEvents] = useState([])
   const [address, setAddress] = useState('')
-  const today = new Date()
-  const [fromDate, setFromDate] = useState(moment(today).startOf('month').startOf('week')._d)
-  const [toDate, setToDate] = useState(moment(today).endOf('month').endOf('week')._d)
+  const [today, setToday] = useState(new Date())
+  const [fromDate, setFromDate] = useState(null)
+  const [toDate, setToDate] = useState(null)
   const [calendarId, setCalendarId] = useState(null)
   const [artistBookingItems, setArtistBookingItems] = useState([])
   const [triggerEventForm, setTriggerEventForm] = useState(false)
@@ -98,6 +98,7 @@ const ArtistBooking = ({
       if (!location.state )
         setCalendarId(theArtist[0].email)
       else if (location.state.edit) {
+        setToday(artistBooking.start)        
         setMode('edit')
         setCalendarId(artistBooking.artists[0].email)
         setAddress(artistBooking.address)
@@ -110,14 +111,18 @@ const ArtistBooking = ({
           title: 'HOTM Booking',
           allDay: false,
           start: artistBooking.start,
+          bookingTime: artistBooking.bookingTime,
           end: artistBooking.end,
           artistName: artistBooking.artistName,
+          address: artistBooking.address,
           comment: artistBooking.comment            
         }
   
         setEvents([entry])
         setDraftEvents([entry])      
       }
+      setFromDate(moment(today).startOf('month').startOf('week')._d)
+      setToDate(moment(today).endOf('month').endOf('week')._d)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -160,6 +165,7 @@ const ArtistBooking = ({
       title: 'New Event',
       allDay: false,
       start: event.start,
+      bookingTime: event.start,
       end: event.end,
       artistName: artist ? artist.name : '',
       artistId: artist ? artist.id : '',
@@ -280,12 +286,12 @@ const ArtistBooking = ({
             <MyCalendar
               events={events}
               localizer={localizer}
-              artist={artist}
+              defaultDate={today}
               onSelectEvent={onSelectEvent}
               moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               newEvent={newEvent}
-              onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate)}
+              onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate, setToday)}
               triggerSaveAllDrafts={triggerSaveAllDrafts}
               triggerDeleteEvent={triggerDeleteEvent}
               eventToDelete={draftEvent? draftEvent.id : null}
@@ -302,7 +308,7 @@ const ArtistBooking = ({
           withTask={false}
           triggerOpen={triggerEventForm}
           initOpen={false}
-          onSaveEventDetails={(task, location, contact, comment) => onSaveEventDetails(task, location, contact, comment, draftEvent, setDraftEvent)}
+          onSaveEventDetails={(task, address, contact, comment) => onSaveEventDetails(task, address, contact, comment, draftEvent, setDraftEvent)}
           onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
         />
         <EventManager

@@ -55,9 +55,9 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
   const [draftEvent, setDraftEvent] = useState(null)
   const [events, setEvents] = useState([])
   const [draftEvents, setDraftEvents] = useState([])
-  const today = new Date()
-  const [fromDate, setFromDate] = useState(moment(today).startOf('month').startOf('week')._d)
-  const [toDate, setToDate] = useState(moment(today).endOf('month').endOf('week')._d)
+  const [today, setToday] = useState(null)
+  const [fromDate, setFromDate] = useState(null)
+  const [toDate, setToDate] = useState(null)
   const calendarId = artist ? artist.email : null
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
@@ -93,12 +93,18 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
   }, [services])
 
   useEffect(() => {
-    if (location.state && location.state.view)
-      setMode('view')
-    else if (location.state && location.state.edit)
-      setMode('edit')
+    if (location.state) {
+      const bookingDate = new Date(adminBooking.origEventList[0].booking_date)
+      setToday(bookingDate)
+      if (location.state.view)
+        setMode('view')
+      else
+        setMode('edit')
+    }
+    setFromDate(moment(today).startOf('month').startOf('week')._d)
+    setToDate(moment(today).endOf('month').endOf('week')._d)
   // eslint-disable-next-line react-hooks/exhaustive-deps    
-  }, [])  
+  }, [])
 
   useEffect(() => {
     if (mode !== 'book') {
@@ -112,12 +118,13 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
           title: 'HOTM Booking',
           allDay: false,
           start: localDate(event.booking_date, event.booking_start_time),
+          bookingTime: localDate(event.booking_date, event.booking_start_time),
           end: localDate(event.booking_date, event.booking_end_time),
           artistName: artists[event.artist_id].name,
           artistId: artists[event.artist_id].id,
           task: event.job_description,
           subject: adminBooking.title,      
-          location: event.event_location,
+          address: event.event_location,
           contact: event.contact,
           comment: event.comment            
         }
@@ -149,12 +156,13 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
       title: 'New Event',
       allDay: false,
       start: event.start,
+      bookingTime: event.start,
       end: event.end,
       artistName: artist.name,
       artistId: artist.id,
       task: task ? task.name : '',
       subject: bookingPackage.name,
-      location: '',
+      address: '',
       contact: `${client.name} - ${client.phone}`,
       comment: ''
   
@@ -191,7 +199,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
       } else {      
         const event = {
           artist_id: draft.artistId,
-          event_location: draft.location,
+          event_location: draft.address,
           contact: draft.contact,
           job_description: draft.task,
           comment: draft.comment,
@@ -296,12 +304,12 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
             <MyCalendar
               events={events}
               localizer={localizer}
-              artist={artist}
+              defaultDate={today}
               onSelectEvent={(event) => onSelectEvent(event, setDraftEvent, adminTasks, setTask, triggerEventForm, setTriggerEventForm)}
               moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               newEvent={newEvent}
-              onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate)}
+              onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate, setToday)}
               triggerSaveAllDrafts={triggerSaveAllDrafts}
               triggerDeleteEvent={triggerDeleteEvent}
               eventToDelete={draftEvent? draftEvent.id : null}
@@ -318,7 +326,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
           taskList={adminTasks}
           task={task}
           setTask={setTask}
-          onSaveEventDetails={(task, location, contact, comment) => onSaveEventDetails(task, location, contact, comment, draftEvent, setDraftEvent)}
+          onSaveEventDetails={(task, address, contact, comment) => onSaveEventDetails(task, address, contact, comment, draftEvent, setDraftEvent)}
           onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
         />
         <EventManager
