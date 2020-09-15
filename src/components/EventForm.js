@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
 import CreateIcon from '@material-ui/icons/Create'
 import { makeStyles } from '@material-ui/core/styles'
-import AddJobDescription from '../components/DropdownList'
+import DropdownList from '../components/DropdownList'
 import LocationSearchInput from './LocationSearchInput'
 import DateFnsUtils from '@date-io/date-fns'
 import {
@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
     marginTop: 20,
     marginBottom: 20
   },
-  job: {
+  dropdown: {
     marginTop: 10,
     marginBottom: 5
   }
@@ -61,6 +61,34 @@ export default function EventForm({
   const [comment, setComment] = useState('')
   const disableDone = address === '' || contact === '' || task === null
   const [selectedDate, setSelectedDate] = useState(null)
+  const [travelTime, setTravelTime] = useState(null)
+
+  const travelTimeList = [
+    {
+      id: 15,
+      name: '15 mins'
+    },
+    {
+      id: 30,
+      name: '30 mins'
+    },
+    {
+      id: 45,
+      name: '45 mins'
+    },
+    {
+      id: 60,
+      name: '60 mins'
+    },
+    {
+      id: 75,
+      name: '1 hour 15 mins'
+    },
+    {
+      id: 90,
+      name: '1 hour 30 mins'
+    }                    
+  ]
     
   const classes = useStyles(theme)
 
@@ -79,7 +107,7 @@ export default function EventForm({
   }, [triggerOpen, initOpen])
 
   const onChangeLocation = address => {
-    setAddress(address)
+    setAddress(address.replace(', Australia', ''))
   }
 
   const onChangeContact = event => {
@@ -132,18 +160,17 @@ export default function EventForm({
                 'aria-label': 'change date',
               }}
             />
-            <KeyboardTimePicker
-              fullWidth
-              margin="normal"
-              id="time-picker"
-              label="Select travel start time"
-              value={selectedDate}
-              minutesStep={10}
-              onChange={handleDateChange}
-              KeyboardButtonProps={{
-                'aria-label': 'change time',
-              }}
-            />
+            <div className={classes.dropdown}>
+              <DropdownList
+                disabled={mode === 'view'}
+                options={travelTimeList}
+                id="travel-time"
+                label="Select travel time"
+                placeholder="travel time"
+                setTag={setTravelTime}
+                tag={travelTime}          
+              />
+            </div>
             <KeyboardTimePicker
               fullWidth
               margin="normal"
@@ -189,8 +216,8 @@ export default function EventForm({
               onChange={onChangeContact}
             />}
           {withTask && 
-            <div className={classes.job}>
-              <AddJobDescription
+            <div className={classes.dropdown}>
+              <DropdownList
                 disabled={mode === 'view'}
                 options={taskList}
                 id="task-list"

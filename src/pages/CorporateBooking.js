@@ -94,13 +94,16 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
       // Open Calendar to the first event date in booking editing
       const bookingDate = new Date(adminBooking.origEventList[0].booking_date)
       setToday(bookingDate)
+      setFromDate(moment(bookingDate).startOf('month').startOf('week')._d)
+      setToDate(moment(bookingDate).endOf('month').endOf('week')._d)      
       if (location.state.view)
         setMode('view')
       else
         setMode('edit')
+    } else {
+      setFromDate(moment(today).startOf('month').startOf('week')._d)
+      setToDate(moment(today).endOf('month').endOf('week')._d)
     }
-    setFromDate(moment(today).startOf('month').startOf('week')._d)
-    setToDate(moment(today).endOf('month').endOf('week')._d)
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 
@@ -159,7 +162,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
       artistId: artist.id,
       task: task ? task.name : '',
       subject: corporate.name,      
-      address: corporate.location,
+      address: corporate.address,
       contact: `${corporate.contactPerson} - ${corporate.contactPhone}`,
       comment: ''      
     }

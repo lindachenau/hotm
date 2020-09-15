@@ -48,9 +48,8 @@ const EventManager = ({
         console.log('Event fetch error: ', errMessage)
       }
     }
-    
     //Artist is signed in to Google Calendar & with a valid calendar
-    if (artistSignedIn && calendarId) 
+    if (artistSignedIn && calendarId && fromDate && toDate) 
       fetchEvents()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarId, fromDate, toDate])

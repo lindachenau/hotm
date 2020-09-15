@@ -73,7 +73,7 @@ const ServiceSelection = ({
   }
 
   const handleAddrChange = address => {
-    setAddress(address)
+    setAddress(address.replace(', Australia', ''))
   }
 
   const getBookingEnd = () => {

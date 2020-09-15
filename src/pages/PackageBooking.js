@@ -55,7 +55,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
   const [draftEvent, setDraftEvent] = useState(null)
   const [events, setEvents] = useState([])
   const [draftEvents, setDraftEvents] = useState([])
-  const [today, setToday] = useState(null)
+  const [today, setToday] = useState(new Date())
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
   const calendarId = artist ? artist.email : null
@@ -96,13 +96,16 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
     if (location.state) {
       const bookingDate = new Date(adminBooking.origEventList[0].booking_date)
       setToday(bookingDate)
+      setFromDate(moment(bookingDate).startOf('month').startOf('week')._d)
+      setToDate(moment(bookingDate).endOf('month').endOf('week')._d)      
       if (location.state.view)
         setMode('view')
       else
         setMode('edit')
+    } else {
+      setFromDate(moment(today).startOf('month').startOf('week')._d)
+      setToDate(moment(today).endOf('month').endOf('week')._d)
     }
-    setFromDate(moment(today).startOf('month').startOf('week')._d)
-    setToDate(moment(today).endOf('month').endOf('week')._d)
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 

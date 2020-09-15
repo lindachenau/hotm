@@ -95,10 +95,14 @@ const ArtistBooking = ({
     if (artistSignedIn && theArtist.length > 0) {
       setArtist(theArtist[0])
 
-      if (!location.state )
+      if (!location.state ) {
         setCalendarId(theArtist[0].email)
-      else if (location.state.edit) {
-        setToday(artistBooking.start)        
+        setFromDate(moment(today).startOf('month').startOf('week')._d)
+        setToDate(moment(today).endOf('month').endOf('week')._d)        
+      } else if (location.state.edit) {
+        setToday(artistBooking.start)
+        setFromDate(moment(artistBooking.start).startOf('month').startOf('week')._d)
+        setToDate(moment(artistBooking.start).endOf('month').endOf('week')._d)                     
         setMode('edit')
         setCalendarId(artistBooking.artists[0].email)
         setAddress(artistBooking.address)
@@ -121,8 +125,6 @@ const ArtistBooking = ({
         setEvents([entry])
         setDraftEvents([entry])      
       }
-      setFromDate(moment(today).startOf('month').startOf('week')._d)
-      setToDate(moment(today).endOf('month').endOf('week')._d)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -236,7 +238,7 @@ const ArtistBooking = ({
       <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
         <Grid container justify="space-around" spacing={1}>
           <Grid item xs={12} md={4}>
-            <LocationSearchInput address={address} changeAddr={(address) => {setAddress(address)}}/>  
+            <LocationSearchInput address={address} changeAddr={(address) => {setAddress(address.replace(', Australia', ''))}}/>  
             <div className={classes.padding}>
               <AddClient
                 disabled={mode !== 'book'}
