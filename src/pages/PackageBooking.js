@@ -62,7 +62,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
   const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
-  // This component has 3 modes of operations - book, edit and view. edit and view are redirected from "Manage bookings".
+  // This component has 2 modes of operations - book nad edit. edit is redirected from "Manage bookings".
   const [mode, setMode] = useState('book')
   const [saveModified, setSaveModified] = useState(false)
   const [browsing, setBrowsing] = useState(false)
@@ -98,9 +98,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
       setToday(bookingDate)
       setFromDate(moment(bookingDate).startOf('month').startOf('week')._d)
       setToDate(moment(bookingDate).endOf('month').endOf('week')._d)      
-      if (location.state.view)
-        setMode('view')
-      else
+      if (location.state.edit)
         setMode('edit')
     } else {
       setFromDate(moment(today).startOf('month').startOf('week')._d)
@@ -174,6 +172,10 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
     setDraftEvents(mergeThenSort([newEvent], draftEvents))
   }  
 
+  const handleBack = () => {
+    setBrowsing(true)
+  }
+  
   const handleBook = () => {
     const callBack = (bookingId) => {
       const message = mode === 'book' ? 'Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.' :
@@ -268,7 +270,6 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
             </div>           
             <div className={classes.padding}>
               <AddArtists
-                disabled={mode === 'view'}
                 artists={artists}
                 multiArtists={false}
                 clearable={false}
@@ -288,19 +289,23 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
               <div className={classes.progress}><CircularProgress color='primary' /></div>
               :              
               <div className={classes.padding2}>
-                <div className={classes.grow} />
-                {mode === 'view' ?
-                null
-                :
+                {mode === 'edit' &&
                 <Button 
-                  variant="contained" 
+                  variant="text" 
+                  onClick={handleBack} 
+                  color="primary"
+                >
+                  Back
+                </Button>}                           
+                <div className={classes.grow} />
+                <Button 
+                  variant="text" 
                   onClick={handleBook} 
-                  color="secondary"
+                  color="primary"
                   disabled={draftEvents.length === 0 || bookingPackage === null}
                 >
                   {mode === 'book' ? 'Book all drafts' : 'Save modified drafts'}
-                </Button>}
-                <div className={classes.grow} />
+                </Button>
             </div>}          
           </Grid>
           <Grid item xs={12} md={9}>                     
@@ -329,7 +334,8 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
           taskList={adminTasks}
           task={task}
           setTask={setTask}
-          onSaveEventDetails={(task, address, contact, comment) => onSaveEventDetails(task, address, contact, comment, draftEvent, setDraftEvent)}
+          onSaveEventDetails={(task, address, contact, comment, start, bookingTime, end) => 
+            onSaveEventDetails(task, address, contact, comment, start, bookingTime, end, draftEvent, setDraftEvent)}
           onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
         />
         <EventManager

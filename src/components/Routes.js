@@ -12,6 +12,7 @@ const ClientBooking = lazy(() => import('../pages/ClientBooking'))
 const ArtistBooking = lazy(() => import('../config/ArtistBookingContainer'))
 const Manage = lazy(() => import('../pages/Manage'))
 const Checkout = lazy(() => import('../pages/Checkout'))
+const ManualBooking = lazy(() => import('../pages/ManualBooking'))
 const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
 const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
 
@@ -49,6 +50,17 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 artists={artists}
                 resetBooking={resetBooking}/>} 
             />
+            <Route exact path='/manual' render={() => 
+              <ManualBooking 
+                theme={theme} 
+                services={services} 
+                bookingStage={bookingStage} 
+                changeBookingStage={changeBookingStage} 
+                bookingValue={bookingValue}
+                depositPayable={depositPayable}
+                artists={artists}
+                resetBooking={resetBooking}/>} 
+            />            
             <Route path='/artist'> 
               {isArtist ? 
                 <ArtistBooking 

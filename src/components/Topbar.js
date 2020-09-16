@@ -12,6 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText'
 import Drawer from '@material-ui/core/Drawer'
 import { Link as MaterialLink, Typography } from '@material-ui/core'
 import AddIcon from '@material-ui/icons/Add'
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import LinkIcon from '@material-ui/icons/Link'
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet'
 import AccountCircleIcon from '@material-ui/icons/AccountCircle'
@@ -48,10 +49,15 @@ const useStyles = makeStyles(theme => ({
 
 const artistMenu = [
   {
-    label: "Client booking",
+    label: "Client auto booking",
     pathname: "/",
     icon: <AddIcon />
   },
+  {
+    label: "Client manual booking",
+    pathname: "/manual",
+    icon: <AddCircleOutlineIcon />
+  },  
   {
     label: "Corporate booking",
     pathname: "/corporate",
@@ -87,10 +93,15 @@ const artistMenu = [
 
 const userMenu = [
   {
-    label: "Client booking",
+    label: "Client auto booking",
     pathname: "/",
     icon: <AddIcon />
   },
+  {
+    label: "Client manual booking",
+    pathname: "/manual",
+    icon: <AddCircleOutlineIcon />
+  },  
   {
     label: "Go to Hair on the Move",
     pathname: home_url,
@@ -134,6 +145,9 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
   let title
 
   switch (currentPath) {
+    case '/manual':
+      title = 'Client manual bookings'
+      break    
     case '/manage':
       title = 'Manage bookings'
       break
@@ -146,11 +160,11 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
     case '/package':
       title = 'Package booking'
       break
-      case '/checkout':
+    case '/checkout':
         title = 'Checkout a completed job'
         break                              
     default:
-      title = 'Client booking'
+      title = 'Client auto booking'
   }
 
   return (

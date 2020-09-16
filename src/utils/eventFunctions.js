@@ -24,8 +24,11 @@ export const onSelectEvent = (event, setDraftEvent, adminTasks, setTask, trigger
   setTriggerEventForm(!triggerEventForm)
 }
 
-export const onSaveEventDetails = (task, address, contact, comment, draftEvent, setDraftEvent) => {
-  setDraftEvent({...draftEvent, task: task, address, contact, comment})
+export const onSaveEventDetails = (task, address, contact, comment, start, bookingTime, end, draftEvent, setDraftEvent) => {
+  if (task && address && contact)
+    setDraftEvent({...draftEvent, task, address, contact, comment, start, bookingTime, end})
+  else
+    setDraftEvent({...draftEvent, comment, start, bookingTime, end})
 }
 
 export const moveEvent = (event, start, end, setEvents, draftEvents, setDraftEvents) => {
@@ -33,7 +36,14 @@ export const moveEvent = (event, start, end, setEvents, draftEvents, setDraftEve
   if (event.type !== 'draft')
     return
 
-  const updatedEvent = { ...event, start, end, allDay: false }
+  let updatedEvent
+  if (event.bookingTime) {
+    const shift =  start.getTime() - event.start.getTime()
+    const bookingTime = new Date(event.bookingTime.getTime() + shift)
+    updatedEvent = { ...event, start, bookingTime, end, allDay: false }
+  } else {
+    updatedEvent = { ...event, start, end, allDay: false }
+  }
 
   setEvents([updatedEvent])
   setDraftEvents(mergeThenSort([updatedEvent], draftEvents))
@@ -44,7 +54,14 @@ export const resizeEvent = (event, start, end, setEvents, draftEvents, setDraftE
   if (event.type !== 'draft' || start >= end)
     return
 
-  const resized = {...event, start, end}
+  let resized
+  if (event.bookingTime && event.bookingTime < start) {
+    const bookingTime = start
+    resized = {...event, start, bookingTime, end}
+  } else {
+    resized = {...event, start, end}
+  }
+  
   setEvents([resized])
   setDraftEvents(mergeThenSort([resized], draftEvents))
 }

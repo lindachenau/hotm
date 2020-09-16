@@ -40,15 +40,6 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
   //     setCompleted(events[activeStep].complete)
   // }, [events, activeStep])
 
-  const handleView = () => {
-    setPrevActiveStep(activeStep)
-    setLocation({
-      pathname: pathnames[bookingType],
-      state: {view : true}
-    })
-    setBrowsing(false)
-  }
-
   const handleEdit = () => {
     setPrevActiveStep(activeStep)
     setLocation({
@@ -84,11 +75,6 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
           setActiveStep={setActiveStep}
         />
         <div className={classes.flex}>
-          {bookingType !== BOOKING_TYPE.A && 
-          <IconButton edge="start" color="primary" onClick={handleView}>
-            <DescriptionIcon/>
-          </IconButton>}
-          <div className={classes.grow} />
           <IconButton edge="start" color="primary" onClick={handleEdit}>
             <EditIcon/>
           </IconButton>

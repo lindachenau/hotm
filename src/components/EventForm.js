@@ -51,7 +51,8 @@ export default function EventForm({
   initOpen, 
   taskList, 
   task, 
-  setTask, 
+  setTask,
+  estimatedDuration, 
   onSaveEventDetails, 
   onDeleteEvent}) {
   const [open, setOpen] = useState(false)
@@ -61,35 +62,9 @@ export default function EventForm({
   const [comment, setComment] = useState('')
   const disableDone = address === '' || contact === '' || task === null
   const [selectedDate, setSelectedDate] = useState(null)
-  const [travelTime, setTravelTime] = useState(null)
+  const [travelTime, setTravelTime] = useState(30)
+  const [duration, setDuration] = useState(30)
 
-  const travelTimeList = [
-    {
-      id: 15,
-      name: '15 mins'
-    },
-    {
-      id: 30,
-      name: '30 mins'
-    },
-    {
-      id: 45,
-      name: '45 mins'
-    },
-    {
-      id: 60,
-      name: '60 mins'
-    },
-    {
-      id: 75,
-      name: '1 hour 15 mins'
-    },
-    {
-      id: 90,
-      name: '1 hour 30 mins'
-    }                    
-  ]
-    
   const classes = useStyles(theme)
 
   useEffect(() => {
@@ -98,6 +73,15 @@ export default function EventForm({
       setAddress(draftEvent.address)
       setContact(draftEvent.contact)
       setComment(draftEvent.comment)
+      if (estimatedDuration)
+        setDuration(estimatedDuration)
+      else
+        setDuration((draftEvent.end.getTime() - draftEvent.start.getTime()) / 60000)
+
+      if (draftEvent.bookingTime)
+        setSelectedDate(draftEvent.bookingTime)
+      else
+        setSelectedDate(draftEvent.start)
     }
     else {
       didMountRef.current = true
@@ -106,8 +90,20 @@ export default function EventForm({
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [triggerOpen, initOpen])
 
+  useEffect(() => {
+    
+  }, [estimatedDuration])
+
   const onChangeLocation = address => {
     setAddress(address.replace(', Australia', ''))
+  }
+
+  const onChangeTravelTime = event => {
+    setTravelTime(event.target.value)
+  }
+
+  const onChangeDuration = event => {
+    setDuration(event.target.value)
   }
 
   const onChangeContact = event => {
@@ -115,10 +111,14 @@ export default function EventForm({
   }
 
   const handleSaveEventDetails = () => {
+    const bookingTime = selectedDate.getTime()
+    const start = new Date(bookingTime - travelTime * 60 * 1000)
+    const end = new Date(bookingTime + duration * 60 * 1000)
+   
     if (!withContact && !withLocation && !withTask)
-      onSaveEventDetails(" ", " ", " ", comment)
+      onSaveEventDetails('', '', '', comment, start, selectedDate, end)
     else
-      onSaveEventDetails(task ? task.name : '', address, contact, comment)
+      onSaveEventDetails(task ? task.name : '', address, contact, comment, start, selectedDate, end)
 
     if (mode === 'edit')
       setSaveModified(true)
@@ -161,15 +161,18 @@ export default function EventForm({
               }}
             />
             <div className={classes.dropdown}>
-              <DropdownList
-                disabled={mode === 'view'}
-                options={travelTimeList}
-                id="travel-time"
-                label="Select travel time"
-                placeholder="travel time"
-                setTag={setTravelTime}
-                tag={travelTime}          
-              />
+            <TextField
+              id="travel-time"
+              label="Travel time in mins"
+              type="number"
+              defaultValue={travelTime}
+              margin="dense"              
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
+              onChange={onChangeTravelTime}              
+            />
             </div>
             <KeyboardTimePicker
               fullWidth
@@ -183,28 +186,26 @@ export default function EventForm({
                 'aria-label': 'change time',
               }}
             />
-            <KeyboardTimePicker
-              fullWidth
-              margin="normal"
-              id="time-picker"
-              label="Select booking end time"
-              value={selectedDate}
-              minutesStep={10}
-              onChange={handleDateChange}
-              KeyboardButtonProps={{
-                'aria-label': 'change time',
+            <TextField
+              id="travel-time"
+              label="Event duration in mins"
+              type="number"
+              defaultValue={duration}
+              margin="dense"              
+              InputLabelProps={{
+                shrink: true,
               }}
-            />                        
+              fullWidth
+              onChange={onChangeDuration}              
+            />
           </MuiPickersUtilsProvider>          
           {withLocation && 
             <LocationSearchInput
-              disabled={mode === 'view'}
               address={address} 
               changeAddr={onChangeLocation}
             />}
           {withContact &&
             <TextField
-              disabled={mode === 'view'}
               id='contact'
               defaultValue={contact}
               required
@@ -218,7 +219,6 @@ export default function EventForm({
           {withTask && 
             <div className={classes.dropdown}>
               <DropdownList
-                disabled={mode === 'view'}
                 options={taskList}
                 id="task-list"
                 label="Job description"
@@ -228,7 +228,6 @@ export default function EventForm({
               />
             </div>}
           <TextField
-            disabled={mode === 'view'}
             id="comment"
             label="Additional instructions"
             placeholder="Additional instructions"

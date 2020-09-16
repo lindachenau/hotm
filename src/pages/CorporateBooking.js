@@ -74,7 +74,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
   const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
-  // This component has 3 modes of operations - book, edit and view. edit and view are redirected from "Manage bookings".
+  // This component has 2 modes of operations - book and edit. edit is redirected from "Manage bookings".
   const [mode, setMode] = useState('book')
   const [saveModified, setSaveModified] = useState(false)
   const [browsing, setBrowsing] = useState(false)
@@ -96,9 +96,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
       setToday(bookingDate)
       setFromDate(moment(bookingDate).startOf('month').startOf('week')._d)
       setToDate(moment(bookingDate).endOf('month').endOf('week')._d)      
-      if (location.state.view)
-        setMode('view')
-      else
+      if (location.state.edit)
         setMode('edit')
     } else {
       setFromDate(moment(today).startOf('month').startOf('week')._d)
@@ -168,6 +166,10 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
     }
     setEvents([newEvent])
     setDraftEvents(mergeThenSort([newEvent], draftEvents))
+  }
+
+  const handleBack = () => {
+    setBrowsing(true)
   }
   
   const handleBook = () => {
@@ -255,7 +257,6 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
             />             
             <div className={classes.padding}>
               <AddArtists
-                disabled={mode === 'view'}
                 artists={artists}
                 multiArtists={false}
                 clearable={false}
@@ -275,19 +276,23 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
               <div className={classes.progress}><CircularProgress color='primary' /></div>
               :            
               <div className={classes.padding2}>
-                <div className={classes.grow} />
-                {mode === 'view' ?
-                null
-                :
+                {mode === 'edit' &&
                 <Button 
-                  variant="contained" 
+                  variant="text" 
+                  onClick={handleBack} 
+                  color="primary"
+                >
+                  Back
+                </Button>}             
+                <div className={classes.grow} />
+                <Button 
+                  variant="text" 
                   onClick={handleBook} 
-                  color="secondary" 
+                  color="primary" 
                   disabled={draftEvents.length === 0 || corporate === null}
                 >
                   {mode === 'book' ? 'Book all drafts' : 'Save modified drafts'}
-                </Button>}
-                <div className={classes.grow} />
+                </Button>
             </div>}         
           </Grid>
           <Grid item xs={12} md={9}>                     
@@ -316,7 +321,8 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
           taskList={adminTasks}
           task={task}
           setTask={setTask}
-          onSaveEventDetails={(task, address, contact, comment) => onSaveEventDetails(task, address, contact, comment, draftEvent, setDraftEvent)}
+          onSaveEventDetails={(task, address, contact, comment, start, bookingTime, end) => 
+            onSaveEventDetails(task, address, contact, comment, start, bookingTime, end, draftEvent, setDraftEvent)}
           onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
         />
         <EventManager

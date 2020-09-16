@@ -131,7 +131,6 @@ export function getAdminBookings(bookingType, bookings, artists, clients, servic
   for (const id in bookings) {
     const booking = bookings[id]
     const cId = booking.card_or_client_id.toString()
-    // debugger
     const title = bookingType.name === BOOKING_TYPE.C ? corpCards[cId].name : `${servicesMenu[booking.service_item.toString()].description}`
     const contact = bookingType.name === BOOKING_TYPE.C ? `${corpCards[cId].contactPerson} - ${corpCards[cId].contactPhone}` : `${clients[cId].name} - ${clients[cId].phone}`
     let eventList = []

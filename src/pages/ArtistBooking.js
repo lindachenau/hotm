@@ -81,6 +81,7 @@ const ArtistBooking = ({
   const [browsing, setBrowsing] = useState(false)
   const { bookingsData } = useContext(BookingsStoreContext)
   const { bookingInProgress } = bookingsData
+  const [estimatedDuration, setEstimatedDuration] = useState(0)
   
   useEffect(() => {
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
@@ -150,6 +151,7 @@ const ArtistBooking = ({
       artItems.push(item)
     }
     setArtistBookingItems(artItems)
+    setEstimatedDuration(getDuration())
   }, [itemQty])
 
   const newEvent = (event) => {
@@ -158,10 +160,16 @@ const ArtistBooking = ({
     if (event.slots.length === 1)
       return
 
-      const newId = `draft-${draftId}`
-      setDraftId(draftId + 1)
-  
-      const newEvent = {
+    //Disable adding new event before artist, package and client selection
+    if (artist === null || artistBookingItems.length === 0 || client === null) {
+      alert('Select artist, service items and client before creating an event.')
+      return
+    }             
+
+    const newId = `draft-${draftId}`
+    setDraftId(draftId + 1)
+
+    const newEvent = {
       id: newId,
       type: 'draft',
       title: 'New Event',
@@ -182,6 +190,10 @@ const ArtistBooking = ({
       return
     setDraftEvent(event)
     setTriggerEventForm(!triggerEventForm)
+  }
+
+  const handleBack = () => {
+    setBrowsing(true)
   }
 
   const handleBook = () => {
@@ -249,7 +261,6 @@ const ArtistBooking = ({
             </div>
             <div className={classes.padding}>
               <AddArtists
-                disabled={mode === 'view'}
                 artists={artists}
                 multiArtists={false}
                 clearable={false}
@@ -259,17 +270,25 @@ const ArtistBooking = ({
               />
             </div>
             <div className={classes.padding}>
-              <ArtistBookingItems items={artistBookingItems} duration={getDuration()}/>
+              <ArtistBookingItems items={artistBookingItems} duration={estimatedDuration}/>
             </div>
             {bookingInProgress ? 
               <div className={classes.progress}><CircularProgress color='primary' /></div>
               :
               <div className={classes.padding2}>
+                {mode === 'edit' &&
+                <Button 
+                  variant="text" 
+                  onClick={handleBack} 
+                  color="primary"
+                >
+                  Back
+                </Button>}                                 
                 <div className={classes.grow} />
                 <Button 
-                  variant="contained"
+                  variant="text"
                   onClick={handleBook}
-                  color="secondary"
+                  color="primary"
                   disabled={
                     draftEvents.length !== 1 || 
                     address === '' || 
@@ -278,7 +297,6 @@ const ArtistBooking = ({
                 >
                   {mode === 'book' ? 'Book' : 'Save'}
                 </Button>
-                <div className={classes.grow} />
                 </div>}                   
             <div className={classes.padding}>
               <ServiceMenu services={services} artistBooking={true} />
@@ -310,7 +328,9 @@ const ArtistBooking = ({
           withTask={false}
           triggerOpen={triggerEventForm}
           initOpen={false}
-          onSaveEventDetails={(task, address, contact, comment) => onSaveEventDetails(task, address, contact, comment, draftEvent, setDraftEvent)}
+          estimatedDuration={estimatedDuration}
+          onSaveEventDetails={(task, address, contact, comment, start, bookingTime, end) => 
+            onSaveEventDetails(task, address, contact, comment, start, bookingTime, end, draftEvent, setDraftEvent)}
           onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
         />
         <EventManager
