@@ -166,6 +166,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
         setEventsFetched(true)
       } else if (bookingType.name === BOOKING_TYPE.A || bookingType.name === BOOKING_TYPE.P) {
         const id_name = bookingType.name === BOOKING_TYPE.A ? 'client_id' : 'card_or_client_id'
+        // clientList contains normal clients for artist and package bookings
         setClientList(getClientListFromBookings(bookingsData.data, id_name))
       }
     }
@@ -213,19 +214,39 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [bookingTrigger])
 
-  //regenerate events whenever clients or bookings data are updated
+  //regenerate events whenever clients are updated
   useEffect(() => {
-    if (artistsFetched && servicesFetched && (Object.keys(clients).length > 0 || bookingType.name === BOOKING_TYPE.C)) {
-      if (bookingType.name === BOOKING_TYPE.A) {
-        setEvents(getEvents(bookingsData.data, artists, clients, services.items))
-        setEventsFetched(true)
-      } else {
-        setAdminBookings(getAdminBookings(bookingType, bookingsData.data, artists, clients, services.items, corpCardsObj))
-        setAdminBookingsFetched(true)
-      }
+    if (artistsFetched && servicesFetched && Object.keys(clients).length > 0 && 
+      (requestMethod === 'get' && bookingType.name === BOOKING_TYPE.A) || (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.A)) {
+      setEvents(getEvents(bookingsData.data, artists, clients, services.items))
+      setEventsFetched(true)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [clientsFetchTrigger, bookingsData.data])
+  }, [clientsFetchTrigger])
+
+  //regenerate events whenever bookings data are updated
+  useEffect(() => {
+    if (requestMethod === 'get' && bookingType.name === BOOKING_TYPE.C) {
+      setAdminBookings(getAdminBookings(bookingType.name, bookingsData.data, artists, clients, services.items, corpCardsObj))
+      setAdminBookingsFetched(true)
+    } else if (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.C) {
+      setAdminBookings(getAdminBookings(bookingTypeName, bookingsData.data, artists, clients, services.items, corpCardsObj))
+      setAdminBookingsFetched(true)      
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
+  }, [bookingsData.data])
+
+  //regenerate events whenever clients are updated
+  useEffect(() => {
+    if (requestMethod === 'get' && bookingType.name === BOOKING_TYPE.P) {
+      setAdminBookings(getAdminBookings(bookingType.name, bookingsData.data, artists, clients, services.items, corpCardsObj))
+      setAdminBookingsFetched(true)
+    } else if (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.P) {
+      setAdminBookings(getAdminBookings(bookingTypeName, bookingsData.data, artists, clients, services.items, corpCardsObj))
+      setAdminBookingsFetched(true)      
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
+  }, [clientsFetchTrigger])
 
   return (
     <BookingsStoreContext.Provider value={{services, servicesFetched, corpCards, adminTasks, 

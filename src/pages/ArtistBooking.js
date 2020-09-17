@@ -130,6 +130,11 @@ const ArtistBooking = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (artist)
+      setCalendarId(artist.email)
+  }, [artist])
+
   const getDuration = () => {
     let duration = 0
     for (let id of Object.keys(itemQty)) {
@@ -217,7 +222,7 @@ const ArtistBooking = ({
     bookingData.services = Object.keys(itemQty).map(id => parseInt(id))
     bookingData.quantities = Object.values(itemQty)
     bookingData.booking_date = moment(event.start).format("YYYY-MM-DD")
-    bookingData.booking_time = moment(event.start).format("HH:mm")
+    bookingData.booking_time = moment(event.bookingTime).format("HH:mm")
     bookingData.booking_end_time = moment(event.end).format("HH:mm")
     bookingData.with_organic = priceFactors.organic ? 1 : 0
     bookingData.with_pensioner_rate = priceFactors.pensionerRate ? 1 : 0
@@ -227,7 +232,7 @@ const ArtistBooking = ({
     bookingData.booking_artist_id = booingArtistId
     //All fields below are redundant. They can be removed when API does not make them mandatory.
     bookingData.time_on_site = getDuration()
-    bookingData.artist_start_time = bookingData.booking_time
+    bookingData.artist_start_time = moment(event.start).format("HH:mm")
     bookingData.travel_duration = 0
     bookingData.travel_distance = 0
     bookingData.payment_amount = 0

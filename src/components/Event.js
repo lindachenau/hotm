@@ -20,22 +20,22 @@ export function DayEvent ({ event }) {
       </>}
       {event.address &&
       <>
-        <FaMapMarkerAlt/><span>{ ` ${event.address} ` }</span>
+        <FaMapMarkerAlt/><span>{ ` ${event.address}  ` }</span>
       </>}
       {event.client &&
       <>
         <FaUserAlt/>
-        <span>{ ` ${event.client.name} ` }</span>
+        <span>{ ` ${event.client.name}  ` }</span>
         <FaPhoneSquare/>
-        <span>{ `${event.client.phone} ` }</span>
+        <span>{ `${event.client.phone}  ` }</span>
       </>}
       {event.artistName && 
       <>
-        <FaUserCog/><span>{` ${event.artistName} `}</span>
+        <FaUserCog/><span>{` ${event.artistName}  `}</span>
       </>}
       {event.task && 
       <>
-        <FaCog/><span>{ event.task}</span>
+        <FaCog/><span>{` ${event.task}`}</span>
       </>}
     </div>
   )

@@ -124,15 +124,15 @@ export function localDate(bookingDate, bookingTime)
   return new Date(y, mon, d, h, min)
 }
 
-export function getAdminBookings(bookingType, bookings, artists, clients, servicesMenu, corpCards)
+export function getAdminBookings(bookingTypeName, bookings, artists, clients, servicesMenu, corpCards)
 {
   let adminBookings = []
 
   for (const id in bookings) {
     const booking = bookings[id]
     const cId = booking.card_or_client_id.toString()
-    const title = bookingType.name === BOOKING_TYPE.C ? corpCards[cId].name : `${servicesMenu[booking.service_item.toString()].description}`
-    const contact = bookingType.name === BOOKING_TYPE.C ? `${corpCards[cId].contactPerson} - ${corpCards[cId].contactPhone}` : `${clients[cId].name} - ${clients[cId].phone}`
+    const title = bookingTypeName === BOOKING_TYPE.C ? corpCards[cId].name : `${servicesMenu[booking.service_item.toString()].description}`
+    const contact = bookingTypeName === BOOKING_TYPE.C ? `${corpCards[cId].contactPerson} - ${corpCards[cId].contactPhone}` : `${clients[cId].name} - ${clients[cId].phone}`
     let eventList = []
     booking.event_list.forEach(event => {
       if (artists[event.artist_id]) {
