@@ -31,11 +31,24 @@ const searchOptions = {
 export default function LocationSearchInput ({ address, changeAddr, disabled=false}) {
   const classes = useStyles()
 
+  const onSelect = (placeId) => {
+    const placeService = new window.google.maps.places.PlacesService(document.createElement('div'))
+  
+    return new Promise(function (resolve, reject) {
+      placeService.getDetails({ placeId: placeId }, function (place, status) {
+        if (status !== window.google.maps.places.PlacesServiceStatus.OK) 
+          reject(status)
+        
+        resolve(place.formatted_address)
+      })
+    })
+  }
+
   return (
     <PlacesAutocomplete
       value={address}
       onChange={changeAddr}
-      onSelect={changeAddr}
+      onSelect={async (address, placeId) => changeAddr(await onSelect(placeId))}
       searchOptions={searchOptions}
     >
       {({ getInputProps, suggestions, getSuggestionItemProps, loading }) => (
@@ -68,7 +81,7 @@ export default function LocationSearchInput ({ address, changeAddr, disabled=fal
                   <div
                     {...getSuggestionItemProps(suggestion, {
                       className,
-                      style,
+                      style
                     })}
                   >
                     {suggestion.description}
