@@ -217,7 +217,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   //regenerate events whenever clients are updated
   useEffect(() => {
     if (artistsFetched && servicesFetched && Object.keys(clients).length > 0 && 
-      (requestMethod === 'get' && bookingType.name === BOOKING_TYPE.A) || (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.A)) {
+      ((requestMethod === 'get' && bookingType.name === BOOKING_TYPE.A) || (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.A))) {
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
       setEventsFetched(true)
     }

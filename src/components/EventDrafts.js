@@ -67,9 +67,9 @@ export default function EventDrafts({ theme, items, corporate }) {
                     {incompleteEvent(item) && <WarningIcon />}
                     {item.toBeDeleted && <DeleteForeverIcon />}
                     {corporate ? 
-                      `${item.subject} - ${moment(item.start).format("YYYY/MM/DD")} - ${((item.end - item.start) / 3600000).toFixed(1)} hrs : ${item.artistName} - ${item.task}`
+                      `${item.subject} - ${moment(item.start).format("DD/MM/YYYY")} - ${((item.end - item.start) / 3600000).toFixed(1)} hrs : ${item.artistName} - ${item.task}`
                       :
-                      `${moment(item.start).format("YYYY/MM/DD")} : ${item.artistName} - ${item.task}`}
+                      `${moment(item.start).format("DD/MM/YYYY")} : ${item.artistName} - ${item.task}`}
                   </TableCell>
                 </TableRow>
               ))}

@@ -184,7 +184,7 @@ export default function EventForm({
               id="time-picker"
               label="Select booking start time"
               value={selectedDate}
-              minutesStep={10}
+              minutesStep={15}
               onChange={handleDateChange}
               KeyboardButtonProps={{
                 'aria-label': 'change time',

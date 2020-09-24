@@ -35,7 +35,7 @@ function EventCard ({ event }) {
   return (
     <Paper className={classes.paper} elevation={6}>
       <Typography variant="h6" align="center" color="textPrimary">
-        { moment(event.start).format("dddd, YYYY/MM/DD") }
+        { moment(event.start).format("dddd, DD/MM/YYYY") }
       </Typography>
       <Typography variant="h6" align="center" color="textPrimary" gutterBottom>
         { `${moment(event.start).format('LT')} – ${moment(event.end).format('LT')}` }
