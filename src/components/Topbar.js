@@ -11,6 +11,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon'
 import ListItemText from '@material-ui/core/ListItemText'
 import Drawer from '@material-ui/core/Drawer'
 import { Link as MaterialLink, Typography } from '@material-ui/core'
+import HomeIcon from '@material-ui/icons/Home'
 import AddIcon from '@material-ui/icons/Add'
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline'
 import LinkIcon from '@material-ui/icons/Link'
@@ -49,42 +50,47 @@ const useStyles = makeStyles(theme => ({
 
 const artistMenu = [
   {
-    label: "Client auto booking",
+    label: "Home",
     pathname: "/",
-    icon: <AddIcon />
+    icon: <HomeIcon />
   },
   {
-    label: "Client manual booking",
-    pathname: "/manual",
+    label: "Any Therapist",
+    pathname: "/any-therapist",
+    icon: <AddIcon />
+  },  
+  {
+    label: "Choose Therapist",
+    pathname: "/choose-therapist",
     icon: <AddCircleOutlineIcon />
   },  
   {
-    label: "Corporate booking",
-    pathname: "/corporate",
+    label: "Corporate Booking",
+    pathname: "/corporate-booking",
     icon: <BusinessIcon />
   },
   {
-    label: "Package booking",
-    pathname: "/package",
+    label: "Package Booking",
+    pathname: "/package-booking",
     icon: <BusinessCenterIcon />
   },  
   {
-    label: "Artist booking",
-    pathname: "/artist",
+    label: "Therapist Booking",
+    pathname: "/therapist-booking",
     icon: <BrushIcon />
   },
   {
-    label: "Manage bookings",
-    pathname: "/manage",
+    label: "Manage Bookings",
+    pathname: "/manage-bookings",
     icon: <AssignmentIndIcon />
   },
   {
-    label: "Checkout a completed job",
-    pathname: "/checkout",
+    label: "My Calendar",
+    pathname: "/my-calendar",
     icon: <AssignmentTurnedInIcon />
   },  
   {
-    label: "Go to Hair on the Move",
+    label: "Go to Hair Beauty Life Co",
     pathname: home_url,
     external: true,
     icon: <LinkIcon />
@@ -93,17 +99,22 @@ const artistMenu = [
 
 const userMenu = [
   {
-    label: "Client auto booking",
+    label: "Home",
     pathname: "/",
+    icon: <HomeIcon />
+  },  
+  {
+    label: "Any Therapist",
+    pathname: "/any-therapist",
     icon: <AddIcon />
   },
   {
-    label: "Client manual booking",
-    pathname: "/manual",
+    label: "Choose Therapist",
+    pathname: "/choose-therapist",
     icon: <AddCircleOutlineIcon />
   },  
   {
-    label: "Go to Hair on the Move",
+    label: "Go to Hair Beauty Life Co",
     pathname: home_url,
     external: true,
     icon: <LinkIcon />
@@ -117,7 +128,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
   const [triggerSignout, setTriggerSignout] = useState(false)
   const [triggerFilter, setTriggerFilter] = useState(false)
   const currentPath = location.pathname
-  const bookingPage = currentPath === '/' || currentPath === '/artist'
+  const bookingPage = currentPath === '/any-therapist' || currentPath === '/choose-therapist'
   const retrievalPage = currentPath === '/manage'
   const menu = isArtist ? artistMenu : userMenu
   
@@ -145,26 +156,29 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
   let title
 
   switch (currentPath) {
-    case '/manual':
-      title = 'Client manual bookings'
+    case '/any-therapist':
+      title = 'Any Therapist'
       break    
-    case '/manage':
-      title = 'Manage bookings'
+    case '/choose-therapist':
+      title = 'Choose Therapist'
+      break    
+    case '/manage-bookings':
+      title = 'Manage Bookings'
       break
-    case '/artist':
-      title = 'Artist booking'
+    case '/therapist-booking':
+      title = 'Therapist Booking'
       break
-    case '/corporate':
-      title = 'Corporate booking'
+    case '/corporate-booking':
+      title = 'Corporate Booking'
       break
-    case '/package':
-      title = 'Package booking'
+    case '/package-booking':
+      title = 'Package Booking'
       break
-    case '/checkout':
-        title = 'Checkout a completed job'
+    case '/my-calendar':
+        title = 'My Calendar'
         break                              
     default:
-      title = 'Client auto booking'
+      title = 'Home'
   }
 
   return (
@@ -172,7 +186,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
       <AppBar color="secondary" position='static'>
         <Toolbar>
           <Link to="/">
-            <img width={60} src={logo} alt="Hair on the move logo" />
+            <img width={60} src={logo} alt="Hair Beauty Life Co logo" />
           </Link>
           <React.Fragment>
             <IconButton onClick={toggleDrawer(true)} color="inherit" aria-label="Menu">

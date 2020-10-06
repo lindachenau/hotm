@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { Redirect, withRouter } from 'react-router-dom'
-import MyCalendar from '../components/MyCalendar'
+import TheCalendar from '../components/TheCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
 import '../components/CalendarToolbar.css'
 import { momentLocalizer } from 'react-big-calendar'
@@ -262,7 +262,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
                 clearable={false}
                 setTags={setArtist}
                 tags={artist}
-                label="Select artist"
+                label="Select therapist"
               />
             </div>
             <div className={classes.padding}>
@@ -296,7 +296,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
             </div>}         
           </Grid>
           <Grid item xs={12} md={9}>                     
-            <MyCalendar
+            <TheCalendar
               events={events}
               localizer={localizer}
               defaultDate={today}

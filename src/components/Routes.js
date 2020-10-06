@@ -8,11 +8,12 @@ import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
 //Use route based lazy loading to split the code to smaller chunks
-const ClientBooking = lazy(() => import('../pages/ClientBooking'))
-const ArtistBooking = lazy(() => import('../config/ArtistBookingContainer'))
+const Home = lazy(() => import('../pages/Home'))
+const AnyTherapist = lazy(() => import('../pages/AnyTherapist'))
+const TherapistBooking = lazy(() => import('../config/TherapistBookingContainer'))
 const Manage = lazy(() => import('../pages/Manage'))
-const Checkout = lazy(() => import('../pages/Checkout'))
-const ManualBooking = lazy(() => import('../pages/ManualBooking'))
+const MyCalendar = lazy(() => import('../pages/MyCalendar'))
+const ChooseTherapist = lazy(() => import('../pages/ChooseTherapist'))
 const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
 const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
 
@@ -39,8 +40,9 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
         <Suspense fallback={<CircularProgress/>}>
         {servicesFetched &&
           <Switch>
-            <Route exact path='/' render={() => 
-              <ClientBooking 
+            <Route exact path='/' component={Home}/> 
+            <Route path='/any-therapist' render={() => 
+              <AnyTherapist 
                 theme={theme} 
                 services={services} 
                 bookingStage={bookingStage} 
@@ -49,9 +51,9 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 depositPayable={depositPayable}
                 artists={artists}
                 resetBooking={resetBooking}/>} 
-            />
-            <Route exact path='/manual' render={() => 
-              <ManualBooking 
+             />
+            <Route path='/choose-therapist' render={() => 
+              <ChooseTherapist 
                 theme={theme} 
                 services={services} 
                 bookingStage={bookingStage} 
@@ -61,9 +63,9 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 artists={artists}
                 resetBooking={resetBooking}/>} 
             />            
-            <Route path='/artist'> 
+            <Route path='/therapist-booking'> 
               {isArtist ? 
-                <ArtistBooking 
+                <TherapistBooking 
                   theme={theme} 
                   services={services}
                   itemQty={itemQty}
@@ -78,7 +80,7 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 <Redirect to="/" />
               }
             </Route>            
-            <Route path='/corporate'>
+            <Route path='/corporate-booking'>
               {isArtist ?
                 <CorporateBooking
                   artists={artists}
@@ -90,7 +92,7 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 <Redirect to="/" />
               }
             </Route>
-            <Route path='/package'>
+            <Route path='/package-booking'>
             {isArtist ?
               <PackageBooking
                 artists={artists}
@@ -102,7 +104,7 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
               <Redirect to="/" />
             }                
             </Route>
-            <Route path='/manage'>
+            <Route path='/manage-bookings'>
             {isArtist ?
               <Manage 
                 events={events} 
@@ -118,15 +120,13 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
               <Redirect to="/" />
             }                  
             </Route>
-            <Route path='/checkout'>
+            <Route path='/my-calendar'>
             {isArtist ?
-              <Checkout 
-                events={events} 
-                eventsFetched={eventsFetched}
-                services={services} 
-                bookingValue={bookingValue}
-                depositPayable={depositPayable}
-                artists={artists}/>
+              <MyCalendar 
+              theme={theme} 
+              artists={artists}
+              userEmail={userEmail}
+              artistSignedIn={artistSignedIn}/>
               :
               <Redirect to="/" />
             }                

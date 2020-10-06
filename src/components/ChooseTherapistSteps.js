@@ -7,15 +7,15 @@ import Container from '@material-ui/core/Container'
 
 
 function getSteps() {
-  return ['Select service', 'Select an artist', 'Confirm booking', 'Pay deposit']
+  return ['Choose a therapist & service', 'Choose time', 'Confirm booking', 'Pay deposit']
 }
 
 function getStepContent(stepIndex) {
   switch (stepIndex) {
     case 0:
-      return 'Select service items, time and location to find available artists'
+      return 'Choose your preferred therapist to check availability for your selected service items'
     case 1:
-      return 'Select an artist for your booking'
+      return 'Choose a time slot for your booking'
     case 2:
       return 'Confirm your booking details'
     case 3:
@@ -25,7 +25,7 @@ function getStepContent(stepIndex) {
   }
 }
 
-export default function BookingSteps(props) {
+export default function ChooseTherapistSteps(props) {
   const steps = getSteps()
   const { activeStep } = props
 

@@ -47,7 +47,7 @@ export default function AddClient({client, setClient, label, disabled=false}) {
         method: 'get',
         headers: { 
           'Authorization': access_token,
-          "Cache-Control": "no-store"
+          "Cache-Control": "no-cache, no-store, must-revalidate"
         },
         url: user_url + '?search=' + searchKey
       }

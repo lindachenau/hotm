@@ -83,7 +83,7 @@ export default function EventForm({
       else
         setSelectedDate(draftEvent.start)
 
-      if (draftEvent.bookingTime && draftEvent.bookingTime != draftEvent.start) {
+      if (draftEvent.bookingTime && draftEvent.bookingTime !== draftEvent.start) {
         setTravelTime((draftEvent.bookingTime.getTime() - draftEvent.start.getTime()) / 60000)
       }
     }

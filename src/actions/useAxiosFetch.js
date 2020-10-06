@@ -46,7 +46,7 @@ const useAxiosFetch = (initialUrl, initialData, trigger) => {
           method: 'get',
           headers: {
             "Content-Type": "application/json",
-            "Cache-Control": "no-store"
+            "Cache-Control": "no-cache, no-store, must-revalidate"
           },
           url: url
         }

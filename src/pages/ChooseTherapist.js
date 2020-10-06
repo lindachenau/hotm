@@ -1,12 +1,12 @@
 import React, { useEffect } from "react"
 import { withRouter } from 'react-router-dom'
 import ArtistSelection from '../config/ArtistSelectionContainer'
-import BookingSteps from '../components/BookingSteps'
-import ServiceSelection from '../config/ServiceSelectionContainer'
+import ChooseTherapistSteps from '../components/ChooseTherapistSteps'
+import TherapistSelection from '../config/TherapistSelectionContainer'
 import Confirmation from '../config/ConfirmationContainer'
 import Payment from '../config/PaymentContainer'
 
-const ClientBooking = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
+const ChooseTherapist = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
 
   useEffect(() => {
     resetBooking()
@@ -15,12 +15,13 @@ const ClientBooking = ({ bookingStage, changeBookingStage, resetBooking, service
 
   return (
     <React.Fragment>
-      <BookingSteps activeStep={bookingStage}/>
+      <ChooseTherapistSteps activeStep={bookingStage}/>
       {bookingStage === 0 ? 
-        <ServiceSelection 
+        <TherapistSelection 
           onSubmit={changeBookingStage} 
           services={services} 
-          theme={theme} 
+          theme={theme}
+          artists={artists}
           bookingValue={bookingValue}
           newBooking={true}/> 
           : null
@@ -47,4 +48,4 @@ const ClientBooking = ({ bookingStage, changeBookingStage, resetBooking, service
   )
 }
 
-export default withRouter(ClientBooking)
+export default withRouter(ChooseTherapist)

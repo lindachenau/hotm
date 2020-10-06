@@ -113,7 +113,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         method: 'get',
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "no-store"
+          "Cache-Control": "no-cache, no-store, must-revalidate"
         },
         url: url
       }

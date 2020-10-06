@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { addBooking, loadBooking, updateBooking } from '../actions/bookingCreator'
-import ArtistBooking from '../pages/ArtistBooking'
+import TherapistBooking from '../pages/TherapistBooking'
 
 const mapStateToProps = state => {
   return {
@@ -16,4 +16,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ArtistBooking)
+export default connect(mapStateToProps, mapDispatchToProps)(TherapistBooking)

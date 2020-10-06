@@ -218,7 +218,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
         method: 'get',
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "no-store"
+          "Cache-Control": "no-cache, no-store, must-revalidate"
         },
         url: register_nonce_url
       }

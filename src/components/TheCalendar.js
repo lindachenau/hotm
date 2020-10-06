@@ -15,7 +15,7 @@ const components = {
   day: {event: DayEvent}
 }
 
-const MyCalendar = ({
+const TheCalendar = ({
   events, 
   localizer, 
   defaultDate, 
@@ -96,4 +96,4 @@ const MyCalendar = ({
   )
 }
 
-export default MyCalendar
+export default TheCalendar

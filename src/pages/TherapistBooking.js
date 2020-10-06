@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
-import MyCalendar from '../components/MyCalendar'
+import TheCalendar from '../components/TheCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
 import '../components/CalendarToolbar.css'
 import { momentLocalizer } from 'react-big-calendar'
@@ -222,6 +222,7 @@ const ArtistBooking = ({
     bookingData.services = Object.keys(itemQty).map(id => parseInt(id))
     bookingData.quantities = Object.values(itemQty)
     bookingData.booking_date = moment(event.start).format("YYYY-MM-DD")
+    bookingData.artist_start_time = moment(event.start).format("HH:mm")
     bookingData.booking_time = moment(event.bookingTime).format("HH:mm")
     bookingData.booking_end_time = moment(event.end).format("HH:mm")
     bookingData.with_organic = priceFactors.organic ? 1 : 0
@@ -231,8 +232,7 @@ const ArtistBooking = ({
     bookingData.comment = event.comment
     bookingData.booking_artist_id = booingArtistId
     //All fields below are redundant. They can be removed when API does not make them mandatory.
-    bookingData.time_on_site = getDuration()
-    bookingData.artist_start_time = moment(event.start).format("HH:mm")
+    bookingData.time_on_site = (event.end.getTime() - event.bookingTime.getTime()) / 60000
     bookingData.travel_duration = 0
     bookingData.travel_distance = 0
     bookingData.payment_amount = 0
@@ -271,7 +271,7 @@ const ArtistBooking = ({
                 clearable={false}
                 setTags={setArtist}
                 tags={artist}
-                label="Select artist"
+                label="Select therapist"
               />
             </div>
             <div className={classes.padding}>
@@ -308,7 +308,7 @@ const ArtistBooking = ({
             </div>
           </Grid>
           <Grid item xs={12} md={8}>                     
-            <MyCalendar
+            <TheCalendar
               events={events}
               localizer={localizer}
               defaultDate={today}
