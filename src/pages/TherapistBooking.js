@@ -239,11 +239,11 @@ const ArtistBooking = ({
     bookingData.payment_type = 'deposit'
 
     if (mode === 'book') {
-      addBooking(bookingData, BOOKING_TYPE.A, callBack)
+      addBooking(bookingData, BOOKING_TYPE.T, callBack)
     }
     else {
       bookingData.booking_id = artistBooking.id
-      updateBooking(bookingData, BOOKING_TYPE.A, callBack)
+      updateBooking(bookingData, BOOKING_TYPE.T, callBack)
     }
   }
 

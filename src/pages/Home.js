@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Redirect, withRouter } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
-import { MDBCarousel, MDBCarouselInner, MDBCarouselItem, MDBView, MDBMask, MDBContainer } from "mdbreact"
 import Container from '@material-ui/core/Container'
 import Button from '@material-ui/core/Button' 
 import EventAvailableIcon from '@material-ui/icons/EventAvailable'
 import EventIcon from '@material-ui/icons/Event'
+import Carousel from 'react-material-ui-carousel'
 
 const imgList = [
   {
@@ -29,19 +29,25 @@ const Home = ({ theme }) => {
   const [location, setLocation] =useState('')
   const useStyles = makeStyles(theme => ({
     container: {
-      height: '500px',
-      width: '500px',
+      width: '30vw',
+      height: '30vh',
+      marginLeft: '-15vw',
+      marginTop: '-15vh',
+      [theme.breakpoints.down('sm')]: {
+        width: '100vw',
+        marginLeft: '-50vw'
+      },           
       position: 'absolute',
       left: '50%', 
       top: '50%',
-      marginLeft: '-250px',
-      marginTop: '-250px',
       zIndex: 100,
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
+      justifyContent: 'space-around'
     },
-    button: {
-      margin: theme.spacing(1)
+    image: {
+      maxWidth: '100%',
+      height: 'auto'
     }
   }))
 
@@ -50,19 +56,12 @@ const Home = ({ theme }) => {
   return (
     <>
       {!location ?
-      <MDBContainer>
-        <MDBCarousel activeItem={1} length={3} showControls={false} showIndicators={false} className="z-depth-1" slide>
-          <MDBCarouselInner>
-            {imgList.map( image => 
-              <MDBCarouselItem itemId={image.key} key={image.key} alt={image.alt}>
-                <MDBView>
-                  <img className="d-block w-100" src={image.name} />
-                  <MDBMask overlay="white-light" />
-                </MDBView>
-              </MDBCarouselItem>
-            )}
-          </MDBCarouselInner>
-        </MDBCarousel>
+      <div>
+        <Carousel indicators={false}>
+          {
+            imgList.map(image => <img className={classes.image} src={image.name} key={image.key} alt={image.alt}/>)
+          }
+        </Carousel>
         <Container className={classes.container}>
           <Button 
             variant="contained" 
@@ -85,7 +84,7 @@ const Home = ({ theme }) => {
             Choose Therapist to find available time
           </Button>
         </Container>                           
-      </MDBContainer>
+      </div>
       :
       <Redirect to={location} />}
     </>

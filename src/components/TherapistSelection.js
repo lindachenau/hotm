@@ -37,7 +37,8 @@ const TherapistSelection = ({
   theme, 
   services,
   itemQty, 
-  bookingAddr, 
+  bookingAddr,
+  onSubmit,
   artists,
   artistBooking,
   bookingValue }) => {
@@ -65,10 +66,7 @@ const TherapistSelection = ({
   }
 
   const handleSubmit = event => {
-
-    /*A workaround for redux-thunk error. When passing (itemQty, selectedDate, address) to getAvailArtist action creator,
-    *(itemQty, selectedDate, address) become undefined even though the values are still correct in mapDispatchToProps.
-    */
+    onSubmit(1)
   }
 
   return (
@@ -91,7 +89,7 @@ const TherapistSelection = ({
       <div className={classes.flex}>
         <div className={classes.grow} />
         <Button variant='text' color='primary' onClick={handleSubmit} disabled={missingFields()}>
-          Submit
+          Next
         </Button>
       </div>
     </Container>

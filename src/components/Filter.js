@@ -57,7 +57,7 @@ export default function Filter({
       name: BOOKING_TYPE.P
     },
     {
-      name: BOOKING_TYPE.A
+      name: BOOKING_TYPE.T
     }
   ]  
 

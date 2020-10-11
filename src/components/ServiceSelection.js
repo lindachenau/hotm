@@ -163,7 +163,7 @@ const ServiceSelection = ({
       <div className={classes.flex}>
         <div className={classes.grow} />
         <Button variant='text' color='primary' onClick={handleSubmit} disabled={missingFields()}>
-          Submit
+          Next
         </Button>
       </div>
     </Container>

@@ -130,12 +130,12 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
               <TableCell align="left" style={{width: "70%"}} className={classes.foreground}>
                 <b>Services requested</b>
               </TableCell>
-              <TableCell align="right" style={{width: "20%", padding: 0}}>
+              <TableCell align="right" style={{width: "20%", padding: 0}} className={classes.foreground}>
                 <div className={classes.priceField}>
                 <b>Unit price</b>
                 </div>
               </TableCell>
-              <TableCell align="right" style={{width: "10%"}}>
+              <TableCell align="right" style={{width: "10%"}} className={classes.foreground}>
               <b>Qty</b>
               </TableCell>
             </TableRow>

@@ -97,7 +97,7 @@ const BookingCards = ({bookingType, events, eventsFetched, adminBookings, adminB
   const [maxSteps, setMaxSteps] = useState(0)
   
   useEffect(() => {
-    if (bookingType === BOOKING_TYPE.A)
+    if (bookingType === BOOKING_TYPE.T)
       setMaxSteps(events.length)
     else
     setMaxSteps(adminBookings.length)
@@ -111,7 +111,7 @@ const BookingCards = ({bookingType, events, eventsFetched, adminBookings, adminB
     setActiveStep(prevActiveStep => prevActiveStep - 1)
   }
 
-  const artistBooking = eventsFetched && bookingType === BOOKING_TYPE.A
+  const artistBooking = eventsFetched && bookingType === BOOKING_TYPE.T
   const adminBooking = adminBookingsFetched && (bookingType === BOOKING_TYPE.C || bookingType === BOOKING_TYPE.P)
 
   return (
@@ -123,7 +123,7 @@ const BookingCards = ({bookingType, events, eventsFetched, adminBookings, adminB
         <Typography variant="h6" align="center" color="textPrimary">No booking found</Typography>
         :
         <>
-          {bookingType === BOOKING_TYPE.A ? <EventCard event={events[activeStep]} /> : <AdminBookingCard booking={adminBookings[activeStep]} />}
+          {bookingType === BOOKING_TYPE.T ? <EventCard event={events[activeStep]} /> : <AdminBookingCard booking={adminBookings[activeStep]} />}
           <MobileStepper
             steps={maxSteps}
             position="static"

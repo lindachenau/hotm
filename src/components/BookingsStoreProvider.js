@@ -115,16 +115,16 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   //update booking filter
   useEffect(() => {
-    const bookingsURL = bookingType.name === BOOKING_TYPE.A ? bookings_url : admin_bookings_url
+    const bookingsURL = bookingType.name === BOOKING_TYPE.T ? bookings_url : admin_bookings_url
     let newFilter = `${bookingsURL}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
 
-    if (bookingType.name !== BOOKING_TYPE.A)
+    if (bookingType.name !== BOOKING_TYPE.T)
       newFilter = `${newFilter}&booking_type=${bookingType.name}`
 
     if (artistId)
       newFilter = `${newFilter}&artist_id=${artistId.toString()}`
 
-    if (bookingType.name === BOOKING_TYPE.A) {
+    if (bookingType.name === BOOKING_TYPE.T) {
       if (clientId)
         newFilter = `${newFilter}&client_id=${clientId.toString()}`
     } else if (corporateId || clientId) {
@@ -164,8 +164,8 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
       if (Object.keys(bookingsData.data).length === 0) {
         // No booking found
         setEventsFetched(true)
-      } else if (bookingType.name === BOOKING_TYPE.A || bookingType.name === BOOKING_TYPE.P) {
-        const id_name = bookingType.name === BOOKING_TYPE.A ? 'client_id' : 'card_or_client_id'
+      } else if (bookingType.name === BOOKING_TYPE.T || bookingType.name === BOOKING_TYPE.P) {
+        const id_name = bookingType.name === BOOKING_TYPE.T ? 'client_id' : 'card_or_client_id'
         // clientList contains normal clients for artist and package bookings
         setClientList(getClientListFromBookings(bookingsData.data, id_name))
       }
@@ -217,7 +217,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   //regenerate events whenever clients are updated
   useEffect(() => {
     if (artistsFetched && servicesFetched && Object.keys(clients).length > 0 && 
-      ((requestMethod === 'get' && bookingType.name === BOOKING_TYPE.A) || (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.A))) {
+      ((requestMethod === 'get' && bookingType.name === BOOKING_TYPE.T) || (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.T))) {
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
       setEventsFetched(true)
     }

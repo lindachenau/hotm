@@ -14,9 +14,8 @@ import { onSelectEvent, resizeEvent, moveEvent, onNavigate } from '../utils/even
 
 const localizer = momentLocalizer(moment)
 
-const MyCalendar = ({theme, artists, userEmail, artistSignedIn}) => {
+const MyCalendar = ({theme, userEmail, artistSignedIn}) => {
   const [events, setEvents] = useState([])
-  const [artist, setArtist] = useState(null)
   /*
    * today is passed to date prop of DragAndDropCalendar which is used as current date to open the calendar.
    * We initialise today to 'today' in booking creation and the first event date in booking editing.
@@ -30,10 +29,6 @@ const MyCalendar = ({theme, artists, userEmail, artistSignedIn}) => {
   useEffect(() => {
     setFromDate(moment(today).startOf('month').startOf('week')._d)
     setToDate(moment(today).endOf('month').endOf('week')._d)
-    const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
-    if (artistSignedIn && theArtist.length > 0) {
-      setArtist(theArtist[0])
-    }    
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 
@@ -57,7 +52,7 @@ const MyCalendar = ({theme, artists, userEmail, artistSignedIn}) => {
         saveModified={null}
         setSaveModified={null}
         artistSignedIn={artistSignedIn}
-        artist={artist}
+        artist={null}
         calendarId={calendarId}
         fromDate={fromDate}
         toDate={toDate}

@@ -29,7 +29,7 @@ export const SET_BOOKING_TYPE = 'SET_BOOKING_TYPE'
 export const BOOKING_TYPE = {
   C: 'corporate',
   P: 'package',
-  A: 'artist'
+  T: 'therapist'
 }
 
 export const toggleOrganic = () => ({

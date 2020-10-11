@@ -135,7 +135,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       const config = {
         method: 'post',
         headers: {"Content-Type": "application/json"},
-        url: bookingTypeName === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
+        url: bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url,
         data: data
       }
 
@@ -170,7 +170,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       const config = {
         method: 'put',
         headers: {"Content-Type": "application/json"},
-        url: bookingTypeName === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
+        url: bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url,
         data: data
       }
 
@@ -208,7 +208,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       const config = {
         method: 'delete',
         headers: {"Content-Type": "application/json"},
-        url: bookingTypeName === BOOKING_TYPE.A ? bookings_url : admin_bookings_url,
+        url: bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url,
         data: data
       }
 

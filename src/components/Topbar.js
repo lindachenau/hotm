@@ -129,7 +129,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
   const [triggerFilter, setTriggerFilter] = useState(false)
   const currentPath = location.pathname
   const bookingPage = currentPath === '/any-therapist' || currentPath === '/choose-therapist'
-  const retrievalPage = currentPath === '/manage'
+  const retrievalPage = currentPath === '/manage-bookings'
   const menu = isArtist ? artistMenu : userMenu
   
   const toggleDrawer = (open) => event => {

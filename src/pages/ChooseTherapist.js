@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { withRouter } from 'react-router-dom'
-import ArtistSelection from '../config/ArtistSelectionContainer'
+import TimeSelection from '../components/TimeSelection'
 import ChooseTherapistSteps from '../components/ChooseTherapistSteps'
 import TherapistSelection from '../config/TherapistSelectionContainer'
 import Confirmation from '../config/ConfirmationContainer'
@@ -26,7 +26,7 @@ const ChooseTherapist = ({ bookingStage, changeBookingStage, resetBooking, servi
           newBooking={true}/> 
           : null
       }
-      {bookingStage === 1 ? <ArtistSelection changeBookingStage={changeBookingStage} theme={theme}/> : null}
+      {bookingStage === 1 ? <TimeSelection changeBookingStage={changeBookingStage} theme={theme}/> : null}
       {bookingStage === 2 ? 
         <Confirmation 
           changeBookingStage={changeBookingStage} 

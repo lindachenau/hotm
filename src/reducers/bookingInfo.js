@@ -237,7 +237,7 @@ const initActivation = {
   adminTasksTrigger: true,
   bookingTrigger: false,
   requestMethod: 'get',
-  bookingTypeName: BOOKING_TYPE.A,
+  bookingTypeName: BOOKING_TYPE.T,
   data: {},
   callMe: null,
   bookingData: {}
@@ -318,7 +318,7 @@ const initBookingFilter = {
   fromDate: new Date(),
   toDate: today.setDate(today.getDate() + 7),
   bookingType: {
-    name: BOOKING_TYPE.A
+    name: BOOKING_TYPE.T
   },
   artist: null,
   client: null,

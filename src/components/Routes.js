@@ -123,8 +123,7 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
             <Route path='/my-calendar'>
             {isArtist ?
               <MyCalendar 
-              theme={theme} 
-              artists={artists}
+              theme={theme}
               userEmail={userEmail}
               artistSignedIn={artistSignedIn}/>
               :

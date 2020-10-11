@@ -84,7 +84,7 @@ function Payment (
       else {
         alert("Your card was declined.")
         const payload = { 'booking_id': bookingId }
-        cancelBooking(payload, BOOKING_TYPE.A)
+        cancelBooking(payload, BOOKING_TYPE.T)
       }
     }
 
@@ -106,7 +106,7 @@ function Payment (
       status: ''
     }
 
-    addBooking(bookingData, BOOKING_TYPE.A, charge)
+    addBooking(bookingData, BOOKING_TYPE.T, charge)
   }
 
   return (
