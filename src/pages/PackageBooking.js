@@ -118,7 +118,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
           type: 'draft',
           title: 'HOTM Booking',
           allDay: false,
-          start: localDate(event.booking_date, event.booking_start_time),
+          start: localDate(event.booking_date, event.artist_start_time),
           bookingTime: localDate(event.booking_date, event.booking_start_time),
           end: localDate(event.booking_date, event.booking_end_time),
           artistName: artists[event.artist_id].name,
@@ -209,7 +209,8 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
           job_description: draft.task,
           comment: draft.comment,
           booking_date: moment(draft.start).format("YYYY-MM-DD"),
-          booking_start_time: moment(draft.start).format("HH:mm"),
+          artist_start_time: moment(draft.start).format("HH:mm"),
+          booking_start_time: moment(draft.bookingTime).format("HH:mm"),
           booking_end_time: moment(draft.end).format("HH:mm")
         }
         if (mode === 'edit' && !draft.id.toString().includes('draft'))
@@ -245,7 +246,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
   return (
     <>
     {browsing ?
-      <Redirect to={'/manage'} />
+      <Redirect to={'/manage-bookings'} />
       :    
       <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
         <Grid container justify="space-around" spacing={1}>

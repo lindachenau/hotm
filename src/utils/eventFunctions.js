@@ -46,7 +46,9 @@ export const moveEvent = (event, start, end, setEvents, draftEvents, setDraftEve
   }
 
   setEvents([updatedEvent])
-  setDraftEvents(mergeThenSort([updatedEvent], draftEvents))
+  
+  if (setDraftEvents)
+    setDraftEvents(mergeThenSort([updatedEvent], draftEvents))
 }
 
 export const resizeEvent = (event, start, end, setEvents, draftEvents, setDraftEvents) => {

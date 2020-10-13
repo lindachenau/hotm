@@ -43,8 +43,8 @@ const useStyles = makeStyles(theme => ({
 
 const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking, updateBooking, cancelBooking}) => {
   /*
-   * events: "events" for passing to MyCalendar which will merge "events" from props to its local "events". setEvents is called @ newEvent
-   *         moveEvent, resizeEvent, onSaveEventDetails
+   * events: "events" for passing to TheCalendar which will merge "events" from props to its local "events". setEvents is called @ newEvent
+   *         moveEvent, resizeEvent, onSaveEventDetails, onNavigate and admin booking retrieval
    *
    * draftEvent: a synthetic "event" for passing to a pop-up onSelectEvent. setDraftEvent is called @ onSelectEvent, onSaveEventDetails
    * 
@@ -115,7 +115,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
           type: 'draft',
           title: 'HOTM Booking',
           allDay: false,
-          start: localDate(event.booking_date, event.booking_start_time),
+          start: localDate(event.booking_date, event.artist_start_time),
           bookingTime: localDate(event.booking_date, event.booking_start_time),
           end: localDate(event.booking_date, event.booking_end_time),
           artistName: artists[event.artist_id].name,
@@ -204,7 +204,8 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
           job_description: draft.task,
           comment: draft.comment,
           booking_date: moment(draft.start).format("YYYY-MM-DD"),
-          booking_start_time: moment(draft.start).format("HH:mm"),
+          artist_start_time: moment(draft.start).format("HH:mm"),
+          booking_start_time: moment(draft.bookingTime).format("HH:mm"),
           booking_end_time: moment(draft.end).format("HH:mm")
         }
         if (mode === 'edit' && !draft.id.toString().includes('draft'))
@@ -240,7 +241,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
   return (
     <>
     {browsing ?
-      <Redirect to={'/manage'} />
+      <Redirect to={'/manage-bookings'} />
       :
       <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
         <Grid container justify="space-around" spacing={1}>

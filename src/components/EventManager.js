@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { startDate, endDate } from '../utils/misc'
 import { mergeThenSort } from '../utils/eventFunctions'
+import { calendar_events_url } from '../config/dataLinks' 
 
 const EventManager = ({
   mode,
@@ -29,6 +30,7 @@ const EventManager = ({
           'singleEvents': true,
           'orderBy': 'startTime'
         })
+        console.log(events)
 
         const artEvents = events.result.items.map((item) => {
           return {
@@ -48,9 +50,40 @@ const EventManager = ({
         console.log('Event fetch error: ', errMessage)
       }
     }
+
+    const fetchEventsViaBackend = async () => {
+      try {
+        const url = `${calendar_events_url}?artist_email=${calendarId}&start_date=${startDate(fromDate).substring(0, 10)}&end_date=${endDate(toDate).substring(0, 10)}`
+        const data = await fetch(url)
+        const events = await data.json
+
+        const artEvents = events.result.items.map((item) => {
+          return {
+            id: item.id,
+            start: new Date(item.start.dateTime),
+            end: new Date(item.end.dateTime),
+            artistName: artist ? artist.name : '',
+            artistId: artist ? artist.id : '',
+            address: item.location ? item.location : '',
+            type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
+          }
+        })
+        setEvents(artEvents)
+      } catch (err) {
+        const errMessage = err.result.error.message
+        alert(`Event fetch error: ${errMessage}`)
+        console.log('Event fetch error: ', errMessage)
+      }
+    }
+
     //Artist is signed in to Google Calendar & with a valid calendar
-    if (artistSignedIn && calendarId && fromDate && toDate) 
-      fetchEvents()
+    if (calendarId && fromDate && toDate) {
+      if (artistSignedIn)
+        fetchEvents()
+      else
+        fetchEventsViaBackend()
+    }
+      
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [calendarId, fromDate, toDate])
   
@@ -65,7 +98,7 @@ const EventManager = ({
   }, [draftEvent])
 
   useEffect(() => {
-    if (triggerDeleteEvent === null)
+    if (draftEvent === null)
       return
       
     if (mode === 'book') {

@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
 import { BookingsStoreContext } from './BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
-
+import moment from 'moment'
 import { stripe_charge_server } from '../config/dataLinks'
 // import sendReminder from '../reducers/bookingInfo'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
@@ -35,16 +35,17 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function Payment (
-  { theme, 
+  { theme,
+    chooseTherapist=false,
+    therapist,
+    itemQty,
+    bookingDateAddr,
     changeBookingStage, 
     depositPayable, 
     resetBooking, 
     addBooking,
-    cancelBooking, 
-    bookingDate,
+    cancelBooking,
     bookingInfo, 
-    items, 
-    itemQty, 
     loggedIn, 
     priceFactors, 
     bookingValue, 
@@ -63,13 +64,15 @@ function Payment (
   }
 
   const submit = async (token) => {
+    let bookingData = {}
+    let bookingDate
     const charge = async (bookingId) => {
       const response = await fetch(stripe_charge_server, {
         method: "POST",
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
           id: token.id,
-          description: `${userName}'s deposit for booking on ${bookingInfo.booking_date}`,
+          description: `${userName}'s deposit for booking on ${bookingDate}`,
           amount: (depositPayable * 100).toFixed(0)
         })
       })
@@ -88,22 +91,51 @@ function Payment (
       }
     }
 
-    const bookingData = {
-      ...bookingInfo, 
-      client_id: userId,
-      client_name: userName,
-      client_email: clientEmail,
-      booking_artist_name: "",
-      booking_artist_email: "",
-      with_organic: priceFactors.organic ? 1 : 0,
-      with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
-      total_amount: bookingValue, 
-      payment_amount: depositPayable, 
-      paid_checkout_total: 0,
-      paid_deposit_total: depositPayable,
-      payment_type: 'deposit', 
-      comment: value,
-      status: ''
+    if (chooseTherapist) {
+      bookingDate = moment(bookingDateAddr.bookingDate).format("YYYY-MM-DD")
+      bookingData = {
+        client_id: userId,
+        client_name: userName,
+        client_email: clientEmail,
+        booking_artist_name: "",
+        booking_artist_email: "",
+        artist_id_list: [therapist.id],
+        services: Object.keys(itemQty).map(id => parseInt(id)),
+        quantities: Object.values(itemQty),
+        booking_date: bookingDate,
+        artist_start_time: moment(bookingDateAddr.artistStart).format("HH:mm"),
+        booking_time: moment(bookingDateAddr.bookingDate).format("HH:mm"),
+        booking_end_time: moment(bookingDateAddr.bookingEnd).format("HH:mm"),
+        with_organic: priceFactors.organic ? 1 : 0,
+        with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
+        event_address: bookingDateAddr.bookingAddr,
+        total_amount: bookingValue,
+        comment: value,
+        time_on_site: (bookingDateAddr.bookingEnd.getTime() - bookingDateAddr.bookingDate.getTime()) / 60000,
+        travel_duration: 0,
+        travel_distance: 0,
+        payment_amount: depositPayable,
+        payment_type: 'deposit'
+      }
+    } else {
+      bookingDate = bookingInfo.booking_date
+      bookingData = {
+        ...bookingInfo, 
+        client_id: userId,
+        client_name: userName,
+        client_email: clientEmail,
+        booking_artist_name: "",
+        booking_artist_email: "",
+        with_organic: priceFactors.organic ? 1 : 0,
+        with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
+        total_amount: bookingValue, 
+        payment_amount: depositPayable, 
+        paid_checkout_total: 0,
+        paid_deposit_total: depositPayable,
+        payment_type: 'deposit', 
+        comment: value,
+        status: ''
+      }
     }
 
     addBooking(bookingData, BOOKING_TYPE.T, charge)

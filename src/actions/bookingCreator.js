@@ -18,7 +18,6 @@ export const SEARCH_BOOKING = 'SEARCH_BOOKING'
 export const ADD_BOOKING = 'ADD_BOOKING'
 export const UPDATE_BOOKING = 'UPDATE_BOOKING'
 export const CANCEL_BOOKING = 'CANCEL_BOOKING'
-export const ASSIGN_ARTISTS = 'ASSIGN_ARTISTS'
 export const LOAD_BOOKING = 'LOAD_BOOKING'
 export const SET_FROM_DATE = 'SET_FROM_DATE'
 export const SET_TO_DATE = 'SET_TO_DATE'
@@ -40,8 +39,9 @@ export const togglePensionerRate = () => ({
   type: CHANGE_PENSIONER_RATE
 })
 
-export const submitBooking = (date, bookingEnd, addr) => ({
+export const submitBooking = (artistStart, date, bookingEnd, addr) => ({
   type: SUBMIT_BOOKING,
+  artistStart: artistStart,
   bookingDate: date,
   bookingEnd: bookingEnd,
   bookingAddr: addr
@@ -132,11 +132,6 @@ export const cancelBooking = (bookingInfo, bookingTypeName, callMe=null) => ({
   payload: bookingInfo,
   bookingTypeName: bookingTypeName,
   callMe
-})
-
-export const assignArtists = (artistIds) => ({
-  type: ASSIGN_ARTISTS,
-  artistIds
 })
 
 export const loadBooking = (booking) => ({

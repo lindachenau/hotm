@@ -64,6 +64,7 @@ export function priceFactors(state = initPriceFactors, action) {
 }
 
 const initDateAddr = {
+  artistStart: null,
   bookingDate: null,
   bookingEnd: null,
   bookingAddr: ''
@@ -73,6 +74,7 @@ export function bookingDateAddr(state = initDateAddr, action) {
   switch (action.type) {
     case SUBMIT_BOOKING: {
       return {
+        artistStart: action.artistStart,
         bookingDate: action.bookingDate,
         bookingEnd: action.bookingEnd,
         bookingAddr: action.bookingAddr
@@ -95,22 +97,6 @@ export function bookingStage(state = {stage: 0}, action) {
     }
     case RESET_BOOKING: {
       return {stage: 0}
-    }
-    default:
-      return state
-  }
-}
-
-/*
- * A list of artists assigned to a job. Only use non-mutating array methods.
- */
-export function assignedArtists(state = [], action) {
-  switch (action.type) {
-    case ASSIGN_ARTISTS: {
-      return action.artistIds
-    }
-    case RESET_BOOKING: {
-      return []
     }
     default:
       return state

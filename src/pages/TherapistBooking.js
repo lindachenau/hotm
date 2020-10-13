@@ -250,7 +250,7 @@ const ArtistBooking = ({
   return (
     <>
     {browsing ?
-      <Redirect to={'/manage'} />
+      <Redirect to={'/manage-bookings'} />
       :
       <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
         <Grid container justify="space-around" spacing={1}>

@@ -17,11 +17,12 @@ import CheckIcon from '@material-ui/icons/Check'
 import HelpIcon from '@material-ui/icons/Help'
 import Button from '@material-ui/core/Button'
 import EventManager from './EventManager'
-import { onSelectEvent, resizeEvent, moveEvent, onNavigate } from '../utils/eventFunctions'
+import EventForm from '../components/EventForm'
+import { moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
 
 const localizer = momentLocalizer(moment)
 
-const TimeSelection = ({changeBookingStage, theme}) => {
+const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, calendarId, bookingDateAddr, submitBooking, theme}) => {
   const useStyles = makeStyles(theme => ({
     flex: {
       display: 'flex',
@@ -32,25 +33,90 @@ const TimeSelection = ({changeBookingStage, theme}) => {
     }
   }))
   
-  const [events, setEvents] = useState([])
   const classes = useStyles()
-  /*
-   * today is passed to date prop of DragAndDropCalendar which is used as current date to open the calendar.
-   * We initialise today to 'today' in booking creation and the first event date in booking editing.
-   * today will be updated whenever onNavigate is called so that Calendar can track date correctly.
-  */
+  const [events, setEvents] = useState([])
   const [today, setToday] = useState(new Date())
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
-  const calendarId = 'sootyyu@gmail.com'
+  const [draftId, setDraftId] = useState(1)
+  const [duration, setDuration] = useState(60)
+  const [draftEvent, setDraftEvent] = useState(null)
+  const [draftEvents, setDraftEvents] = useState([])
+  const [triggerEventForm, setTriggerEventForm] = useState(false)
+  const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
+  const [saveModified, setSaveModified] = useState(false)
+  const bookingAddr = bookingDateAddr.bookingAddr
   
+  const getDuration = () => {
+    let duration = 0
+    const items = services.items
+    for (let id of Object.keys(itemQty)) {
+      let qty = itemQty[id]
+      duration += items[id].timeOnsite * qty
+    }
+    return duration
+  }
+
   useEffect(() => {
     setFromDate(moment(today).startOf('month').startOf('week')._d)
     setToDate(moment(today).endOf('month').endOf('week')._d)
+    setDuration(getDuration())
+
+    if (bookingDateAddr.bookingDate) {
+      const newEvent = {
+        id: 'draft-1',
+        type: 'draft',
+        title: 'New Event',
+        allDay: false,
+        start: bookingDateAddr.artistStart,
+        bookingTime: bookingDateAddr.bookingDate,
+        end: bookingDateAddr.bookingEnd,
+        comment: ''
+      }
+      setEvents([newEvent])
+      setDraftEvent(newEvent)  
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 
+  const onSelectEvent = (event) => {
+    if (event.type !== 'draft')
+      return
+    setDraftEvent(event)
+    setTriggerEventForm(!triggerEventForm)
+  }
+
+  const newEvent = (event) => {
+
+    //Disable adding new event in month view
+    if (event.slots.length === 1)
+      return
+
+    if (events.length === 1) {
+      alert('Only one booking event is allowed.')
+      return
+    }
+
+    const newId = `draft-${draftId}`
+    setDraftId(draftId + 1)
+
+    const bookingTime = event.start.getTime()
+    const newEvent = {
+      id: newId,
+      type: 'draft',
+      title: 'New Event',
+      allDay: false,
+      start: new Date(bookingTime - travelTime * 60 * 1000),
+      bookingTime: event.start,
+      end: new Date(bookingTime + duration * 60 * 1000),
+      comment: ''
+    }
+    setEvents([newEvent])
+    setDraftEvent(newEvent)
+  }
+
   const handleNext = () => {
+    submitBooking(draftEvent.start, draftEvent.bookingTime, draftEvent.end, bookingAddr)
     changeBookingStage(2)
   }
 
@@ -63,21 +129,23 @@ const TimeSelection = ({changeBookingStage, theme}) => {
               <ListItemIcon>
                 <AccessTimeIcon />
               </ListItemIcon>
-              <ListItemText primary={`Your appointment requires 100 minutes. Therapist travel time is automatically calculated.`} />
+              <ListItemText primary={`The service takes ${duration} minutes. Therapist travel time will be added before your 
+                appointment to the calendar automatically.`} />
             </ListItem>
             <ListItem>
                 <ListItemIcon>
                   <InfoIcon />
                 </ListItemIcon>
                 <ListItemText primary="Find available time from the therapist's calendar to book your appointment. 
-                  Once you decide a date, click the date number icon to go to the Day view. Select your start time from the Day view. An event 
-                  including the therapist travel time and your appointment time will be generated automatically." />
+                  Once you decide a date, click the date number icon to go to the Day view. Select your start time 
+                  by clicking on the time grid in the Day view. An event, in blue colour, including the therapist travel time and 
+                  your appointment time will be generated automatically." />
             </ListItem>
             <ListItem>
                 <ListItemIcon>
                   <CheckIcon />
                 </ListItemIcon>
-                <ListItemText primary="The event must start after 8am, finish before 6pm and not overlap with the therapist's existing events." />
+                <ListItemText primary="The event must start between 8am to 6pm and not overlap with the therapist's existing events." />
             </ListItem>
             <ListItem>
                 <ListItemIcon>
@@ -101,31 +169,47 @@ const TimeSelection = ({changeBookingStage, theme}) => {
             events={events}
             localizer={localizer}
             defaultDate={today}
-            onSelectEvent={(event) => onSelectEvent(event, null, [], null, null, null)}
+            onSelectEvent={onSelectEvent}
             moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, [], null)}
-            resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, [], null)}
-            newEvent={null}
+            resizeEvent={null}
+            newEvent={newEvent}
             onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate, setToday)}
             triggerSaveAllDrafts={null}
-            triggerDeleteEvent={null}
-            eventToDelete={null}
+            triggerDeleteEvent={triggerDeleteEvent}
+            eventToDelete={draftEvent? draftEvent.id : null}
           />
         </Grid>
-      </Grid>  
+      </Grid>
+      <EventForm 
+        theme={theme}
+        mode='book'
+        draftEvent={draftEvent}
+        withLocation={false}
+        withContact={false}
+        withTask={false}
+        withTravelTime={false}
+        withDuration={false}
+        withComment={false}
+        triggerOpen={triggerEventForm}
+        initOpen={false}
+        onSaveEventDetails={(task, address, contact, comment, start, bookingTime, end) => 
+          onSaveEventDetails(task, address, contact, comment, start, bookingTime, end, draftEvent, setDraftEvent)}
+        onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}
+      />      
       <EventManager
-        mode={null}
-        saveModified={null}
-        setSaveModified={null}
+        mode='book'
+        saveModified={saveModified}
+        setSaveModified={setSaveModified}
         artistSignedIn={true}
         artist={null}
         calendarId={calendarId}
         fromDate={fromDate}
         toDate={toDate}
         setEvents={setEvents}
-        draftEvent={null}
-        draftEvents={[]}
-        setDraftEvents={null}     
-        triggerDeleteEvent={null}
+        draftEvent={draftEvent}
+        draftEvents={draftEvents}
+        setDraftEvents={setDraftEvents}     
+        triggerDeleteEvent={triggerDeleteEvent}
       />
     </Container>
   )

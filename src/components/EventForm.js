@@ -48,6 +48,9 @@ export default function EventForm({
   withLocation = true,
   withTask = true,
   withContact = true,
+  withTravelTime = true,
+  withDuration = true,
+  withComment = true,
   initOpen, 
   taskList, 
   task, 
@@ -142,12 +145,11 @@ export default function EventForm({
   return (
     <>
       <Dialog fullWidth open={open} onBackdropClick={() => setOpen(false)}>
-        {mode !== 'view' &&
-          <div className={classes.container}>
-            <div className={classes.grow} />
-            <CreateIcon color='primary' fontSize='large'/>
-            <div className={classes.grow} />
-          </div>}
+        <div className={classes.container}>
+          <div className={classes.grow} />
+          <CreateIcon color='primary' fontSize='large'/>
+          <div className={classes.grow} />
+        </div>
         <DialogContent>
           <MuiPickersUtilsProvider utils={DateFnsUtils}>
             <KeyboardDatePicker
@@ -164,7 +166,7 @@ export default function EventForm({
                 'aria-label': 'change date',
               }}
             />
-            <div className={classes.dropdown}>
+            {withTravelTime && <div className={classes.dropdown}>
             <TextField
               id="travel-time"
               label="Travel time in mins"
@@ -177,7 +179,7 @@ export default function EventForm({
               fullWidth
               onChange={onChangeTravelTime}              
             />
-            </div>
+            </div>}
             <KeyboardTimePicker
               fullWidth
               margin="normal"
@@ -190,7 +192,7 @@ export default function EventForm({
                 'aria-label': 'change time',
               }}
             />
-            <TextField
+            {withDuration && <TextField
               id="travel-time"
               label="Event duration in mins"
               type="number"
@@ -201,7 +203,7 @@ export default function EventForm({
               }}
               fullWidth
               onChange={onChangeDuration}              
-            />
+            />}
           </MuiPickersUtilsProvider>          
           {withLocation && 
             <LocationSearchInput
@@ -231,7 +233,7 @@ export default function EventForm({
                 tag={task}          
               />
             </div>}
-          <TextField
+          {withComment && <TextField
             id="comment"
             label="Additional instructions"
             placeholder="Additional instructions"
@@ -241,9 +243,8 @@ export default function EventForm({
             margin="dense"
             variant="outlined"
             onChange={(event) => setComment(event.target.value)}
-          />          
+          />}
         </DialogContent>
-        {mode !== 'view' &&
           <DialogActions className={classes.button}>
             <Button variant="contained" onClick={handleDeleteEvent} color="secondary" fullWidth>
               Delete
@@ -251,7 +252,7 @@ export default function EventForm({
             <Button variant="contained" onClick={handleSaveEventDetails} color="secondary" fullWidth disabled={disableDone}>
               Save
             </Button>
-          </DialogActions>}        
+          </DialogActions>        
       </Dialog>
     </>
   )

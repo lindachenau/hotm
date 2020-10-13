@@ -12,7 +12,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-      submitBooking: (date, bookingEnd, addr) => dispatch(submitBooking(date, bookingEnd, addr)),
+      submitBooking: (artistStart, date, bookingEnd, addr) => dispatch(submitBooking(artistStart, date, bookingEnd, addr)),
       getAvailArtist: (url) => dispatch(getAvailArtist(url)),
       changeSelectedArtist: id => dispatch(changeSelectedArtist((id)))
     }

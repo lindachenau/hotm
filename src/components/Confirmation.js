@@ -61,10 +61,24 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, itemQty, changeBookingStage, organic, pensioner, bookingValue, artists }) {
+function Confirmation ({ 
+  bookingDate, 
+  bookingEnd, 
+  bookingAddr, 
+  artistId, 
+  items, 
+  itemQty, 
+  changeBookingStage, 
+  organic, 
+  pensioner, 
+  bookingValue, 
+  artists, 
+  therapistId, 
+  chooseTherapist }) {
   const [checkedDeposit, setCheckedDeposit] = useState(false)
   const [checkedTerm, setCheckedTerm] = useState(false)
   const [checkedParking, setCheckedParking] = useState(false)
+  const id = chooseTherapist ? therapistId : artistId
   const classes = useStyles()
 
   const handleDeposit = event => {
@@ -118,7 +132,7 @@ function Confirmation ({ bookingDate, bookingEnd, bookingAddr, artistId, items, 
           <TableBody>
             <TableRow>
               <TableCell align="left">
-              {artists[artistId].name}
+              {artists[id].name}
               </TableCell>
             </TableRow>
           </TableBody>

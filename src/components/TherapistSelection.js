@@ -37,35 +37,32 @@ const TherapistSelection = ({
   theme, 
   services,
   itemQty, 
-  bookingAddr,
+  bookingDateAddr,
+  submitBooking,
   onSubmit,
   artists,
-  artistBooking,
-  bookingValue }) => {
+  therapist,
+  setTherapist,
+  artistBooking}) => {
   
   const classes = useStyles()
-  const items = services.items
-  const [address, setAddress] = useState(bookingAddr)
-  const [artist, setArtist] = useState(null)
-  
-  useEffect(() => {
-    setAddress(bookingAddr)
-  }, [bookingAddr])
-
+  const [address, setAddress] = useState(bookingDateAddr.bookingAddr)
+    
   const missingFields = () => {
     let qty = 0
     for (let id of Object.keys(itemQty)) {
       qty += itemQty[id]
     }
     
-    return !(qty > 0 && address && artist)
+    return !(qty > 0 && address && therapist)
   }
 
   const handleAddrChange = address => {
     setAddress(address.replace(', Australia', ''))
   }
 
-  const handleSubmit = event => {
+  const handleNext = event => {
+    submitBooking(bookingDateAddr.artistStart, bookingDateAddr.bookingDate, bookingDateAddr.bookingEnd, address)
     onSubmit(1)
   }
 
@@ -76,8 +73,8 @@ const TherapistSelection = ({
           artists={artists}
           multiArtists={false}
           clearable={false}
-          setTags={setArtist}
-          tags={artist}
+          setTags={setTherapist}
+          tags={therapist}
           label="Select therapist"
         />
       </div>
@@ -88,7 +85,7 @@ const TherapistSelection = ({
       </div>
       <div className={classes.flex}>
         <div className={classes.grow} />
-        <Button variant='text' color='primary' onClick={handleSubmit} disabled={missingFields()}>
+        <Button variant='text' color='primary' onClick={handleNext} disabled={missingFields()}>
           Next
         </Button>
       </div>

@@ -107,12 +107,12 @@ const ServiceSelection = ({
     return true
   }
 
-  const handleSubmit = event => {
+  const handleNext = event => {
 
     if (!checkBookingRules())
       return
 
-    submitBooking(selectedDate, new Date(getBookingEnd()), address)
+    submitBooking(null, selectedDate, new Date(getBookingEnd()), address)
 
     /*A workaround for redux-thunk error. When passing (itemQty, selectedDate, address) to getAvailArtist action creator,
     *(itemQty, selectedDate, address) become undefined even though the values are still correct in mapDispatchToProps.
@@ -162,7 +162,7 @@ const ServiceSelection = ({
       <LocationSearchInput address={address} changeAddr={handleAddrChange}/>
       <div className={classes.flex}>
         <div className={classes.grow} />
-        <Button variant='text' color='primary' onClick={handleSubmit} disabled={missingFields()}>
+        <Button variant='text' color='primary' onClick={handleNext} disabled={missingFields()}>
           Next
         </Button>
       </div>

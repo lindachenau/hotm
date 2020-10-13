@@ -6,8 +6,9 @@ const mapStateToProps = state => {
   return {
     bookingInfo: state.availArtists.recs[state.selectedArtist.order],
     bookingDate: state.bookingDateAddr.bookingDate,
-    priceFactors: state.priceFactors,
     itemQty: state.itemQty,
+    bookingDateAddr: state.bookingDateAddr,
+    priceFactors: state.priceFactors,
     userId: state.userInfo.id,
     userName: state.userInfo.firstName + ' ' + state.userInfo.lastName,
     loggedIn: state.userInfo.loggedIn,

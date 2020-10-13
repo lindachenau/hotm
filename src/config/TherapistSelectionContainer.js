@@ -4,17 +4,14 @@ import TherapistSelection from '../components/TherapistSelection'
 
 const mapStateToProps = state => {
   return {
-    bookingDate: state.bookingDateAddr.bookingDate,
-    bookingAddr: state.bookingDateAddr.bookingAddr,
+    bookingDateAddr: state.bookingDateAddr,
     itemQty: state.itemQty
   }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-      submitBooking: (date, bookingEnd, addr) => dispatch(submitBooking(date, bookingEnd, addr)),
-      getAvailArtist: (url) => dispatch(getAvailArtist(url)),
-      changeSelectedArtist: id => dispatch(changeSelectedArtist((id)))
+      submitBooking: (artistStart, date, bookingEnd, addr) => dispatch(submitBooking(artistStart, date, bookingEnd, addr))
     }
 }
 

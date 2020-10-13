@@ -29,9 +29,9 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
   const [browsing, setBrowsing] = useState(true)
   const [location, setLocation] = useState({})
   const pathnames = {
-    corporate: '/corporate',
-    package: '/package',
-    artist:'/artist'
+    corporate: '/corporate-booking',
+    package: '/package-booking',
+    therapist:'/therapist-booking'
   }
 
   // disable EDIT and CHECKOUT for completed bookings
