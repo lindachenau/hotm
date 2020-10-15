@@ -31,7 +31,7 @@ const ChooseTherapist = ({ bookingStage, changeBookingStage, resetBooking, servi
       {bookingStage === 1 ? 
       <TimeSelection 
         changeBookingStage={changeBookingStage} 
-        calendarId={artists[therapist.id].email}
+        calendarId={therapist? artists[therapist.id].email : null}
         services={services}
         theme={theme}/> 
         : null

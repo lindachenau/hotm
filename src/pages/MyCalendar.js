@@ -6,15 +6,16 @@ import '../components/CalendarToolbar.css'
 import { momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { makeStyles } from '@material-ui/core/styles'
-import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container'
-import Button from '@material-ui/core/Button'
 import EventManager from '../components/EventManager'
-import { onSelectEvent, resizeEvent, moveEvent, onNavigate } from '../utils/eventFunctions'
+import { onNavigate } from '../utils/eventFunctions'
+import { booking_events_url } from '../config/dataLinks' 
+import { localDate, getEvents } from '../utils/dataFormatter'
+import CheckoutForm from '../components/CheckoutForm'
 
 const localizer = momentLocalizer(moment)
 
-const MyCalendar = ({theme, userEmail, artistSignedIn}) => {
+const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, artists, services, clients}) => {
   const [events, setEvents] = useState([])
   /*
    * today is passed to date prop of DragAndDropCalendar which is used as current date to open the calendar.
@@ -24,6 +25,8 @@ const MyCalendar = ({theme, userEmail, artistSignedIn}) => {
   const [today, setToday] = useState(new Date())
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
+  const [triggerCheckoutForm, setTriggerCheckoutForm] = useState(false)
+  const [bookingEvent, setBookingEvent] = useState({})
   const calendarId = userEmail
   
   useEffect(() => {
@@ -32,15 +35,48 @@ const MyCalendar = ({theme, userEmail, artistSignedIn}) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 
+  const onSelectEvent = async (event) => {
+    if (event.type !== 'hotm')
+      return
+
+    try {
+      const url = `${booking_events_url}?gcal_event_id=${event.id.slice(0, 26)}`
+      const data = await fetch(url)
+      const bookingEvent = await data.json()
+
+      if (bookingEvent.admin_booking_id) {
+        setBookingEvent({
+          adminBooking: true,
+          id: bookingEvent.admin_booking_id,
+          eventId: bookingEvent.event_id,
+          start: localDate(bookingEvent.booking_date, bookingEvent.booking_start_time),
+          end: localDate(bookingEvent.booking_date, bookingEvent.booking_end_time),
+          address: bookingEvent.event_location,
+          task: bookingEvent.job_description,
+          contact: bookingEvent.contact,
+          comment: bookingEvent.comment
+        })
+      } else {
+        let event = getEvents(bookingEvent, artists, clients, services.items)
+        event.adminBooking = false
+        setBookingEvent(event)
+      }
+      
+      setTriggerCheckoutForm(!triggerCheckoutForm)
+    } catch (err) {
+      console.log('Booking event fetch error: ', err)
+    }
+  }
+
   return (
     <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
       <TheCalendar
         events={events}
         localizer={localizer}
         defaultDate={today}
-        onSelectEvent={(event) => onSelectEvent(event, null, [], null, null, null)}
-        moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, [], null)}
-        resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, [], null)}
+        onSelectEvent={onSelectEvent}
+        moveEvent={null}
+        resizeEvent={null}
         newEvent={null}
         onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate, setToday)}
         triggerSaveAllDrafts={null}
@@ -61,6 +97,12 @@ const MyCalendar = ({theme, userEmail, artistSignedIn}) => {
         draftEvents={[]}
         setDraftEvents={null}     
         triggerDeleteEvent={null}
+      />
+      <CheckoutForm
+        event={bookingEvent}
+        triggerOpen={triggerCheckoutForm}
+        initOpen={false}
+        updateBooking={updateBooking}
       />
     </Container>
   )

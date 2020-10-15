@@ -52,7 +52,6 @@ export const moveEvent = (event, start, end, setEvents, draftEvents, setDraftEve
 }
 
 export const resizeEvent = (event, start, end, setEvents, draftEvents, setDraftEvents) => {
-  console.log(start, end)
   if (event.type !== 'draft' || start >= end)
     return
 

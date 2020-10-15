@@ -4,11 +4,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import IconButton from '@material-ui/core/IconButton'
 import BookingCards from '../components/BookingCards'
-import DescriptionIcon from '@material-ui/icons/Description'
-import PaymentIcon from '@material-ui/icons/Payment'
+import { FaFileInvoiceDollar } from "react-icons/fa"
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
-import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const useStyles = makeStyles(theme => ({
   flex: {
@@ -80,7 +78,7 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
           </IconButton>
           <div className={classes.grow} />
           <IconButton edge="start" color="primary" onClick={handlePayment}>
-            <PaymentIcon/>
+            <FaFileInvoiceDollar/>
           </IconButton>
           <div className={classes.grow} />
           <IconButton edge="start" color="primary" onClick={handleDelete}>

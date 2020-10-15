@@ -30,7 +30,6 @@ const EventManager = ({
           'singleEvents': true,
           'orderBy': 'startTime'
         })
-        console.log(events)
 
         const artEvents = events.result.items.map((item) => {
           return {
@@ -55,7 +54,7 @@ const EventManager = ({
       try {
         const url = `${calendar_events_url}?artist_email=${calendarId}&start_date=${startDate(fromDate).substring(0, 10)}&end_date=${endDate(toDate).substring(0, 10)}`
         const data = await fetch(url)
-        const events = await data.json
+        const events = await data.json()
 
         const artEvents = events.result.items.map((item) => {
           return {

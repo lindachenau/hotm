@@ -12,13 +12,14 @@ const Home = lazy(() => import('../pages/Home'))
 const AnyTherapist = lazy(() => import('../pages/AnyTherapist'))
 const TherapistBooking = lazy(() => import('../config/TherapistBookingContainer'))
 const Manage = lazy(() => import('../pages/Manage'))
-const MyCalendar = lazy(() => import('../pages/MyCalendar'))
+const MyCalendar = lazy(() => import('../config/MyCalendarContainer'))
 const ChooseTherapist = lazy(() => import('../pages/ChooseTherapist'))
 const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
 const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
 
 const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
-  const { services, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists } = useContext(BookingsStoreContext)
+  const { services, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists, clients } = 
+    useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
   const [artistSignedIn, setArtistSignedIn] = useState(false)
@@ -123,9 +124,12 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
             <Route path='/my-calendar'>
             {isArtist ?
               <MyCalendar 
-              theme={theme}
-              userEmail={userEmail}
-              artistSignedIn={artistSignedIn}/>
+                theme={theme}
+                userEmail={userEmail}
+                artistSignedIn={artistSignedIn}
+                artists={artists}
+                services={services}
+                clients={clients}/>
               :
               <Redirect to="/" />
             }                

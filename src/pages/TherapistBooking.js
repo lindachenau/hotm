@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   }  
 }))
 
-const ArtistBooking = ({
+const TherapistBooking = ({
   location,
   theme,
   artistBooking,
@@ -83,6 +83,11 @@ const ArtistBooking = ({
   const { bookingInProgress } = bookingsData
   const [estimatedDuration, setEstimatedDuration] = useState(0)
   
+  useEffect(() => {
+    resetBooking()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => {
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
     if (theArtist.length > 0) {
@@ -358,4 +363,4 @@ const ArtistBooking = ({
   )
 }
 
-export default withRouter(ArtistBooking)
+export default withRouter(TherapistBooking)

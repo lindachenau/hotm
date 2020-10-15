@@ -79,6 +79,10 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 
+  useEffect(() => {
+    setDraftEvent(null)
+  }, [triggerDeleteEvent])
+
   const onSelectEvent = (event) => {
     if (event.type !== 'draft')
       return
@@ -92,7 +96,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
     if (event.slots.length === 1)
       return
 
-    if (events.length === 1) {
+    if (draftEvent) {
       alert('Only one booking event is allowed.')
       return
     }

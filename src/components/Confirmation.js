@@ -74,7 +74,7 @@ function Confirmation ({
   bookingValue, 
   artists, 
   therapistId, 
-  chooseTherapist }) {
+  chooseTherapist=false }) {
   const [checkedDeposit, setCheckedDeposit] = useState(false)
   const [checkedTerm, setCheckedTerm] = useState(false)
   const [checkedParking, setCheckedParking] = useState(false)

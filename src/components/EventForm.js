@@ -97,10 +97,6 @@ export default function EventForm({
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [triggerOpen, initOpen])
 
-  useEffect(() => {
-    
-  }, [estimatedDuration])
-
   const onChangeLocation = address => {
     setAddress(address.replace(', Australia', ''))
   }

@@ -250,7 +250,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   return (
     <BookingsStoreContext.Provider value={{services, servicesFetched, corpCards, adminTasks, 
-      events, eventsFetched, adminBookings, adminBookingsFetched, artists, artistsFetched, bookingsData}}>
+      events, eventsFetched, adminBookings, adminBookingsFetched, artists, artistsFetched, clients, bookingsData}}>
       {children}
     </BookingsStoreContext.Provider>
   )
