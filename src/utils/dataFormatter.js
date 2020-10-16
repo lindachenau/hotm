@@ -21,6 +21,7 @@ export function normaliseArtists(artistArr)
         state: state,
         photo: artistArr[i].photo,
         title: artistArr[i].title,
+        offDays: [0, 1],
         bio: artistArr[i].bio,
         hashtag: artistArr[i].hashtag ? artistArr[i].hashtag.replace('#', '') : "haironthemove2u"
       }

@@ -305,7 +305,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
               moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               newEvent={newEvent}
-              onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate, setToday)}
+              onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
               triggerSaveAllDrafts={triggerSaveAllDrafts}
               triggerDeleteEvent={triggerDeleteEvent}
               eventToDelete={draftEvent? draftEvent.id : null}
@@ -332,6 +332,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
           setSaveModified={setSaveModified}
           artistSignedIn={artistSignedIn}
           artist={artist}
+          offDays={artist ? artist.offDays : []}
           calendarId={calendarId}
           fromDate={fromDate}
           toDate={toDate}

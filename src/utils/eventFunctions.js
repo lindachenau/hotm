@@ -67,21 +67,17 @@ export const resizeEvent = (event, start, end, setEvents, draftEvents, setDraftE
   setDraftEvents(mergeThenSort([resized], draftEvents))
 }
 
-export const onNavigate = (date, view, fromDate, setFromDate, toDate, setToDate, setToday) => {
+export const onNavigate = (date, view, setFromDate, setToDate, setToday) => {
   setToday(date)
   if (view === 'month') {
     const start = moment(date).startOf('month').startOf('week')._d
     const end = moment(date).endOf('month').endOf('week')._d
-    if (start < fromDate)
-      setFromDate(start)
-    if (end > toDate)
-      setToDate(end)      
+    setFromDate(start)
+    setToDate(end)      
   }
 
   if (view === 'day') {
-    if (date < fromDate)
-      setFromDate(date)
-    if (date > toDate)
-      setToDate(date)      
+    setFromDate(date)
+    setToDate(date)      
   }
 }

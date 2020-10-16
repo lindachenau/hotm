@@ -78,7 +78,7 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, artists, s
         moveEvent={null}
         resizeEvent={null}
         newEvent={null}
-        onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate, setToday)}
+        onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
         triggerSaveAllDrafts={null}
         triggerDeleteEvent={null}
         eventToDelete={null}

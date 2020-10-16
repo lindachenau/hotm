@@ -22,7 +22,7 @@ import { moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctio
 
 const localizer = momentLocalizer(moment)
 
-const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, calendarId, bookingDateAddr, submitBooking, theme}) => {
+const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, calendarId, offDays, bookingDateAddr, submitBooking, theme}) => {
   const useStyles = makeStyles(theme => ({
     flex: {
       display: 'flex',
@@ -177,7 +177,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
             moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, [], null)}
             resizeEvent={null}
             newEvent={newEvent}
-            onNavigate={(date, view) => onNavigate(date, view, fromDate, setFromDate, toDate, setToDate, setToday)}
+            onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
             triggerSaveAllDrafts={null}
             triggerDeleteEvent={triggerDeleteEvent}
             eventToDelete={draftEvent? draftEvent.id : null}
@@ -206,6 +206,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
         setSaveModified={setSaveModified}
         artistSignedIn={true}
         artist={null}
+        offDays={offDays}
         calendarId={calendarId}
         fromDate={fromDate}
         toDate={toDate}

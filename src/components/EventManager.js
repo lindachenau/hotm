@@ -9,6 +9,7 @@ const EventManager = ({
   setSaveModified,
   artistSignedIn,
   artist,
+  offDays=[],
   calendarId, 
   fromDate,
   toDate,
@@ -20,12 +21,45 @@ const EventManager = ({
 }) => {
   
   useEffect(() => {
+    const getOffDays = (start, end) => {
+      if (offDays.length === 0)
+        return []
+
+      let offDayList = []
+
+      let curTick = new Date(start).getTime()
+      const numDays = Math.floor((new Date(end).getTime() - curTick) / 86400000)
+
+      for (let i = 0; i < numDays; i++) {
+        const date = new Date(curTick)
+        const y = date.getFullYear()
+        const m = date.getMonth()
+        const d = date.getDate()
+        if (offDays.includes(date.getDay())) {
+          offDayList.push({
+            id: i.toString(),
+            start: new Date(y, m, d, 8, 0), //8am
+            end: new Date(y, m, d, 18, 0), //6pm
+            artistName: artist ? artist.name : '',
+            artistId: artist ? artist.id : '',
+            address: '',
+            type: 'private'
+          })
+        }
+        curTick = curTick + 86400000
+      }
+
+      return offDayList
+    }
+  
     const fetchEvents = async () => {
       try {
+        const start = startDate(fromDate)
+        const end = endDate(toDate)
         const events = await window.gapi.client.calendar.events.list({
           'calendarId': calendarId,
-          'timeMin': startDate(fromDate),
-          'timeMax': endDate(toDate),
+          'timeMin': start,
+          'timeMax': end,
           'showDeleted': false,
           'singleEvents': true,
           'orderBy': 'startTime'
@@ -42,7 +76,8 @@ const EventManager = ({
             type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
           }
         })
-        setEvents(artEvents)
+        const offDays = getOffDays(start, end)
+        setEvents(mergeThenSort(artEvents, offDays))
       } catch (err) {
         const errMessage = err.result.error.message
         alert(`Event fetch error: ${errMessage}`)
