@@ -28,7 +28,7 @@ import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
 import Filter from '../config/FilterContainer'
 import CalendarLoader from '../components/CalendarLoader'
-import { home_url } from '../config/dataLinks'
+import { hblc_url } from '../config/dataLinks'
 
 const logo = require('../images/hblc_logo_192_white_bg.png')
 
@@ -91,7 +91,7 @@ const artistMenu = [
   },  
   {
     label: "Go to Hair Beauty Life Co",
-    pathname: home_url,
+    pathname: hblc_url,
     external: true,
     icon: <LinkIcon />
   }
@@ -115,7 +115,7 @@ const userMenu = [
   },  
   {
     label: "Go to Hair Beauty Life Co",
-    pathname: home_url,
+    pathname: hblc_url,
     external: true,
     icon: <LinkIcon />
   }

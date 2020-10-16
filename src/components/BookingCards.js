@@ -63,7 +63,7 @@ function EventCard ({ event }) {
       </div>
       <div>
         <CommentIcon/>
-        <span>{event.comment}</span>
+        <span>{ ` ${event.comment}`}</span>
       </div>
     </Paper>
   )

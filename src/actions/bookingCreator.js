@@ -28,7 +28,8 @@ export const SET_BOOKING_TYPE = 'SET_BOOKING_TYPE'
 export const BOOKING_TYPE = {
   C: 'corporate',
   P: 'package',
-  T: 'therapist'
+  T: 'therapist',
+  CHECKOUT: 'checkout'  //synthetic type used for checkout
 }
 
 export const toggleOrganic = () => ({

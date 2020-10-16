@@ -11,6 +11,7 @@ import EventNoteIcon from '@material-ui/icons/EventNote'
 import { makeStyles } from '@material-ui/core/styles'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
 import IconButton from '@material-ui/core/IconButton'
+import CommentIcon from '@material-ui/icons/Comment'
 import { FaFileInvoiceDollar, FaRegCreditCard } from "react-icons/fa"
 import EditIcon from '@material-ui/icons/Edit'
 import DateFnsUtils from '@date-io/date-fns'
@@ -18,6 +19,7 @@ import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker
 } from '@material-ui/pickers'
+import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -70,6 +72,10 @@ function TherapistEventCard ({ event }) {
           {event.serviceItems.map( item => <li key={itemKey++}>{ item }</li> )}
         </ul>}
       </div>
+      <div>
+        <CommentIcon/>
+        <span>{ ` ${event.comment}`}</span>
+      </div>
     </Paper>
   )
 }
@@ -88,6 +94,10 @@ function AdminEventCard ({ event }) {
       </div>
       <div>
         <FaPhoneSquare/><span>{ ` ${event.contact}` }</span>
+      </div>
+      <div>
+        <CommentIcon/>
+        <span>{ ` ${event.comment}`}</span>
       </div>
     </Paper>
   )
@@ -114,7 +124,7 @@ export default function CheckoutForm({
       setOpen(true)
       setActualStart(event.start)
       setActualEnd(event.end)
-      setCheckoutComment(event.comment)
+      setCheckoutComment('')
     }
     else {
       didMountRef.current = true
@@ -125,15 +135,16 @@ export default function CheckoutForm({
 
   const handleCheckout = () => {
     const bookingData = {
-      admin_booking_id: event.id,
+      booking_id: event.id,
       event_list: [{
         event_id: event.eventId,
-        actual_start_time: actualStart,
-        actual_end_time: actualEnd,
-        comment: checkoutComment
+        actual_start_time: moment(actualStart).format("HH:mm"),
+        actual_end_time: moment(actualEnd).format("HH:mm"),
+        comment: `${event.comment} ${checkoutComment}`
       }]
     }
-    updateBooking(bookingData, BOOKING_TYPE.C, () => alert('Checkout successful!'))  
+    //Set BOOKING_TYPE to CHECKOUT to prevent adminBookings get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
+    updateBooking(bookingData, BOOKING_TYPE.CHECKOUT, () => alert('Checkout successful!'))  
     setOpen(false)
   }
 

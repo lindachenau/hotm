@@ -2,8 +2,8 @@ const miniOrangeAccessKey = process.env.REACT_APP_MINIORANGE_ACCESS_KEY
 /*
  * Hair On the Move 2 U Home page
  */
+export const hblc_url = process.env.REACT_APP_HBLC_URL
 export const home_url = process.env.REACT_APP_HOTM_BACKEND
-
 export const corporate_url = `${home_url}/contact-us/`
 export const contact_phone = "1300 816 757"
 
@@ -50,7 +50,7 @@ export const instagram_url = "https://www.instagram.com/explore/tags/"
 /*
  * Hair On the Move 2 U Terms & Conditions
  */
-export const term_url = `${home_url}/terms-conditions/`
+export const term_url = `${hblc_url}/terms-conditions/`
 
 /*
  * Stripe charge server running on Node.js deployed to Heroku

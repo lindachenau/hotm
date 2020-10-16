@@ -16,6 +16,7 @@ const MyCalendar = lazy(() => import('../config/MyCalendarContainer'))
 const ChooseTherapist = lazy(() => import('../pages/ChooseTherapist'))
 const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
 const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
+const PaymentLink = lazy(() => import('../pages/PaymentLink'))
 
 const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
   const { services, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists, clients } = 
@@ -133,7 +134,8 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
               :
               <Redirect to="/" />
             }                
-            </Route>           
+            </Route>
+            <Route exact path='/payment' component={PaymentLink}/>        
           </Switch>}
         </Suspense>
       </ScrollToTop>
