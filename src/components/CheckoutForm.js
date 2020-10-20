@@ -66,6 +66,7 @@ function TherapistEventCard ({ event }) {
         <br/>
         <FaDollarSign/>
         <span>{ ` ${event.depositPaid}/${event.total} `}</span>
+        <br/>
         <FaUserCog/>
         {event.serviceItems && 
         <ul>
@@ -144,16 +145,34 @@ export default function CheckoutForm({
       }]
     }
     //Set BOOKING_TYPE to CHECKOUT to prevent adminBookings get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
-    updateBooking(bookingData, BOOKING_TYPE.CHECKOUT, () => alert('Checkout successful!'))  
+    updateBooking(bookingData, BOOKING_TYPE.C, () => alert('Checkout successful!'), true)  
     setOpen(false)
   }
 
   const handleCheckoutPay = () => {
-
+    const bookingData = {
+      booking_id: event.id,
+      actual_start_time: moment(actualStart).format("HH:mm"),
+      actual_end_time: moment(actualEnd).format("HH:mm"),
+      comment: `${event.comment} ${checkoutComment}`,
+      payment_type: 'credit'
+    }
+    //Set BOOKING_TYPE to CHECKOUT to prevent events get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
+    updateBooking(bookingData, BOOKING_TYPE.T, () => alert('Checkout successful!'), true)  
+    setOpen(false)
   }
 
   const handleCheckoutLink = () => {
-
+    const bookingData = {
+      booking_id: event.id,
+      actual_start_time: moment(actualStart).format("HH:mm"),
+      actual_end_time: moment(actualEnd).format("HH:mm"),
+      comment: `${event.comment} ${checkoutComment}`,
+      payment_type: 'send_link'
+    }
+    //Set BOOKING_TYPE to CHECKOUT to prevent events get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
+    updateBooking(bookingData, BOOKING_TYPE.T, () => alert('Checkout successful!'), true)  
+    setOpen(false)
   }
 
   const handleEdit = () => {

@@ -90,19 +90,22 @@ const EventManager = ({
         const url = `${calendar_events_url}?artist_email=${calendarId}&start_date=${startDate(fromDate).substring(0, 10)}&end_date=${endDate(toDate).substring(0, 10)}`
         const data = await fetch(url)
         const events = await data.json()
+        const start = startDate(fromDate)
+        const end = endDate(toDate)
 
-        const artEvents = events.result.items.map((item) => {
+        const artEvents = events.map((item) => {
           return {
-            id: item.id,
-            start: new Date(item.start.dateTime),
-            end: new Date(item.end.dateTime),
+            id: item.gcal_event_id.slice(0, 26),
+            start: new Date(item.start_time),
+            end: new Date(item.end_time),
             artistName: artist ? artist.name : '',
             artistId: artist ? artist.id : '',
             address: item.location ? item.location : '',
             type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
           }
         })
-        setEvents(artEvents)
+        const offDays = getOffDays(start, end)
+        setEvents(mergeThenSort(artEvents, offDays))
       } catch (err) {
         const errMessage = err.result.error.message
         alert(`Event fetch error: ${errMessage}`)

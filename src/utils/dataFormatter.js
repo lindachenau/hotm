@@ -168,8 +168,8 @@ export function getEvents(bookings, artists, clients, servicesMenu)
     let booking = bookings[id]
     let complete = (booking.total_amount - booking.paid_checkout_total - booking.paid_deposit_total) < 0.01
 
-    //artist && client still exist
-    if (artists[booking.artist_id_list[0]] && clients[booking.client_id]) {
+    //artist exists
+    if (artists[booking.artist_id_list[0]]) {
       let itemQty = {}
       let priceFactors = {
         organic: booking.with_organic,
@@ -189,7 +189,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         total = getBookingValue(servicesMenu, priceFactors, itemQty)
 
       /*
-      * new Date(`${booking.booking_date}T${booking.booking_time}:00`) returns the local time zone on Chrome and Firefox
+      * new Date(`${booking.booking_date}T${booking.booking_start_time}:00`) returns the local time zone on Chrome and Firefox
       * but returns the value based on the UTC standard
       */
 
@@ -197,7 +197,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         id: booking.booking_id,
         type: 'hotm',
         start: localDate(booking.booking_date, booking.artist_start_time),
-        bookingTime: localDate(booking.booking_date, booking.booking_time),
+        bookingTime: localDate(booking.booking_date, booking.booking_start_time),
         end: localDate(booking.booking_date, booking.booking_end_time),
         address: booking.event_address,
         artists: booking.artist_id_list.map(id => artists[id]),

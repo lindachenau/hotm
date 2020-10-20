@@ -14,8 +14,8 @@ import {
 import ServiceMenu from '../config/ServiceMenuContainer'
 
 import LocationSearchInput from './LocationSearchInput'
-
-import { available_artists_url, contact_phone } from '../config/dataLinks'
+import { checkBookingRules } from '../utils/misc'
+import { available_artists_url } from '../config/dataLinks'
 import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
@@ -86,30 +86,9 @@ const ServiceSelection = ({
     return selectedDate.getTime() + duration * 60 * 1000
   }
 
-  const legalBookingTime = () => {
-    const now = new Date()
-    const ahead24hrs = (selectedDate - now) / 3600000 >= 24 
-    const bookingHour = selectedDate.getHours()
-    const between8And18 = bookingHour >= 8 && bookingHour < 18
-
-    return ahead24hrs && between8And18
-  }
-
-  const checkBookingRules = () => {
-    if (pensionerRate && selectedDate.getDay() !== 1) {
-      alert('Sorry, pensioner rate is only available on Mondays.')
-      return false
-    } else if (!legalBookingTime()) {
-      alert(`Please book appointments between 8am to 6pm at least 24 hours in advance. If you need to book outside these hours, please call ${contact_phone}.`)
-      return false
-    }
-
-    return true
-  }
-
   const handleNext = event => {
 
-    if (!checkBookingRules())
+    if (!checkBookingRules(pensionerRate, selectedDate))
       return
 
     submitBooking(null, selectedDate, new Date(getBookingEnd()), address)

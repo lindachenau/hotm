@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { submitBooking, getAvailArtist, changeSelectedArtist } from '../actions/bookingCreator'
+import { submitBooking } from '../actions/bookingCreator'
 import TherapistSelection from '../components/TherapistSelection'
 
 const mapStateToProps = state => {

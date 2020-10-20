@@ -19,7 +19,7 @@ const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
 const PaymentLink = lazy(() => import('../pages/PaymentLink'))
 
 const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
-  const { services, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists, clients } = 
+  const { services, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists } = 
     useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
@@ -129,8 +129,7 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 userEmail={userEmail}
                 artistSignedIn={artistSignedIn}
                 artists={artists}
-                services={services}
-                clients={clients}/>
+                services={services}/>
               :
               <Redirect to="/" />
             }                

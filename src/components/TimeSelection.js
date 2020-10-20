@@ -19,10 +19,11 @@ import Button from '@material-ui/core/Button'
 import EventManager from './EventManager'
 import EventForm from '../components/EventForm'
 import { moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
+import { checkBookingRules } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
 
-const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, calendarId, offDays, bookingDateAddr, submitBooking, theme}) => {
+const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, travelTime=30, calendarId, offDays, bookingDateAddr, submitBooking, theme}) => {
   const useStyles = makeStyles(theme => ({
     flex: {
       display: 'flex',
@@ -74,7 +75,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
         comment: ''
       }
       setEvents([newEvent])
-      setDraftEvent(newEvent)  
+      setDraftEvents([newEvent])  
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
@@ -96,7 +97,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
     if (event.slots.length === 1)
       return
 
-    if (draftEvent) {
+    if (draftEvents.length === 1) {
       alert('Only one booking event is allowed.')
       return
     }
@@ -116,12 +117,30 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
       comment: ''
     }
     setEvents([newEvent])
-    setDraftEvent(newEvent)
+    setDraftEvents([newEvent])
+  }
+
+  const checkConflicts = (bookingTime) => {
+
   }
 
   const handleNext = () => {
-    submitBooking(draftEvent.start, draftEvent.bookingTime, draftEvent.end, bookingAddr)
+    const theEvent = draftEvents[0]
+    submitBooking(theEvent.start, theEvent.bookingTime, theEvent.end, bookingAddr)
+      
+    if (!checkBookingRules(pensionerRate, theEvent.bookingTime))
+      return
+
+    if (checkConflicts(theEvent.bookingTime))
+      return
+           
     changeBookingStage(2)
+  }
+
+  const handleBack = () => {
+    const theEvent = draftEvents[0]
+    submitBooking(theEvent.start, theEvent.bookingTime, theEvent.end, bookingAddr)
+    changeBookingStage(0)
   }
 
   return (
@@ -159,7 +178,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
             </ListItem>            
           </List>
           <div className={classes.flex}>
-            <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(0)}>
+            <Button variant="text" color="primary" size='large' onClick={handleBack}>
               back
             </Button>
             <div className={classes.grow} />
@@ -174,7 +193,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
             localizer={localizer}
             defaultDate={today}
             onSelectEvent={onSelectEvent}
-            moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, [], null)}
+            moveEvent={({event, start, end}) => moveEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
             resizeEvent={null}
             newEvent={newEvent}
             onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
@@ -204,7 +223,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, travelTime=30, ca
         mode='book'
         saveModified={saveModified}
         setSaveModified={setSaveModified}
-        artistSignedIn={true}
+        artistSignedIn={false}
         artist={null}
         offDays={offDays}
         calendarId={calendarId}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Redirect, withRouter } from 'react-router-dom'
 import TheCalendar from '../components/TheCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
@@ -15,7 +15,7 @@ import CheckoutForm from '../components/CheckoutForm'
 
 const localizer = momentLocalizer(moment)
 
-const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, artists, services, clients}) => {
+const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient, client, artists, services}) => {
   const [events, setEvents] = useState([])
   /*
    * today is passed to date prop of DragAndDropCalendar which is used as current date to open the calendar.
@@ -27,6 +27,7 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, artists, s
   const [toDate, setToDate] = useState(null)
   const [triggerCheckoutForm, setTriggerCheckoutForm] = useState(false)
   const [bookingEvent, setBookingEvent] = useState({})
+  const [gcalEvent, setGcalEvent] = useState(null)
   const calendarId = userEmail
   
   useEffect(() => {
@@ -56,17 +57,33 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, artists, s
           contact: bookingEvent.contact,
           comment: bookingEvent.comment
         })
+        setTriggerCheckoutForm(!triggerCheckoutForm)
       } else {
-        let event = getEvents(bookingEvent, artists, clients, services.items)
+        //Open the checkout form first before the client is fetched. Client query is very slow
+        const events = getEvents([bookingEvent], artists, {}, services.items)
+        const event = events[0]
         event.adminBooking = false
+        event.contact = ''
         setBookingEvent(event)
+        setTriggerCheckoutForm(!triggerCheckoutForm)
+  
+        //Fetch the client in the background
+        setGcalEvent(bookingEvent)
+        await getClient(bookingEvent.client_id)
       }
       
-      setTriggerCheckoutForm(!triggerCheckoutForm)
     } catch (err) {
       console.log('Booking event fetch error: ', err)
     }
   }
+
+  useEffect(() => {
+    //Client is fetched. Update the contact now in Checkout form.
+    if (Object.keys(client).length) {
+      const contact = `${client.name} ${client.phone}`
+      setBookingEvent(Object.assign({}, bookingEvent, {contact: contact}))
+    }
+}, [client])
 
   return (
     <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>

@@ -5,7 +5,8 @@ import TimeSelection from '../components/TimeSelection'
 const mapStateToProps = state => {
   return {
     bookingDateAddr: state.bookingDateAddr,
-    itemQty: state.itemQty
+    itemQty: state.itemQty,
+    pensionerRate: state.priceFactors.pensionerRate
   }
 }
 

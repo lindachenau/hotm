@@ -9,6 +9,9 @@ import {
   GET_AVAIL_ARTISTS,
   RECEIVE_AVAIL_ARTISTS,
   ERROR_AVAIL_ARTISTS,
+  FETCH_CLIENT,
+  RECEIVE_CLIENT,
+  ERROR_CLIENT,
   FETCH_SERVICES,
   FETCH_ARTISTS,
   FETCH_CORP_CARDS,
@@ -168,6 +171,25 @@ export function availArtists(state = initAvailArtists, action) {
   }
 }
 
+export function client(state = {}, action) {
+  switch (action.type) {
+    case FETCH_CLIENT: {
+      return {}
+    }
+    case RECEIVE_CLIENT: {
+      return Object.assign({}, state, action.payload)
+    }
+    case ERROR_CLIENT: {
+      return {}
+    }
+    case RESET_BOOKING: {
+      return {}
+    }
+    default:
+      return state
+  }
+}
+
 export function itemQty(state = {}, action) {
   let qty = 0
   let id = action.itemId
@@ -226,7 +248,8 @@ const initActivation = {
   bookingTypeName: BOOKING_TYPE.T,
   data: {},
   callMe: null,
-  bookingData: {}
+  bookingData: {},
+  checkout: false
 }
 
 export function storeActivation(state = initActivation, action) {
@@ -254,7 +277,8 @@ export function storeActivation(state = initActivation, action) {
     case SEARCH_BOOKING: {
       return Object.assign({}, state, {
         requestMethod: 'get',
-        bookingTrigger: !state.bookingTrigger
+        bookingTrigger: !state.bookingTrigger,
+        checkout: false
       })
     }
     //create a new booking on the server
@@ -264,7 +288,8 @@ export function storeActivation(state = initActivation, action) {
         data: action.payload,
         bookingTypeName: action.bookingTypeName,
         bookingTrigger: !state.bookingTrigger,
-        callMe: action.callMe
+        callMe: action.callMe,
+        checkout: false
       })
     }
     //modify an existing booking on the server
@@ -274,7 +299,8 @@ export function storeActivation(state = initActivation, action) {
         data: action.payload,
         bookingTypeName: action.bookingTypeName,
         bookingTrigger: !state.bookingTrigger,
-        callMe: action.callMe
+        callMe: action.callMe,
+        checkout: action.checkout
       })
     }
     //delete an existing booking on the server
@@ -283,14 +309,16 @@ export function storeActivation(state = initActivation, action) {
         requestMethod: 'delete',
         data: action.payload,
         bookingTrigger: !state.bookingTrigger,
-        callMe: null
+        callMe: null,
+        checkout: false
       })
     }
     case RESET_BOOKING: {
       return Object.assign({}, state, {
         data: {},
         callMe: null,
-        bookingData: {}
+        bookingData: {},
+        checkout: false
       })
     }
     default:

@@ -7,7 +7,6 @@ const mapStateToProps = state => {
     priceFactors: state.priceFactors,
     itemQty: state.itemQty,
     artists: state.artists,
-    clients: state.clients,
     bookings: state.bookings,
     bookingStage: state.bookingStage.stage,
     bookingType: state.bookingFilter.bookingType.name,

@@ -104,7 +104,7 @@ function Payment (
         quantities: Object.values(itemQty),
         booking_date: bookingDate,
         artist_start_time: moment(bookingDateAddr.artistStart).format("HH:mm"),
-        booking_time: moment(bookingDateAddr.bookingDate).format("HH:mm"),
+        booking_start_time: moment(bookingDateAddr.bookingDate).format("HH:mm"),
         booking_end_time: moment(bookingDateAddr.bookingEnd).format("HH:mm"),
         with_organic: priceFactors.organic ? 1 : 0,
         with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,

@@ -40,7 +40,7 @@ const initFilter = (fromDate, toDate) => {
 }
 
 const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchArtists, fetchServices, fetchCorpCards, fetchAdminTasks, isArtist}) => {
-  const {servicesTrigger, artistsTrigger, corpCardsTrigger, adminTasksTrigger, bookingTrigger, requestMethod, bookingTypeName, data, callMe} = storeActivation
+  const {servicesTrigger, artistsTrigger, corpCardsTrigger, adminTasksTrigger, bookingTrigger, requestMethod, bookingTypeName, data, callMe, checkout} = storeActivation
   const {fromDate, toDate, bookingType} = bookingFilter
   const artistId = bookingFilter.artist ? bookingFilter.artist.id : null
   const clientId = bookingFilter.client ? bookingFilter.client.id : null
@@ -216,6 +216,9 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   //regenerate events whenever clients are updated
   useEffect(() => {
+    if (checkout)
+      return
+
     if (artistsFetched && servicesFetched && Object.keys(clients).length > 0 && 
       ((requestMethod === 'get' && bookingType.name === BOOKING_TYPE.T) || (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.T))) {
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
@@ -226,6 +229,9 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   //regenerate events whenever bookings data are updated
   useEffect(() => {
+    if (checkout)
+      return
+
     if (requestMethod === 'get' && bookingType.name === BOOKING_TYPE.C) {
       setAdminBookings(getAdminBookings(bookingType.name, bookingsData.data, artists, clients, services.items, corpCardsObj))
       setAdminBookingsFetched(true)
@@ -238,6 +244,9 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   //regenerate events whenever clients are updated
   useEffect(() => {
+    if (checkout)
+      return
+
     if (requestMethod === 'get' && bookingType.name === BOOKING_TYPE.P) {
       setAdminBookings(getAdminBookings(bookingType.name, bookingsData.data, artists, clients, services.items, corpCardsObj))
       setAdminBookingsFetched(true)
@@ -250,7 +259,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   return (
     <BookingsStoreContext.Provider value={{services, servicesFetched, corpCards, adminTasks, 
-      events, eventsFetched, adminBookings, adminBookingsFetched, artists, artistsFetched, clients, bookingsData}}>
+      events, eventsFetched, adminBookings, adminBookingsFetched, artists, artistsFetched, bookingsData}}>
       {children}
     </BookingsStoreContext.Provider>
   )

@@ -1,3 +1,5 @@
+import { user_url, access_token } from '../config/dataLinks'
+import axios from 'axios'
 export const CHANGE_ORGANIC = 'CHANGE_ORGANIC'
 export const CHANGE_PENSIONER_RATE = 'CHANGE_PENSIONER_RATE'
 export const SUBMIT_BOOKING = 'SUBMIT_BOOKING'
@@ -8,6 +10,9 @@ export const DEC_ITEM_QTY = 'DEC_ITEM_QTY'
 export const GET_AVAIL_ARTISTS = 'GET_AVAIL_ARTISTS'
 export const RECEIVE_AVAIL_ARTISTS = 'RECEIVE_AVAIL_ARTISTS'
 export const ERROR_AVAIL_ARTISTS = 'ERROR_AVAIL_ARTISTS'
+export const FETCH_CLIENT = 'FETCH_CLIENT'
+export const RECEIVE_CLIENT = 'RECEIVE_CLIENT'
+export const ERROR_CLIENT = 'ERROR_CLIENT'
 export const FETCH_ARTISTS = 'FETCH_ARTISTS'
 export const FETCH_SERVICES = 'FETCH_SERVICES'
 export const FETCH_CORP_CARDS = 'FETCH_CORP_CARDS'
@@ -28,8 +33,7 @@ export const SET_BOOKING_TYPE = 'SET_BOOKING_TYPE'
 export const BOOKING_TYPE = {
   C: 'corporate',
   P: 'package',
-  T: 'therapist',
-  CHECKOUT: 'checkout'  //synthetic type used for checkout
+  T: 'therapist'
 }
 
 export const toggleOrganic = () => ({
@@ -80,6 +84,38 @@ export function getAvailArtist(url) {
   }
 }
 
+export function getClient(clientId) {
+  return async function(dispatch) {
+    dispatch({
+      type: FETCH_CLIENT
+    })
+
+    try {
+      const config = {
+        method: 'get',
+        headers: { 'Authorization': access_token },
+        url: `${user_url}/${clientId}`
+      }
+
+      const result = await axios(config)
+      const client = {
+        id: result.data.id,
+        name: result.data.name,
+        phone: result.data.meta.billing_phone[0]
+      }
+      dispatch({
+        type: RECEIVE_CLIENT,
+        payload: client
+      })
+    } catch (err) {
+      console.log("Client fetching error")
+      dispatch({
+        type: ERROR_CLIENT
+      })
+    }
+  }
+}
+
 export const incItemQty = id => ({
   type: INC_ITEM_QTY,
   itemId: id
@@ -121,11 +157,12 @@ export const addBooking = (bookingInfo, bookingTypeName, callMe) => ({
   callMe
 })
 
-export const updateBooking = (bookingInfo, bookingTypeName, callMe) => ({
+export const updateBooking = (bookingInfo, bookingTypeName, callMe, checkout=false) => ({
   type: UPDATE_BOOKING,
   payload: bookingInfo,
   bookingTypeName: bookingTypeName,
-  callMe
+  callMe,
+  checkout
 })
 
 export const cancelBooking = (bookingInfo, bookingTypeName, callMe=null) => ({

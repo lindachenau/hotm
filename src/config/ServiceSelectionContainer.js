@@ -6,7 +6,8 @@ const mapStateToProps = state => {
   return {
     bookingDate: state.bookingDateAddr.bookingDate,
     bookingAddr: state.bookingDateAddr.bookingAddr,
-    itemQty: state.itemQty
+    itemQty: state.itemQty,
+    pensionerRate: state.priceFactors.pensionerRate
   }
 }
 
