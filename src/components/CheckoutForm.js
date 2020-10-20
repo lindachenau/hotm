@@ -109,7 +109,8 @@ export default function CheckoutForm({
   event,
   triggerOpen,
   initOpen,
-  updateBooking
+  updateBooking,
+  setBrowsing
 }) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
@@ -117,6 +118,7 @@ export default function CheckoutForm({
   const [actualEnd, setActualEnd] = useState(null)
   const [checkoutComment, setCheckoutComment] = useState('')
   const { adminBooking } = event
+  const futureEvent = event.end ? event.end.getTime() > (new Date).getTime() : false
 
   const classes = useStyles(theme)
 
@@ -176,7 +178,7 @@ export default function CheckoutForm({
   }
 
   const handleEdit = () => {
-
+    setBrowsing(false)
   }
 
   return (
@@ -229,7 +231,7 @@ export default function CheckoutForm({
         </DialogContent>
           <DialogActions className={classes.button}>
             {adminBooking ?
-            <Button variant="contained" onClick={handleCheckout} color="secondary" fullWidth>
+            <Button variant="contained" onClick={handleCheckout} color="secondary" fullWidth disabled={futureEvent}>
               Checkout
             </Button>
             :
@@ -237,6 +239,7 @@ export default function CheckoutForm({
               <Button 
                 variant="text" 
                 onClick={handleCheckoutPay} 
+                disabled={futureEvent}
                 color="primary"
                 aria-label="checkout & pay"
                 endIcon={<FaRegCreditCard />}
@@ -247,6 +250,7 @@ export default function CheckoutForm({
               <Button 
                 variant="text" 
                 onClick={handleCheckoutLink} 
+                disabled={futureEvent}
                 color="primary"
                 aria-label="checkout & payment link"
                 endIcon={<FaFileInvoiceDollar />}
@@ -254,7 +258,12 @@ export default function CheckoutForm({
                 Checkout
               </Button>
               <div className={classes.grow} />
-              <IconButton edge="start" color="primary" onClick={handleEdit}>
+              <IconButton 
+                edge="start" 
+                color="primary" 
+                onClick={handleEdit} 
+                disabled={event.client === undefined ? true : false}
+              >
                 <EditIcon/>
               </IconButton>
             </>}

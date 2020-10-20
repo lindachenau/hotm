@@ -46,6 +46,7 @@ const TherapistBooking = ({
   location,
   theme,
   artistBooking,
+  checkoutEvent,
   services,
   itemQty,
   artists,
@@ -105,27 +106,35 @@ const TherapistBooking = ({
         setCalendarId(theArtist[0].email)
         setFromDate(moment(today).startOf('month').startOf('week')._d)
         setToDate(moment(today).endOf('month').endOf('week')._d)        
-      } else if (location.state.edit) {
-        setToday(artistBooking.start)
-        setFromDate(moment(artistBooking.start).startOf('month').startOf('week')._d)
-        setToDate(moment(artistBooking.start).endOf('month').endOf('week')._d)                     
-        setMode('edit')
-        setCalendarId(artistBooking.artists[0].email)
-        setAddress(artistBooking.address)
-        setClient(artistBooking.client)
-        setArtist(artistBooking.artists[0])
-        loadBooking(artistBooking.origBooking)
+      } else {
+        let booking
+        if (location.state.edit) {
+          setMode('edit')
+          booking = artistBooking
+        } else {
+          setMode('checkout')
+          booking = checkoutEvent
+        }
+        setToday(booking.start)
+        setFromDate(moment(booking.start).startOf('month').startOf('week')._d)
+        setToDate(moment(booking.start).endOf('month').endOf('week')._d)                     
+        
+        setCalendarId(booking.artists[0].email)
+        setAddress(booking.address)
+        setClient(booking.client)
+        setArtist(booking.artists[0])
+        loadBooking(booking.origBooking)
         const entry = {
-          id: artistBooking.id,
+          id: booking.id,
           type: 'draft',
           title: 'HOTM Booking',
           allDay: false,
-          start: artistBooking.start,
-          bookingTime: artistBooking.bookingTime,
-          end: artistBooking.end,
-          artistName: artistBooking.artistName,
-          address: artistBooking.address,
-          comment: artistBooking.comment            
+          start: booking.start,
+          bookingTime: booking.bookingTime,
+          end: booking.end,
+          artistName: booking.artistName,
+          address: booking.address,
+          comment: booking.comment            
         }
   
         setEvents([entry])
@@ -214,7 +223,7 @@ const TherapistBooking = ({
       alert(message)
       setDraftEvents([])
       resetBooking()
-      if (mode === 'edit')
+      if (mode !== 'book')
         setBrowsing(true)
     }
 
@@ -237,9 +246,6 @@ const TherapistBooking = ({
     bookingData.comment = event.comment
     bookingData.booking_artist_id = booingArtistId
     //All fields below are redundant. They can be removed when API does not make them mandatory.
-    bookingData.time_on_site = (event.end.getTime() - event.bookingTime.getTime()) / 60000
-    bookingData.travel_duration = 0
-    bookingData.travel_distance = 0
     bookingData.payment_amount = 0
     bookingData.payment_type = 'deposit'
 
@@ -247,7 +253,7 @@ const TherapistBooking = ({
       addBooking(bookingData, BOOKING_TYPE.T, callBack)
     }
     else {
-      bookingData.booking_id = artistBooking.id
+      bookingData.booking_id = mode === 'edit' ? artistBooking.id : checkoutEvent.id
       updateBooking(bookingData, BOOKING_TYPE.T, callBack)
     }
   }
@@ -255,7 +261,7 @@ const TherapistBooking = ({
   return (
     <>
     {browsing ?
-      <Redirect to={'/manage-bookings'} />
+      <Redirect to={mode === 'edit' ? '/manage-bookings' : '/my-calendar'} />
       :
       <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
         <Grid container justify="space-around" spacing={1}>
@@ -286,7 +292,7 @@ const TherapistBooking = ({
               <div className={classes.progress}><CircularProgress color='primary' /></div>
               :
               <div className={classes.padding2}>
-                {mode === 'edit' &&
+                {mode !== 'book' &&
                 <Button 
                   variant="text" 
                   onClick={handleBack} 

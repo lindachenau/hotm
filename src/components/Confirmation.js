@@ -182,13 +182,13 @@ function Confirmation ({
           { `TOTAL (GST INCL): $${bookingValue}` }
         </Typography>
         <div className={classes.acknowledge}>
-          <Checkbox checked={checkedDeposit} onChange={handleDeposit} value="checkedDeposit" className={classes.inline}/>
+          <Checkbox checked={checkedDeposit} onChange={handleDeposit} value="checkedDeposit" className={classes.inline} color="primary"/>
           <Typography variant="body2" align="left" color="textPrimary">
             Please pay 30% of the requested services to secure your booking now.
           </Typography>
         </div>
         <div className={classes.acknowledge}>
-          <Checkbox checked={checkedTerm} onChange={handleTerm} value="checkedTerm" className={classes.inline}/>
+          <Checkbox checked={checkedTerm} onChange={handleTerm} value="checkedTerm" className={classes.inline} color="primary"/>
           <Typography variant="body2" align="left" color="textPrimary">
             Please read and accept our &nbsp;
           </Typography>
@@ -197,7 +197,7 @@ function Confirmation ({
           </Link>
         </div>
         <div className={classes.acknowledge}>
-          <Checkbox checked={checkedParking} onChange={handleParking} value="checkedTerm" className={classes.inline}/>
+          <Checkbox checked={checkedParking} onChange={handleParking} value="checkedTerm" className={classes.inline} color="primary"/>
           <Typography variant="body2" align="left" color="textPrimary">
             Customers are required to pay parking charges incurred while artists attend your booking. 
             The incurred parking charges will be added onto the final invoice. Parking instructions can be provided 

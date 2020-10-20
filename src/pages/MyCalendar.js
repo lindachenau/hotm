@@ -5,7 +5,7 @@ import 'react-big-calendar/lib/sass/styles.scss'
 import '../components/CalendarToolbar.css'
 import { momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
-import { makeStyles } from '@material-ui/core/styles'
+import axios from "axios"
 import Container from '@material-ui/core/Container'
 import EventManager from '../components/EventManager'
 import { onNavigate } from '../utils/eventFunctions'
@@ -15,7 +15,7 @@ import CheckoutForm from '../components/CheckoutForm'
 
 const localizer = momentLocalizer(moment)
 
-const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient, client, artists, services}) => {
+const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient, client, artists, services, bookingEvent, setBookingEvent}) => {
   const [events, setEvents] = useState([])
   /*
    * today is passed to date prop of DragAndDropCalendar which is used as current date to open the calendar.
@@ -26,8 +26,12 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
   const [fromDate, setFromDate] = useState(null)
   const [toDate, setToDate] = useState(null)
   const [triggerCheckoutForm, setTriggerCheckoutForm] = useState(false)
-  const [bookingEvent, setBookingEvent] = useState({})
-  const [gcalEvent, setGcalEvent] = useState(null)
+  const [browsing, setBrowsing] = useState(true)
+  const [location] = useState({
+    pathname: '/therapist-booking',
+    state: {checkout : true}
+  })
+
   const calendarId = userEmail
   
   useEffect(() => {
@@ -42,8 +46,16 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
 
     try {
       const url = `${booking_events_url}?gcal_event_id=${event.id.slice(0, 26)}`
-      const data = await fetch(url)
-      const bookingEvent = await data.json()
+      const config = {
+        method: 'get',
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate"
+        },
+        url: url
+      }
+
+      const bookingEvent = (await axios(config)).data
 
       if (bookingEvent.admin_booking_id) {
         setBookingEvent({
@@ -68,7 +80,6 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
         setTriggerCheckoutForm(!triggerCheckoutForm)
   
         //Fetch the client in the background
-        setGcalEvent(bookingEvent)
         await getClient(bookingEvent.client_id)
       }
       
@@ -81,47 +92,56 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
     //Client is fetched. Update the contact now in Checkout form.
     if (Object.keys(client).length) {
       const contact = `${client.name} ${client.phone}`
-      setBookingEvent(Object.assign({}, bookingEvent, {contact: contact}))
+      setBookingEvent(Object.assign({}, bookingEvent, {
+        client: client,
+        contact: contact
+      }))
     }
 }, [client])
 
   return (
-    <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
-      <TheCalendar
-        events={events}
-        localizer={localizer}
-        defaultDate={today}
-        onSelectEvent={onSelectEvent}
-        moveEvent={null}
-        resizeEvent={null}
-        newEvent={null}
-        onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
-        triggerSaveAllDrafts={null}
-        triggerDeleteEvent={null}
-        eventToDelete={null}
-      />
-      <EventManager
-        mode={null}
-        saveModified={null}
-        setSaveModified={null}
-        artistSignedIn={artistSignedIn}
-        artist={null}
-        calendarId={calendarId}
-        fromDate={fromDate}
-        toDate={toDate}
-        setEvents={setEvents}
-        draftEvent={null}
-        draftEvents={[]}
-        setDraftEvents={null}     
-        triggerDeleteEvent={null}
-      />
-      <CheckoutForm
-        event={bookingEvent}
-        triggerOpen={triggerCheckoutForm}
-        initOpen={false}
-        updateBooking={updateBooking}
-      />
-    </Container>
+    <>
+      {browsing ?
+      <Container maxWidth='xl' style={{paddingTop: 10, paddingLeft: 10, paddingRight: 10}}>
+        <TheCalendar
+          events={events}
+          localizer={localizer}
+          defaultDate={today}
+          onSelectEvent={onSelectEvent}
+          moveEvent={null}
+          resizeEvent={null}
+          newEvent={null}
+          onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
+          triggerSaveAllDrafts={null}
+          triggerDeleteEvent={null}
+          eventToDelete={null}
+        />
+        <EventManager
+          mode={null}
+          saveModified={null}
+          setSaveModified={null}
+          artistSignedIn={artistSignedIn}
+          artist={null}
+          calendarId={calendarId}
+          fromDate={fromDate}
+          toDate={toDate}
+          setEvents={setEvents}
+          draftEvent={null}
+          draftEvents={[]}
+          setDraftEvents={null}     
+          triggerDeleteEvent={null}
+        />
+        <CheckoutForm
+          event={bookingEvent}
+          triggerOpen={triggerCheckoutForm}
+          initOpen={false}
+          updateBooking={updateBooking}
+          setBrowsing={setBrowsing}
+        />
+      </Container>
+      :
+      <Redirect to={location} />}
+    </>  
   )
 }
 

@@ -111,9 +111,6 @@ function Payment (
         event_address: bookingDateAddr.bookingAddr,
         total_amount: bookingValue,
         comment: value,
-        time_on_site: (bookingDateAddr.bookingEnd.getTime() - bookingDateAddr.bookingDate.getTime()) / 60000,
-        travel_duration: 0,
-        travel_distance: 0,
         payment_amount: depositPayable,
         payment_type: 'deposit'
       }

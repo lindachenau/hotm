@@ -18,7 +18,7 @@ import HelpIcon from '@material-ui/icons/Help'
 import Button from '@material-ui/core/Button'
 import EventManager from './EventManager'
 import EventForm from '../components/EventForm'
-import { moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
+import { moveEvent, onNavigate, onSaveEventDetails, mergeThenSort } from '../utils/eventFunctions'
 import { checkBookingRules } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
@@ -46,6 +46,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
   const [saveModified, setSaveModified] = useState(false)
+  const [slots, setSlots] = useState([])
   const bookingAddr = bookingDateAddr.bookingAddr
   
   const getDuration = () => {
@@ -59,23 +60,29 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
   }
 
   useEffect(() => {
-    setFromDate(moment(today).startOf('month').startOf('week')._d)
-    setToDate(moment(today).endOf('month').endOf('week')._d)
     setDuration(getDuration())
 
     if (bookingDateAddr.bookingDate) {
+      const today = bookingDateAddr.bookingDate
+      setToday(today)
+      setFromDate(moment(today).startOf('month').startOf('week')._d)
+      setToDate(moment(today).endOf('month').endOf('week')._d)
+  
       const newEvent = {
         id: 'draft-1',
         type: 'draft',
         title: 'New Event',
         allDay: false,
         start: bookingDateAddr.artistStart,
-        bookingTime: bookingDateAddr.bookingDate,
+        bookingTime: today,
         end: bookingDateAddr.bookingEnd,
         comment: ''
       }
       setEvents([newEvent])
       setDraftEvents([newEvent])  
+    } else {
+      setFromDate(moment(today).startOf('month').startOf('week')._d)
+      setToDate(moment(today).endOf('month').endOf('week')._d)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
@@ -84,11 +91,23 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
     setDraftEvent(null)
   }, [triggerDeleteEvent])
 
+  useEffect(() => {
+    if (events.length > 0 && events[0].type !== 'draft')
+      slots2CheckConflicts(mergeThenSort(slots, events))
+  }, [events])
+
   const onSelectEvent = (event) => {
     if (event.type !== 'draft')
       return
     setDraftEvent(event)
     setTriggerEventForm(!triggerEventForm)
+  }
+
+  const slots2CheckConflicts = (events) => {
+    setSlots(events.map(event => { return {
+      start: event.start,
+      end: event.end
+    }}))
   }
 
   const newEvent = (event) => {
@@ -120,8 +139,17 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
     setDraftEvents([newEvent])
   }
 
-  const checkConflicts = (bookingTime) => {
+  const checkConflicts = (start, end) => {
+    const startTick = start.getTime()
+    const endTick = end.getTime()
+    for (let i = 0; i < slots.length; i++) {
+      const slotStart = slots[i].start.getTime()
+      const slotEnd = slots[i].end.getTime()
+      if (endTick >= slotStart && startTick <= slotEnd)
+        return true
+    }
 
+    return false
   }
 
   const handleNext = () => {
@@ -131,15 +159,18 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
     if (!checkBookingRules(pensionerRate, theEvent.bookingTime))
       return
 
-    if (checkConflicts(theEvent.bookingTime))
+    if (checkConflicts(theEvent.start, theEvent.end)) {
+      alert("Your appointment conflicts with the therapist's existing events. Please move it to avoid conflicts.")
       return
+    }
            
     changeBookingStage(2)
   }
 
   const handleBack = () => {
     const theEvent = draftEvents[0]
-    submitBooking(theEvent.start, theEvent.bookingTime, theEvent.end, bookingAddr)
+    if (theEvent)
+      submitBooking(theEvent.start, theEvent.bookingTime, theEvent.end, bookingAddr)
     changeBookingStage(0)
   }
 
@@ -182,7 +213,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
               back
             </Button>
             <div className={classes.grow} />
-            <Button variant="text" color="primary" size='large' onClick={handleNext}>
+            <Button variant="text" color="primary" size='large' onClick={handleNext} disabled={draftEvents[0] === undefined}>
               Next
             </Button>
           </div>          

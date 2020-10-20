@@ -224,9 +224,10 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
       setEventsFetched(true)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [clientsFetchTrigger])
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Retrieval is triggered by clientsFetchTrigger while booking update is triggered by bookingsData.data
+  }, [clientsFetchTrigger, bookingsData.data])
+  
   //regenerate events whenever bookings data are updated
   useEffect(() => {
     if (checkout)

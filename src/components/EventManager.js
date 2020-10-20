@@ -126,7 +126,8 @@ const EventManager = ({
   
 
   useEffect(() => {
-    if (draftEvent && (mode === 'book' || (mode === 'edit' && saveModified))) {
+    // if (draftEvent && (mode === 'book' || (mode === 'edit' && saveModified))) {
+    if (draftEvent && (mode === 'book' || saveModified)) {
       setEvents([draftEvent])
       setDraftEvents(mergeThenSort([draftEvent], draftEvents))
       setSaveModified(false)

@@ -25,6 +25,8 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
   const [depositPayable, setDepositPayable] = useState(0)
   const [artistSignedIn, setArtistSignedIn] = useState(false)
   const [prevActiveStep, setPrevActiveStep] = useState(0)
+  //Admin and therapist booking event for checkout pop-up in MyCalendar
+  const [bookingEvent, setBookingEvent] = useState({adminBookings: false})
 
   useEffect(() => {
     setBookingValue(getBookingValue(services.items, priceFactors, itemQty))
@@ -77,6 +79,7 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                   resetBooking={resetBooking}
                   artistSignedIn={artistSignedIn}
                   artistBooking={events[prevActiveStep]}
+                  checkoutEvent={bookingEvent}
                 />
                 :
                 <Redirect to="/" />
@@ -129,7 +132,9 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
                 userEmail={userEmail}
                 artistSignedIn={artistSignedIn}
                 artists={artists}
-                services={services}/>
+                services={services}
+                bookingEvent={bookingEvent}
+                setBookingEvent={setBookingEvent}/>
               :
               <Redirect to="/" />
             }                
