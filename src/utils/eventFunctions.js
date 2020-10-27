@@ -74,6 +74,13 @@ export const onNavigate = (date, view, setFromDate, setToDate, setToday) => {
     setToDate(end)      
   }
 
+  if (view === 'week') {
+    const start = moment(date).startOf('week')._d
+    const end = moment(date).endOf('week')._d
+    setFromDate(start)
+    setToDate(end)      
+  }
+
   if (view === 'day') {
     setFromDate(date)
     setToDate(date)      

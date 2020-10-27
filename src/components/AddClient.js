@@ -72,7 +72,8 @@ export default function AddClient({client, setClient, label, disabled=false}) {
       return {
         id: client.id,
         name: client.name, 
-        phone: client.meta.billing_phone[0] ? client.meta.billing_phone[0] : ''
+        phone: client.meta.billing_phone[0] ? client.meta.billing_phone[0] : '',
+        email: "lindachenau@gmail.com"
       }
     }))
   }, [data])

@@ -53,7 +53,7 @@ function EventCard ({ event }) {
       <div>
         <br/>
         <FaDollarSign/>
-        <span>{ `${event.depositPaid}/${event.total} `}</span>
+        <span>{ `${event.paidAmount}/${event.total} `}</span>
         <FaUserCog/>
         <span>{ event.artists.map(artist => artist.name).join(', ')}</span>
         {event.complete ? <CheckCircleIcon color='primary'/> : null}

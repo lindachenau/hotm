@@ -9,7 +9,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
 import EventNoteIcon from '@material-ui/icons/EventNote'
 import { makeStyles } from '@material-ui/core/styles'
-import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import IconButton from '@material-ui/core/IconButton'
 import CommentIcon from '@material-ui/icons/Comment'
 import { FaFileInvoiceDollar, FaRegCreditCard } from "react-icons/fa"
@@ -20,6 +20,9 @@ import {
   KeyboardTimePicker
 } from '@material-ui/pickers'
 import moment from 'moment'
+import { sendPaymentLink } from '../utils/misc'
+import { payment_link_base } from '../config/dataLinks'
+import CheckoutPaymentForm from '../components/CheckoutPaymentForm'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -65,7 +68,7 @@ function TherapistEventCard ({ event }) {
       <div>
         <br/>
         <FaDollarSign/>
-        <span>{ ` ${event.depositPaid}/${event.total} `}</span>
+        <span>{ ` ${event.paidAmount}/${event.total} `}</span>
         <br/>
         <FaUserCog/>
         {event.serviceItems && 
@@ -119,14 +122,21 @@ export default function CheckoutForm({
   const [checkoutComment, setCheckoutComment] = useState('')
   const { adminBooking } = event
   const futureEvent = event.end ? event.end.getTime() > (new Date).getTime() : false
+  const checkedOut = event.status ? (event.status === 'checkout' && event.actualStart && event.actualEnd) : false
+  const [triggerCheckoutPaymentForm, setTriggerCheckoutPaymentForm] = useState(false)
 
   const classes = useStyles(theme)
 
   useEffect(() => {
     if (didMountRef.current) {
       setOpen(true)
-      setActualStart(event.start)
-      setActualEnd(event.end)
+      if (checkedOut) {
+        setActualStart(event.actualStart)
+        setActualEnd(event.actualEnd)
+      } else {
+        setActualStart(event.start)
+        setActualEnd(event.end)
+      }
       setCheckoutComment('')
     }
     else {
@@ -139,12 +149,11 @@ export default function CheckoutForm({
   const handleCheckout = () => {
     const bookingData = {
       booking_id: event.id,
-      event_list: [{
-        event_id: event.eventId,
-        actual_start_time: moment(actualStart).format("HH:mm"),
-        actual_end_time: moment(actualEnd).format("HH:mm"),
-        comment: `${event.comment} ${checkoutComment}`
-      }]
+      event_id: event.eventId,
+      operation: PUT_OPERATION.CHECKOUT,
+      actual_start_time: moment(actualStart).format("HH:mm"),
+      actual_end_time: moment(actualEnd).format("HH:mm"),
+      comment: `${event.comment} ${checkoutComment}`
     }
     //Set BOOKING_TYPE to CHECKOUT to prevent adminBookings get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
     updateBooking(bookingData, BOOKING_TYPE.C, () => alert('Checkout successful!'), true)  
@@ -152,28 +161,25 @@ export default function CheckoutForm({
   }
 
   const handleCheckoutPay = () => {
-    const bookingData = {
-      booking_id: event.id,
-      actual_start_time: moment(actualStart).format("HH:mm"),
-      actual_end_time: moment(actualEnd).format("HH:mm"),
-      comment: `${event.comment} ${checkoutComment}`,
-      payment_type: 'credit'
-    }
-    //Set BOOKING_TYPE to CHECKOUT to prevent events get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
-    updateBooking(bookingData, BOOKING_TYPE.T, () => alert('Checkout successful!'), true)  
     setOpen(false)
+    setTriggerCheckoutPaymentForm(!triggerCheckoutPaymentForm)
   }
 
-  const handleCheckoutLink = () => {
+  const handleCheckoutLink = async () => {
     const bookingData = {
       booking_id: event.id,
+      operation: PUT_OPERATION.CHECKOUT_PAYMENT,
       actual_start_time: moment(actualStart).format("HH:mm"),
       actual_end_time: moment(actualEnd).format("HH:mm"),
       comment: `${event.comment} ${checkoutComment}`,
       payment_type: 'send_link'
     }
+
+    const paymentLink = `${payment_link_base}?booking_type=client&booking_id=${event.id}&payment_type=balance`
+    const status = await sendPaymentLink(event.client.email, paymentLink, "Pay the balance")
     //Set BOOKING_TYPE to CHECKOUT to prevent events get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
-    updateBooking(bookingData, BOOKING_TYPE.T, () => alert('Checkout successful!'), true)  
+    const message = status === 'success' ? 'Payment link sent & checkout successful!' : 'Payment link sent failure. Please send it again manually.' 
+    updateBooking(bookingData, BOOKING_TYPE.T, () => alert(message), true)  
     setOpen(false)
   }
 
@@ -196,7 +202,8 @@ export default function CheckoutForm({
               fullWidth
               margin="normal"
               id="time-picker-start"
-              label="Select service start time"
+              label={checkedOut ? "Service started at" : "Select service start time"}
+              disabled={checkedOut}
               value={actualStart}
               minutesStep={15}
               onChange={setActualStart}
@@ -208,7 +215,8 @@ export default function CheckoutForm({
               fullWidth
               margin="normal"
               id="time-picker-end"
-              label="Select service end time"
+              label={checkedOut ? "Service ended at" : "Select service end time"}
+              disabled={checkedOut}
               value={actualEnd}
               minutesStep={15}
               onChange={setActualEnd}
@@ -216,7 +224,8 @@ export default function CheckoutForm({
                 'aria-label': 'change time',
               }}
             />
-          </MuiPickersUtilsProvider>            
+          </MuiPickersUtilsProvider>
+          {!checkedOut &&
           <TextField
             id="comment"
             label="Checkout comment"
@@ -227,11 +236,11 @@ export default function CheckoutForm({
             margin="dense"
             variant="outlined"
             onChange={(event) => setCheckoutComment(event.target.value)}
-          />
+          />}
         </DialogContent>
           <DialogActions className={classes.button}>
             {adminBooking ?
-            <Button variant="contained" onClick={handleCheckout} color="secondary" fullWidth disabled={futureEvent}>
+            <Button variant="contained" onClick={handleCheckout} color="secondary" fullWidth disabled={futureEvent || checkedOut}>
               Checkout
             </Button>
             :
@@ -239,7 +248,7 @@ export default function CheckoutForm({
               <Button 
                 variant="text" 
                 onClick={handleCheckoutPay} 
-                disabled={futureEvent}
+                disabled={futureEvent || checkedOut}
                 color="primary"
                 aria-label="checkout & pay"
                 endIcon={<FaRegCreditCard />}
@@ -250,7 +259,7 @@ export default function CheckoutForm({
               <Button 
                 variant="text" 
                 onClick={handleCheckoutLink} 
-                disabled={futureEvent}
+                disabled={futureEvent || checkedOut}
                 color="primary"
                 aria-label="checkout & payment link"
                 endIcon={<FaFileInvoiceDollar />}
@@ -262,13 +271,22 @@ export default function CheckoutForm({
                 edge="start" 
                 color="primary" 
                 onClick={handleEdit} 
-                disabled={event.client === undefined ? true : false}
+                disabled={(event.client === undefined ? true : false)  || checkedOut}
               >
                 <EditIcon/>
               </IconButton>
             </>}
           </DialogActions>        
       </Dialog>
+      <CheckoutPaymentForm
+        event={event}
+        triggerOpen={triggerCheckoutPaymentForm}
+        initOpen={false}
+        actualStart={actualStart}
+        actualEnd={actualEnd}
+        comment={`${event.comment} ${checkoutComment}`}
+        updateBooking={updateBooking}
+      />
     </>
   )
 }

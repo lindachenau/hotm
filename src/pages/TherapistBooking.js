@@ -17,9 +17,10 @@ import ServiceMenu from '../config/ServiceMenuContainer'
 import ArtistBookingItems from '../components/ArtistBookingItems'
 import EventManager from '../components/EventManager'
 import { mergeThenSort, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
-import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { validateTherapistBooking } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
 
@@ -215,7 +216,7 @@ const TherapistBooking = ({
     setBrowsing(true)
   }
 
-  const handleBook = () => {
+  const handleBook = async() => {
     const callBack = (bookingId) => {
       const message = mode === 'book' ? 'Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.' :
         'Updating successful'
@@ -230,6 +231,12 @@ const TherapistBooking = ({
     let bookingData = {}
     
     const event = draftEvents[0]
+
+    const { valid, reason } = await validateTherapistBooking(priceFactors.pensionerRate, event.start)
+    if (!valid) {
+      alert(reason)
+      return
+    }
 
     bookingData.client_id = client.id
     bookingData.artist_id_list = [artist.id]
@@ -254,6 +261,7 @@ const TherapistBooking = ({
     }
     else {
       bookingData.booking_id = mode === 'edit' ? artistBooking.id : checkoutEvent.id
+      bookingData.operation = PUT_OPERATION.UPDATE
       updateBooking(bookingData, BOOKING_TYPE.T, callBack)
     }
   }

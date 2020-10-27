@@ -7,6 +7,7 @@ import BookingCards from '../components/BookingCards'
 import { FaFileInvoiceDollar } from "react-icons/fa"
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
+import PaymentRequestForm from '../components/PaymentRequestForm'
 
 const useStyles = makeStyles(theme => ({
   flex: {
@@ -18,12 +19,13 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, bookingType, prevActiveStep, setPrevActiveStep}) => {
+const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bookingType, prevActiveStep, setPrevActiveStep}) => {
   // bookingType = bookingFilter.bookingType.name
   const [activeStep, setActiveStep] = useState(prevActiveStep)
   const didMountRef = useRef(false)
   const classes = useStyles()
   const [completed, setCompleted] = useState(false)
+  const [triggerPaymentRequestForm, setTriggerPaymentRequestForm] = useState(false)
   const [browsing, setBrowsing] = useState(true)
   const [location, setLocation] = useState({})
   const pathnames = {
@@ -32,7 +34,7 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
     therapist:'/therapist-booking'
   }
 
-  // disable EDIT and CHECKOUT for completed bookings
+  // disable EDIT, PAYMENT LINK and DELETE for completed bookings
   // useEffect(() => {
   //   if (events.length > 0)
   //     setCompleted(events[activeStep].complete)
@@ -47,7 +49,9 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
     setBrowsing(false)
   }
 
-  const handlePayment = () => {}
+  const handlePayment = () => {
+    setTriggerPaymentRequestForm(!triggerPaymentRequestForm)
+  }
 
   const handleDelete = () => {}
 
@@ -84,7 +88,14 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
           <IconButton edge="start" color="primary" onClick={handleDelete}>
             <DeleteForeverIcon/>
           </IconButton>           
-        </div>            
+        </div>
+        <PaymentRequestForm 
+          triggerOpen={triggerPaymentRequestForm}
+          initOpen={false}
+          bookingType={bookingType}
+          adminBooking={adminBookings[activeStep]}
+          artistBooking={events[activeStep]}
+        />
       </Container>
       :
       <Redirect to={location} />}

@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
   acknowledge: {
     display: 'flex',
     marginTop: 20,
-    alignItems: 'flexStart'
+    alignItems: 'flex-start'
   },
   inline: {
     display: 'inline',

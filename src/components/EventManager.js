@@ -28,7 +28,7 @@ const EventManager = ({
       let offDayList = []
 
       let curTick = new Date(start).getTime()
-      const numDays = Math.floor((new Date(end).getTime() - curTick) / 86400000)
+      const numDays = Math.ceil((new Date(end).getTime() - curTick) / 86400000)
 
       for (let i = 0; i < numDays; i++) {
         const date = new Date(curTick)
@@ -107,9 +107,10 @@ const EventManager = ({
         const offDays = getOffDays(start, end)
         setEvents(mergeThenSort(artEvents, offDays))
       } catch (err) {
-        const errMessage = err.result.error.message
-        alert(`Event fetch error: ${errMessage}`)
-        console.log('Event fetch error: ', errMessage)
+        // const errMessage = err.result.error.message
+        console.log(err)
+        // alert(`Event fetch error: ${errMessage}`)
+        // console.log('Event fetch error: ', errMessage)
       }
     }
 

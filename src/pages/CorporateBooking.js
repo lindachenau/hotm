@@ -16,7 +16,7 @@ import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
 import EventManager from '../components/EventManager'
 import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
-import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
@@ -221,6 +221,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
     }
     else {
       bookingData.booking_id = adminBooking.id
+      bookingData.operation = PUT_OPERATION.UPDATE
       if (deleteList.length > 0) {
         bookingData.event_list = deleteList
         if (eventList.length > 0) {

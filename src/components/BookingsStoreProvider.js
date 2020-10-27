@@ -6,6 +6,7 @@ import { bookings_url, admin_bookings_url, user_url, access_token, artists_url, 
 import axios from 'axios'
 import moment from 'moment'
 import { BOOKING_TYPE } from "../actions/bookingCreator"
+import { GoMail } from "react-icons/go"
 
 
 /*
@@ -193,7 +194,8 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
             temp[id.toString()] = {
               id,
               name: client.name,
-              phone: client.meta.billing_phone[0]
+              phone: client.meta.billing_phone[0],
+              email: "lindachenau@gmail.com"
             }
           }
         })

@@ -17,9 +17,11 @@ import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
 import EventManager from '../components/EventManager'
 import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
-import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { sendPaymentLink } from '../utils/misc'
+import { payment_link_base } from '../config/dataLinks'
 
 const localizer = momentLocalizer(moment)
 
@@ -181,6 +183,8 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
       const message = mode === 'book' ? 'Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.' :
       'Updating successful'      
       setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
+      const paymentLink = `${payment_link_base}?booking_type=admin&booking_id=${bookingId}&payment_type=deposit&percentage=30`
+      sendPaymentLink(client.email, paymentLink, "Pay the deposit")
       alert(message)
       setDraftEvents([])
       if (mode === 'edit')
@@ -226,6 +230,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
     }
     else {
       bookingData.booking_id = adminBooking.id
+      bookingData.operation = PUT_OPERATION.UPDATE
       if (deleteList.length > 0) {
         bookingData.event_list = deleteList
         if (eventList.length > 0) {

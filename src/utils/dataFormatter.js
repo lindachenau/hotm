@@ -1,6 +1,14 @@
 import { getBookingValue } from './getBookingValue'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
 
+function offDays(workingDays) 
+{
+  const week = [0, 1, 2, 3, 4, 5, 6]
+  const workingDaysInt = workingDays.split(",").map(day => parseInt(day))
+  const offDays = week.filter(day => !workingDaysInt.includes(day))
+  return offDays
+}
+
 export function normaliseArtists(artistArr)
 {
   let artists = {}
@@ -21,7 +29,7 @@ export function normaliseArtists(artistArr)
         state: state,
         photo: artistArr[i].photo,
         title: artistArr[i].title,
-        offDays: [0, 1],
+        offDays: offDays(artistArr[i].working_days),
         bio: artistArr[i].bio,
         hashtag: artistArr[i].hashtag ? artistArr[i].hashtag.replace('#', '') : "haironthemove2u"
       }
@@ -134,6 +142,8 @@ export function getAdminBookings(bookingTypeName, bookings, artists, clients, se
     const cId = booking.card_or_client_id.toString()
     const title = bookingTypeName === BOOKING_TYPE.C ? corpCards[cId].name : `${servicesMenu[booking.service_item.toString()].description}`
     const contact = bookingTypeName === BOOKING_TYPE.C ? `${corpCards[cId].contactPerson} - ${corpCards[cId].contactPhone}` : `${clients[cId].name} - ${clients[cId].phone}`
+    const email = bookingTypeName === BOOKING_TYPE.C ? corpCards[cId].contactEmail : clients[cId].email
+
     let eventList = []
     booking.event_list.forEach(event => {
       if (artists[event.artist_id]) {
@@ -145,6 +155,9 @@ export function getAdminBookings(bookingTypeName, bookings, artists, clients, se
       id: booking.booking_id,
       title: title,
       contact: contact,
+      email: email,
+      total: booking.total_amount_booked, //To be fixed for package booking
+      depositPaid: 0, //To be fixed after payment API finalised
       totalHours: booking.total_hours_booked,
       serviceItem: booking.service_item,
       eventList: eventList,
@@ -205,9 +218,13 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         client: clients[booking.client_id],
         organic: booking.with_organic,
         serviceItems: serviceItems,
-        depositPaid: booking.paid_deposit_total,
+        paidAmount: booking.paid_amount,
         complete: complete,
         comment: booking.comment,
+        status: booking.status,
+        //inconsistent data checkout status with null actual_start_time & actual_end_time
+        actualStart: (booking.status === 'checkout' && booking.actual_start_time) ? localDate(booking.booking_date, booking.actual_start_time) : null,
+        actualEnd: (booking.status === 'checkout' && booking.actual_end_time) ? localDate(booking.booking_date, booking.actual_end_time) : null,
         total: total,
         origBooking: booking
       })

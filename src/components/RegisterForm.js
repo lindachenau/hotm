@@ -115,39 +115,39 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   }, [password, confirmedPassword]) 
 
   const onChangeEmail = event => {
-    setEmail(event.target.value)
+    setEmail(event.target.value.trim())
   }
 
   const onChangeFirstName = event => {
-    setFirstName(event.target.value)
+    setFirstName(event.target.value.trim())
   }
 
   const onChangeLastName = event => {
-    setLastName(event.target.value)
+    setLastName(event.target.value.trim())
   }
 
   const onChangeCompany = event => {
-    setCompany(event.target.value)
+    setCompany(event.target.value.trim())
   }
 
   const onChangeAddress = event => {
-    setAddress(event.target.value)
+    setAddress(event.target.value.trim())
   }
 
   const onChangeCity = event => {
-    setCity(event.target.value)
+    setCity(event.target.value.trim())
   }
 
   const onChangeStateAbbr = event => {
-    setStateAbbr(event.target.value)
+    setStateAbbr(event.target.value.trim())
   }
 
   const onChangePostcode = event => {
-    setPostcode(event.target.value)
+    setPostcode(event.target.value.trim())
   }
 
   const onChangePhone= event => {
-    setPhone(event.target.value)
+    setPhone(event.target.value.trim())
   }
 
   const checkExistence = async () => {

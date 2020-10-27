@@ -14,7 +14,7 @@ import {
 import ServiceMenu from '../config/ServiceMenuContainer'
 
 import LocationSearchInput from './LocationSearchInput'
-import { checkBookingRules } from '../utils/misc'
+import { validateClientBooking } from '../utils/misc'
 import { available_artists_url } from '../config/dataLinks'
 import moment from 'moment'
 
@@ -86,10 +86,12 @@ const ServiceSelection = ({
     return selectedDate.getTime() + duration * 60 * 1000
   }
 
-  const handleNext = event => {
-
-    if (!checkBookingRules(pensionerRate, selectedDate))
+  const handleNext = async (event) => {
+    const { valid, reason } = await validateClientBooking(pensionerRate, selectedDate)
+    if (!valid) {
+      alert(reason)
       return
+    }
 
     submitBooking(null, selectedDate, new Date(getBookingEnd()), address)
 

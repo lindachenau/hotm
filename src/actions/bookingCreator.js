@@ -36,6 +36,13 @@ export const BOOKING_TYPE = {
   T: 'therapist'
 }
 
+export const PUT_OPERATION = {
+  UPDATE: 0,
+  CHECKOUT: 1,
+  PAYMENT: 2,
+  CHECKOUT_PAYMENT: 3
+}
+
 export const toggleOrganic = () => ({
   type: CHANGE_ORGANIC
 })
@@ -101,7 +108,8 @@ export function getClient(clientId) {
       const client = {
         id: result.data.id,
         name: result.data.name,
-        phone: result.data.meta.billing_phone[0]
+        phone: result.data.meta.billing_phone[0],
+        email: "lindachenau@gmail.com"
       }
       dispatch({
         type: RECEIVE_CLIENT,

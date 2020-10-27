@@ -19,7 +19,7 @@ import Button from '@material-ui/core/Button'
 import EventManager from './EventManager'
 import EventForm from '../components/EventForm'
 import { moveEvent, onNavigate, onSaveEventDetails, mergeThenSort } from '../utils/eventFunctions'
-import { checkBookingRules } from '../utils/misc'
+import { validateClientBooking } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
 
@@ -152,12 +152,15 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
     return false
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const theEvent = draftEvents[0]
     submitBooking(theEvent.start, theEvent.bookingTime, theEvent.end, bookingAddr)
-      
-    if (!checkBookingRules(pensionerRate, theEvent.bookingTime))
+
+    const { valid, reason } = await validateClientBooking(pensionerRate, theEvent.bookingTime)
+    if (!valid) {
+      alert(reason)
       return
+    }
 
     if (checkConflicts(theEvent.start, theEvent.end)) {
       alert("Your appointment conflicts with the therapist's existing events. Please move it to avoid conflicts.")
@@ -183,16 +186,14 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
               <ListItemIcon>
                 <AccessTimeIcon />
               </ListItemIcon>
-              <ListItemText primary={`The service takes ${duration} minutes. Therapist travel time will be added before your 
-                appointment to the calendar automatically.`} />
+              <ListItemText primary={`The service takes ${duration} minutes.`} />
             </ListItem>
             <ListItem>
                 <ListItemIcon>
                   <InfoIcon />
                 </ListItemIcon>
-                <ListItemText primary="Find available time from the therapist's calendar to book your appointment. 
-                  Once you decide a date, click the date number icon to go to the Day view. Select your start time 
-                  by clicking on the time grid in the Day view. An event, in blue colour, including the therapist travel time and 
+                <ListItemText primary="Click on an available time slot to book your appointment. 
+                  An event, in blue colour, including the therapist travel time and 
                   your appointment time will be generated automatically." />
             </ListItem>
             <ListItem>

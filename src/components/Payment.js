@@ -72,11 +72,12 @@ function Payment (
         headers: {"Content-Type": "application/json"},
         body: JSON.stringify({
           id: token.id,
-          description: `${userName}'s deposit for booking on ${bookingDate}`,
+          description: `${userName}'s deposit for booking ID: ${bookingId} on ${bookingDate}`,
           amount: (depositPayable * 100).toFixed(0)
         })
       })
 
+      //Store payment id for refund
       const {id, status} = await response.json()
       
       if (status === 'succeeded') {
