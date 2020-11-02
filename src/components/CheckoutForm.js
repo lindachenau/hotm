@@ -13,6 +13,7 @@ import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import IconButton from '@material-ui/core/IconButton'
 import CommentIcon from '@material-ui/icons/Comment'
 import { FaFileInvoiceDollar, FaRegCreditCard } from "react-icons/fa"
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
 import EditIcon from '@material-ui/icons/Edit'
 import DateFnsUtils from '@date-io/date-fns'
 import {
@@ -69,6 +70,7 @@ function TherapistEventCard ({ event }) {
         <br/>
         <FaDollarSign/>
         <span>{ ` ${event.paidAmount}/${event.total} `}</span>
+        {event.complete ? <CheckCircleIcon color='primary'/> : null}
         <br/>
         <FaUserCog/>
         {event.serviceItems && 

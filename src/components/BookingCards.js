@@ -84,6 +84,9 @@ function AdminBookingCard ({ booking }) {
         <br/>
         <span>{`Total hours booked: ${booking.totalHours}`}</span>
         <br/>
+        <span>{`Payment status: $${booking.paidAmount}/$${booking.total}`}</span>
+        {booking.complete ? <CheckCircleIcon color='primary'/> : null}
+        <br/>
         <ul>
           {booking.eventList.map(event => <li key={itemKey++}>{event}</li>)}
         </ul>

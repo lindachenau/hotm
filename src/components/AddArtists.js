@@ -19,6 +19,11 @@ export default function AddArtists({tags, setTags, multiArtists, clearable, disa
     setTags(value)
   }
 
+  const dropdownDisplay = (option) => {
+    const ext = option.email ?  ` - ${option.email}` : ''
+    return `${option.name}${ext}`
+  }
+
   return (
     <Autocomplete
       multiple={multiArtists}
@@ -28,14 +33,14 @@ export default function AddArtists({tags, setTags, multiArtists, clearable, disa
       filterSelectedOptions
       options={artistOptions}
       groupBy={option => option.state.toUpperCase()}
-      getOptionLabel={option => `${option.name} - ${option.email}`}
+      getOptionLabel={dropdownDisplay}
       value={tags}
       onChange={onChangeArtists}
       renderInput={params => (
         <TextField
           {...params}
           variant="outlined"
-          placeholder="Artist name"
+          placeholder="Therapist name"
           label={label}
           fullWidth
         />

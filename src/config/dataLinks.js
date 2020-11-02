@@ -6,13 +6,12 @@ export const hblc_url = process.env.REACT_APP_HBLC_URL
 export const home_url = process.env.REACT_APP_HOTM_BACKEND
 export const corporate_url = `${home_url}/contact-us/`
 export const contact_phone = "1300 849 777"
-export const payment_server_url = process.env.REACT_APP_DIGITF_EMAIL_SERVER
 export const payment_link_base = process.env.REACT_APP_PAYMENT_LINK_BASE
 
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v0.16`
+const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v0.17`
 export const services_url = `${HOTM_BOOKING_API}/services`
 export const artists_url = `${HOTM_BOOKING_API}/artists`
 export const bookings_url = `${HOTM_BOOKING_API}/bookings`
@@ -55,16 +54,26 @@ export const instagram_url = "https://www.instagram.com/explore/tags/"
 export const term_url = `${hblc_url}/terms-conditions/`
 
 /*
- * Stripe charge server running on Node.js deployed to Heroku
+ * Stripe payment link sender running on Node.js deployed to AWS lambda
+ */
+export const payment_link_sender = `${process.env.REACT_APP_HOTM_SERVER}/sendemail`
+
+/*
+ * Stripe charge server running on Node.js deployed to AWS lambda
  */
 export const stripe_charge_server = `${process.env.REACT_APP_HOTM_SERVER}/charge`
 
 /*
- * Email verification server running on Node.js deployed to Heroku
+ * Stripe refund server running on Node.js deployed to AWS lambda
+ */
+export const stripe_refund_server = `${process.env.REACT_APP_HOTM_SERVER}/refund`
+
+/*
+ * Email verification server running on Node.js deployed to AWS lambda
  */
 export const email_verification_server = `${process.env.REACT_APP_HOTM_SERVER}/send`
 
 /*
- * Email reminder server running on Node.js deployed to Heroku
+ * Email reminder server running on Node.js deployed to AWS lambda
  */
 export const email_reminder_server = `${process.env.REACT_APP_HOTM_SERVER}/schedule`

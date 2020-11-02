@@ -24,6 +24,7 @@ import BusinessCenterIcon from '@material-ui/icons/BusinessCenter'
 import SearchIcon from '@material-ui/icons/Search'
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
 import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
 import Filter from '../config/FilterContainer'
@@ -88,6 +89,11 @@ const artistMenu = [
     label: "My Calendar",
     pathname: "/my-calendar",
     icon: <AssignmentTurnedInIcon />
+  },  
+  {
+    label: "Admin",
+    pathname: "/admin",
+    icon: <SupervisorAccountIcon />
   },  
   {
     label: "Go to Hair Beauty Life Co",
@@ -177,6 +183,9 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
     case '/my-calendar':
         title = 'My Calendar'
         break                              
+    case '/admin':
+      title = 'Admin'
+      break                              
     default:
       title = 'Home'
   }

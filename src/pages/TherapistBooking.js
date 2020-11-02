@@ -252,9 +252,6 @@ const TherapistBooking = ({
     bookingData.total_amount = bookingValue
     bookingData.comment = event.comment
     bookingData.booking_artist_id = booingArtistId
-    //All fields below are redundant. They can be removed when API does not make them mandatory.
-    bookingData.payment_amount = 0
-    bookingData.payment_type = 'deposit'
 
     if (mode === 'book') {
       addBooking(bookingData, BOOKING_TYPE.T, callBack)

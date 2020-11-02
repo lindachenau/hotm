@@ -71,7 +71,9 @@ const TheCalendar = ({
       views={['month', 'week', 'day']}
       defaultView={Views.WEEK}
       date={defaultDate}
-      scrollToTime={new Date(2019, 1, 1, 6)}
+      min={new Date(2020, 1, 1, 6)}
+      max={new Date(2020, 1, 1, 20)}
+      scrollToTime={new Date(2020, 1, 1, 6)}
       messages={{
         month: <FaCalendarAlt />, 
         week: <FaCalendarWeek />, 

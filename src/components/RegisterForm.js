@@ -10,7 +10,7 @@ import { register_nonce_url, register_url, update_user_meta_url, email_verificat
 import axios from 'axios'
 import EmailVeriForm from './EmailVeriForm'
 
-const logo = require('../images/hblc_logo_512.png')
+const logo = require('../images/HBLC-Updated-logo-600.png')
 
 const useStyles = makeStyles(theme => ({
   container1: {
@@ -89,15 +89,15 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   }, [open])
 
   const onChangeUsername = event => {
-    setUsername(event.target.value)
+    setUsername(event.target.value.trim())
   }
 
   const onChangePassword = event => {
-    setPassword(event.target.value)
+    setPassword(event.target.value.trim())
   }
 
   const onChangeConfirmedPassword = event => {
-    setConfirmedPassword(event.target.value)
+    setConfirmedPassword(event.target.value.trim())
   }
 
   //check retyped password matches
@@ -119,23 +119,23 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   }
 
   const onChangeFirstName = event => {
-    setFirstName(event.target.value.trim())
+    setFirstName(event.target.value)
   }
 
   const onChangeLastName = event => {
-    setLastName(event.target.value.trim())
+    setLastName(event.target.value)
   }
 
   const onChangeCompany = event => {
-    setCompany(event.target.value.trim())
+    setCompany(event.target.value)
   }
 
   const onChangeAddress = event => {
-    setAddress(event.target.value.trim())
+    setAddress(event.target.value)
   }
 
   const onChangeCity = event => {
-    setCity(event.target.value.trim())
+    setCity(event.target.value)
   }
 
   const onChangeStateAbbr = event => {
@@ -147,7 +147,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   }
 
   const onChangePhone= event => {
-    setPhone(event.target.value.trim())
+    setPhone(event.target.value)
   }
 
   const checkExistence = async () => {
@@ -295,7 +295,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
         loggedIn: true
       }
       signinUser(payload)
-      alert('You are now registered for HOTM2U online booking!')
+      alert('You are now registered for Hair Beauty Life Co online booking!')
       setOpen(false)
     }
     catch (metaErr) {
@@ -328,7 +328,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
       <Dialog fullWidth open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container1}>
           <div className={classes.grow} />
-          <img className={classes.logo} src={logo} alt="Hair on the move logo" />
+          <img className={classes.logo} src={logo} alt="Hair Beauty Life Co logo" />
           <div className={classes.grow} />
         </div>
         <DialogContent>

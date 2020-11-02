@@ -49,6 +49,10 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
   const [slots, setSlots] = useState([])
   const bookingAddr = bookingDateAddr.bookingAddr
   
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+  
   const getDuration = () => {
     let duration = 0
     const items = services.items

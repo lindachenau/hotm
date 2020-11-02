@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import Routes from '../components/Routes'
-import { changeBookingStage, resetBooking } from '../actions/bookingCreator'
+import { changeBookingStage, resetBooking, searchBooking, enableStore } from '../actions/bookingCreator'
 
 const mapStateToProps = state => {
   return {
@@ -19,7 +19,9 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     changeBookingStage: stage => dispatch(changeBookingStage(stage)),
-    resetBooking: () => dispatch(resetBooking())
+    resetBooking: () => dispatch(resetBooking()),
+    enableStore: () => dispatch(enableStore()),
+    searchBooking: () => dispatch(searchBooking())
   }
 }
 

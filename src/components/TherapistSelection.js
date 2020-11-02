@@ -75,7 +75,7 @@ const TherapistSelection = ({
           clearable={false}
           setTags={setTherapist}
           tags={therapist}
-          label="Select therapist"
+          label="Choose therapist"
         />
       </div>
       <ServiceMenu services={services} artistBooking={artistBooking} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import moment from 'moment'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
@@ -80,6 +80,10 @@ function Confirmation ({
   const [checkedParking, setCheckedParking] = useState(false)
   const id = chooseTherapist ? therapistId : artistId
   const classes = useStyles()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   const handleDeposit = event => {
     setCheckedDeposit(!checkedDeposit)

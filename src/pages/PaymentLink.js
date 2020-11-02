@@ -12,7 +12,7 @@ import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
-const logo = require('../images/hblc_logo_512.png')
+const logo = require('../images/HBLC-Updated-logo-600.png')
 
 const useStyles = makeStyles(theme => ({
   container1: {
@@ -33,10 +33,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function PaymentLink ({ theme, updateBooking, getClient, client} ) {
+function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) {
  
   const classes = useStyles()
-  const { corpCards } = useContext(BookingsStoreContext)
+  const { corpCardsObj } = useContext(BookingsStoreContext)
   const [query] = useState(queryString.parse(useLocation().search))
   const [bookingData, setBookingData] = useState(null)
   const [amount, setAmount] = useState(0)
@@ -59,31 +59,35 @@ function PaymentLink ({ theme, updateBooking, getClient, client} ) {
 
       try {
         const result = await axios(config)
-        setBookingData(result.data[0])
+        setBookingData(result.data)
       } catch (err) {
         alert(`Unable to fetch booking data: ${err}. Please call ${contact_phone} to resolve this issue.`)
       }
     }
 
+    enableStore()
     fetchBooking()
 
   }, [])
 
   useEffect(() => {
     if (bookingData) {
+      const cId = query.booking_type === 'client' ? bookingData.client_id : bookingData.card_or_client_id
       const amount = query.payment_type === 'deposit' ? (bookingData.total_amount * query.percentage / 100).toFixed(2) : 
         (bookingData.total_amount - bookingData.paid_amount).toFixed(2)
       setAmount(amount)
-      setBookingDate(bookingData.booking_date)
       setBookingTotal(bookingData.total_amount)
       if (query.booking_type === 'client') {
-        getClient(bookingData.client_id)
+        getClient(cId)
+        setBookingDate(bookingData.booking_date)
         setClientPay(true)
       } else if (bookingData.booking_type === BOOKING_TYPE.P) {
-        getClient(bookingDate.card_or_client_id)
+        getClient(cId)
+        setBookingDate(bookingData.event_list[0].booking_date)
         setClientPay(true)
       } else {
-        setCorpName(corpCards[bookingDate.card_or_client_id].name)
+        setBookingDate(bookingData.event_list[0].booking_date)
+        setCorpName(corpCardsObj[cId.toString()].name)
       }
     }
   }, [bookingData])
@@ -105,19 +109,19 @@ function PaymentLink ({ theme, updateBooking, getClient, client} ) {
     }
 
     const response = await charge(query.booking_id)
-
     const {id, status} = await response.json()
 
     if (status === 'succeeded') {
       alert("Payment successful!")
-      const bookingData = {
+      const bookingInfo = {
         booking_id: query.booking_id,
         payment_type: 'credit',
         payment_amount: amount,
-        operation: PUT_OPERATION.PAYMENT
+        operation: PUT_OPERATION.PAYMENT,
+        stripe_id: id
       }
   
-      updateBooking(bookingData, query.booking_type === 'client' ? BOOKING_TYPE.T : BOOKING_TYPE.C, null, true)
+      updateBooking(bookingInfo, query.booking_type === 'client' ? BOOKING_TYPE.T : BOOKING_TYPE.C, null, true)
     }
     else {
       alert("Your card was declined.")

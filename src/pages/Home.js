@@ -1,88 +1,89 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Redirect, withRouter } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
-import Button from '@material-ui/core/Button' 
-import EventAvailableIcon from '@material-ui/icons/EventAvailable'
-import EventIcon from '@material-ui/icons/Event'
-import Carousel from 'react-material-ui-carousel'
+import AddArtists from '../components/AddArtists'
+import { Typography } from '@material-ui/core'
+import { searchBooking } from '../actions/bookingCreator'
 
-const imgList = [
-  {
-    name: require("../images/wallpaper1.jpg"),
-    key: "1",
-    alt: "First slide"
-  },
-  {
-    name: require("../images/wallpaper2.jpg"),
-    key: "2",
-    alt: "Second slide"
-  },
-  {
-    name: require("../images/wallpaper3.jpg"),
-    key: "3",
-    alt: "Third slide"
-  }
-]
-
-const Home = ({ theme }) => {
+const Home = ({ theme, enableStore, searchBooking, artists }) => {
+  const logo = require('../images/HBLC-Updated-logo-600.png')
   const [location, setLocation] =useState('')
+  const [therapist, setTherapist] = useState(null)
+  const anyTherapist = {
+    id: 0,
+    state: '',
+    name: 'ANY THERAPIST',
+    email: ''
+  }
+  const therapistDropdown = Object.assign({}, artists, {"0": anyTherapist})
+
   const useStyles = makeStyles(theme => ({
-    container: {
-      width: '30vw',
-      height: '30vh',
-      marginLeft: '-15vw',
-      marginTop: '-15vh',
-      [theme.breakpoints.down('sm')]: {
-        width: '100vw',
-        marginLeft: '-50vw'
-      },           
-      position: 'absolute',
-      left: '50%', 
-      top: '50%',
-      zIndex: 100,
+    heading: {
       display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'space-around'
+      marginTop: 10,
+      marginBottom: 20
     },
-    image: {
-      maxWidth: '100%',
-      height: 'auto'
+    grow: {
+      flexGrow: 1
+    },
+    logo: {
+      maxWidth: '40%',
+      width: 'auto',
+      height: 'auto',
+      [theme.breakpoints.down('sm')]: {
+        maxWidth: '50%'
+      }
+    },
+    title: {
+      marginBottom: 40
     }
   }))
 
   const classes = useStyles()
 
+  useEffect(() => {
+    //Pre-fetch client booking events in the background
+    enableStore()
+    searchBooking()
+  }, [])
+
+  useEffect(() => {
+    if (therapist) {
+      if (therapist.id === 0) {
+        setLocation({
+          pathname: '/any-therapist'
+        })
+      } else {
+        setLocation({
+          pathname: '/choose-therapist',
+          therapist: therapist
+        })
+      }
+    }
+  }, [therapist])
+
   return (
     <>
       {!location ?
       <div>
-        <Carousel indicators={false}>
-          {
-            imgList.map(image => <img className={classes.image} src={image.name} key={image.key} alt={image.alt}/>)
-          }
-        </Carousel>
-        <Container className={classes.container}>
-          <Button 
-            variant="contained" 
-            color="secondary"
-            size='large'
-            startIcon={<EventIcon />}
-            onClick={() => setLocation({pathname: '/any-therapist'})}
-            className={classes.button}
-          >
-            Any Therapist at your chosen time
-          </Button>
-          <Button 
-            variant="contained" 
-            color="secondary"
-            size='large'
-            startIcon={<EventAvailableIcon />}
-            onClick={() => setLocation({pathname: '/choose-therapist'})}
-            className={classes.button}
-          >
-            Choose Therapist to find available time
-          </Button>
+        <Container maxWidth='sm'>
+          <div className={classes.heading}>
+            <div className={classes.grow} />
+            <img className={classes.logo} src={logo} alt="Hair Beauty Life Co logo" />
+            <div className={classes.grow} />
+          </div>
+          <Typography className={classes.title} variant="h5" align="center" color="textPrimary">
+            Please Choose your preferred therapist
+          </Typography>
+          <AddArtists
+            artists={therapistDropdown}
+            multiArtists={false}
+            clearable={false}
+            setTags={setTherapist}
+            tags={therapist}
+            label="Choose therapist"
+          />
         </Container>                           
       </div>
       :

@@ -7,7 +7,7 @@ import Container from '@material-ui/core/Container'
 
 
 function getSteps() {
-  return ['Choose service', 'Choose a therapist', 'Confirm booking', 'Pay deposit']
+  return ['Choose service', 'Choose therapist', 'Confirm booking', 'Pay deposit']
 }
 
 function getStepContent(stepIndex) {

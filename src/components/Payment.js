@@ -12,7 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import moment from 'moment'
 import { stripe_charge_server } from '../config/dataLinks'
 // import sendReminder from '../reducers/bookingInfo'
-import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BOOKING_TYPE, PUT_OPERATION  } from '../actions/bookingCreator'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
@@ -44,6 +44,7 @@ function Payment (
     depositPayable, 
     resetBooking, 
     addBooking,
+    updateBooking,
     cancelBooking,
     bookingInfo, 
     loggedIn, 
@@ -82,6 +83,16 @@ function Payment (
       
       if (status === 'succeeded') {
         alert("Booking successful!")
+        const bookingData = {
+          booking_id: bookingId,
+          payment_type: 'credit',
+          payment_amount: depositPayable,
+          operation: PUT_OPERATION.PAYMENT,
+          stripe_id: id
+        }
+    
+        updateBooking(bookingData, BOOKING_TYPE.T, null, true)
+  
         // sendReminder(clientEmail, bookingDate)
         resetBooking()
       }
@@ -111,9 +122,7 @@ function Payment (
         with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
         event_address: bookingDateAddr.bookingAddr,
         total_amount: bookingValue,
-        comment: value,
-        payment_amount: depositPayable,
-        payment_type: 'deposit'
+        comment: value
       }
     } else {
       bookingDate = bookingInfo.booking_date
@@ -126,11 +135,7 @@ function Payment (
         booking_artist_email: "",
         with_organic: priceFactors.organic ? 1 : 0,
         with_pensioner_rate: priceFactors.pensionerRate ? 1 : 0,
-        total_amount: bookingValue, 
-        payment_amount: depositPayable, 
-        paid_checkout_total: 0,
-        paid_deposit_total: depositPayable,
-        payment_type: 'deposit', 
+        total_amount: bookingValue,
         comment: value,
         status: ''
       }

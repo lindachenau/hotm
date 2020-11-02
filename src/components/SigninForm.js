@@ -11,7 +11,7 @@ import axios from 'axios'
 import ForgetPWForm from './ForgetPWForm'
 import RegisterForm from './RegisterForm'
 
-const logo = require('../images/hblc_logo_512.png')
+const logo = require('../images/HBLC-Updated-logo-600.png')
 
 const useStyles = makeStyles(theme => ({
   container1: {
@@ -136,7 +136,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
       <Dialog fullWidth open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container1}>
           <div className={classes.grow} />
-          <img className={classes.logo} src={logo} alt="Hair on the move logo" />
+          <img className={classes.logo} src={logo} alt="Hair Beauty Life Co logo" />
           <div className={classes.grow} />
         </div>
         <DialogContent>

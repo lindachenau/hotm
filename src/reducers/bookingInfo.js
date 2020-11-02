@@ -12,6 +12,7 @@ import {
   FETCH_CLIENT,
   RECEIVE_CLIENT,
   ERROR_CLIENT,
+  ENABLE_STORE,
   FETCH_SERVICES,
   FETCH_ARTISTS,
   FETCH_CORP_CARDS,
@@ -239,6 +240,7 @@ export function itemQty(state = {}, action) {
 }
 
 const initActivation = {
+  storeEnabled: false,
   servicesTrigger: true,
   artistsTrigger: true,
   corpCardsTrigger: true,
@@ -254,6 +256,11 @@ const initActivation = {
 
 export function storeActivation(state = initActivation, action) {
   switch (action.type) {
+    case ENABLE_STORE: {
+      return Object.assign({}, state, {
+        storeEnabled: true
+      })
+    }
     case FETCH_SERVICES: {
       return Object.assign({}, state, {
         servicesTrigger: !state.servicesTrigger
@@ -317,8 +324,7 @@ export function storeActivation(state = initActivation, action) {
       return Object.assign({}, state, {
         data: {},
         callMe: null,
-        bookingData: {},
-        checkout: false
+        bookingData: {}
       })
     }
     default:

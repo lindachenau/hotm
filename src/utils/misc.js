@@ -1,4 +1,4 @@
-import { contact_phone, payment_server_url } from '../config/dataLinks'
+import { contact_phone, payment_link_sender } from '../config/dataLinks'
 
  //Merge arr2 into arr1; If item with the same id exists in arr1, the item in arr2 is dropped.
   export const mergeArrays = (arr1, arr2) => {
@@ -36,7 +36,7 @@ export function endDate(bookingDate)
 }
 
 export const sendPaymentLink = async (email, link, message) => {
-  const response = await fetch(payment_server_url, {
+  const response = await fetch(payment_link_sender, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({

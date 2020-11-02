@@ -8,6 +8,8 @@ import { FaFileInvoiceDollar } from "react-icons/fa"
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import PaymentRequestForm from '../components/PaymentRequestForm'
+import CancelBookingForm from '../config/CancelBookingFormContainer'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 const useStyles = makeStyles(theme => ({
   flex: {
@@ -26,6 +28,7 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
   const classes = useStyles()
   const [completed, setCompleted] = useState(false)
   const [triggerPaymentRequestForm, setTriggerPaymentRequestForm] = useState(false)
+  const [triggerCancelBookingForm, setTriggerCancelBookingForm] = useState(false)
   const [browsing, setBrowsing] = useState(true)
   const [location, setLocation] = useState({})
   const pathnames = {
@@ -35,10 +38,10 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
   }
 
   // disable EDIT, PAYMENT LINK and DELETE for completed bookings
-  // useEffect(() => {
-  //   if (events.length > 0)
-  //     setCompleted(events[activeStep].complete)
-  // }, [events, activeStep])
+  useEffect(() => {
+    if (adminBookings.length > 0 || events.length > 0)
+      setCompleted(bookingType === BOOKING_TYPE.C ? adminBookings[activeStep].complete: events[activeStep].complete)
+  }, [activeStep])
 
   const handleEdit = () => {
     setPrevActiveStep(activeStep)
@@ -53,7 +56,9 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
     setTriggerPaymentRequestForm(!triggerPaymentRequestForm)
   }
 
-  const handleDelete = () => {}
+  const handleDelete = () => {
+    setTriggerCancelBookingForm(!triggerCancelBookingForm)
+  }
 
   useEffect(() => {
     // Don't reset on mount
@@ -77,20 +82,27 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
           setActiveStep={setActiveStep}
         />
         <div className={classes.flex}>
-          <IconButton edge="start" color="primary" onClick={handleEdit}>
+          <IconButton edge="start" color="primary" onClick={handleEdit} disabled={completed}>
             <EditIcon/>
           </IconButton>
           <div className={classes.grow} />
-          <IconButton edge="start" color="primary" onClick={handlePayment}>
+          <IconButton edge="start" color="primary" onClick={handlePayment} disabled={completed}>
             <FaFileInvoiceDollar/>
           </IconButton>
           <div className={classes.grow} />
-          <IconButton edge="start" color="primary" onClick={handleDelete}>
+          <IconButton edge="start" color="primary" onClick={handleDelete} disabled={completed}>
             <DeleteForeverIcon/>
           </IconButton>           
         </div>
         <PaymentRequestForm 
           triggerOpen={triggerPaymentRequestForm}
+          initOpen={false}
+          bookingType={bookingType}
+          adminBooking={adminBookings[activeStep]}
+          artistBooking={events[activeStep]}
+        />
+        <CancelBookingForm 
+          triggerOpen={triggerCancelBookingForm}
           initOpen={false}
           bookingType={bookingType}
           adminBooking={adminBookings[activeStep]}

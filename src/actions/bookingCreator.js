@@ -13,6 +13,7 @@ export const ERROR_AVAIL_ARTISTS = 'ERROR_AVAIL_ARTISTS'
 export const FETCH_CLIENT = 'FETCH_CLIENT'
 export const RECEIVE_CLIENT = 'RECEIVE_CLIENT'
 export const ERROR_CLIENT = 'ERROR_CLIENT'
+export const ENABLE_STORE = 'ENABLE_STORE'
 export const FETCH_ARTISTS = 'FETCH_ARTISTS'
 export const FETCH_SERVICES = 'FETCH_SERVICES'
 export const FETCH_CORP_CARDS = 'FETCH_CORP_CARDS'
@@ -132,6 +133,10 @@ export const incItemQty = id => ({
 export const decItemQty = id => ({
   type: DEC_ITEM_QTY,
   itemId: id
+})
+
+export const enableStore = () => ({
+  type: ENABLE_STORE,
 })
 
 export const fetchArtists = () => ({

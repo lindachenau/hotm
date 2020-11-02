@@ -86,7 +86,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, bookingTrigger) => {
+const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, bookingTrigger, storeEnabled) => {
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -98,6 +98,9 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
   })
 
   useEffect(() => {
+    if (!storeEnabled)
+      return
+
     let didCancel = false
 
     const requestData = async () => {
@@ -184,12 +187,6 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
-            /*
-             * Balance payment success. Change paid_checkout_total to total_amount locally. Server performs this step. Because 
-             * we don't read back the updated booking record from the server, we simply modify paid_checkout_total locally.
-             */ 
-            if (data.payment_amount > 0)
-              data.paid_checkout_total = data.payment_amount
             dispatch({ type: "PUT_SUCCESS", payload: data })
             await callMe()
           }

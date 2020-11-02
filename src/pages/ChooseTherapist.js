@@ -6,11 +6,13 @@ import TherapistSelection from '../config/TherapistSelectionContainer'
 import Confirmation from '../config/ConfirmationContainer'
 import Payment from '../config/PaymentContainer'
 
-const ChooseTherapist = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
+const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
   const [therapist, setTherapist] = useState(null)
   
   useEffect(() => {
     resetBooking()
+    if (location && location.therapist)
+      setTherapist(location.therapist)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

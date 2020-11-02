@@ -17,8 +17,21 @@ const ChooseTherapist = lazy(() => import('../pages/ChooseTherapist'))
 const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
 const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
 const PaymentLink = lazy(() => import('../config/PaymentLinkContainer'))
+const Admin = lazy(() => import('../pages/Admin'))
 
-const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBooking, priceFactors, itemQty, loggedIn, isArtist, userEmail }) => {
+const Routes = ({ 
+  theme, 
+  bookingStage, 
+  bookingType, 
+  changeBookingStage, 
+  resetBooking, 
+  enableStore, 
+  searchBooking, 
+  priceFactors, 
+  itemQty, 
+  loggedIn, 
+  isArtist, 
+  userEmail }) => {
   const { services, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists } = 
     useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
@@ -44,7 +57,13 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
         <Suspense fallback={<CircularProgress/>}>
         {servicesFetched &&
           <Switch>
-            <Route exact path='/' component={Home}/> 
+            <Route exact path='/' render={() => 
+              <Home 
+                theme={theme}
+                enableStore={enableStore}
+                searchBooking={searchBooking}
+                artists={artists}/>}
+            />
             <Route path='/any-therapist' render={() => 
               <AnyTherapist 
                 theme={theme} 
@@ -139,7 +158,16 @@ const Routes = ({ theme, bookingStage, bookingType, changeBookingStage, resetBoo
               <Redirect to="/" />
             }                
             </Route>
-            <Route exact path='/payment' component={PaymentLink}/>        
+            <Route exact path='/payment'>
+              <PaymentLink enableStore={enableStore}/>
+            </Route>
+            <Route exact path='/admin'>
+              {isArtist ? 
+                <Admin/>
+                :
+                <Redirect to="/" />
+              }
+            </Route>    
           </Switch>}
         </Suspense>
       </ScrollToTop>

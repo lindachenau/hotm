@@ -192,10 +192,12 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
     }
 
     let bookingData = {}
+    const itemNum = bookingPackage.id
     bookingData.booking_type = BOOKING_TYPE.P
     bookingData.card_or_client_id = client.id
-    bookingData.service_item = bookingPackage.id
+    bookingData.service_item = itemNum
     bookingData.booking_artist_id = booingArtistId
+    bookingData.total_amount = services.items[itemNum.toString()].price
     
     let eventList = []
     let deleteList = []

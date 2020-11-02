@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Redirect, withRouter } from 'react-router-dom'
 import TheCalendar from '../components/TheCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
-import '../components/CalendarToolbar.css'
 import { momentLocalizer } from 'react-big-calendar'
+import '../components/CalendarToolbar.css'
 import moment from 'moment'
 import axios from "axios"
 import Container from '@material-ui/core/Container'
@@ -56,6 +56,11 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
       }
 
       const bookingEvent = (await axios(config)).data
+
+      if (bookingEvent.length === 0) {
+        alert('No booking event found. The booking has probably been cancelled.')
+        return
+      }
 
       if (bookingEvent.admin_booking_id) {
         setBookingEvent({

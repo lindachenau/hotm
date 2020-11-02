@@ -51,7 +51,9 @@ export function normaliseCorpCards(corpCardsArr)
       address: corpCardsArr[i].event_address,
       contactPerson: corpCardsArr[i].contact_name,
       contactPhone: corpCardsArr[i].contact_phone,
-      contactEmail: corpCardsArr[i].contact_email
+      contactEmail: corpCardsArr[i].contact_email,
+      hblcRate: corpCardsArr[i].hotm_rate,
+      therapistRate: corpCardsArr[i].artist_rate
     }
     corpCards[id.toString()] = card
   }
@@ -143,6 +145,7 @@ export function getAdminBookings(bookingTypeName, bookings, artists, clients, se
     const title = bookingTypeName === BOOKING_TYPE.C ? corpCards[cId].name : `${servicesMenu[booking.service_item.toString()].description}`
     const contact = bookingTypeName === BOOKING_TYPE.C ? `${corpCards[cId].contactPerson} - ${corpCards[cId].contactPhone}` : `${clients[cId].name} - ${clients[cId].phone}`
     const email = bookingTypeName === BOOKING_TYPE.C ? corpCards[cId].contactEmail : clients[cId].email
+    const complete = (booking.total_amount - booking.paid_amount) < 0.01
 
     let eventList = []
     booking.event_list.forEach(event => {
@@ -156,14 +159,16 @@ export function getAdminBookings(bookingTypeName, bookings, artists, clients, se
       title: title,
       contact: contact,
       email: email,
-      total: booking.total_amount_booked, //To be fixed for package booking
-      depositPaid: 0, //To be fixed after payment API finalised
+      total: booking.total_amount,
+      paidAmount: booking.paid_amount,
+      stripeId: booking.stripe_id,
       totalHours: booking.total_hours_booked,
       serviceItem: booking.service_item,
       eventList: eventList,
       cId: booking.card_or_client_id,
       client: clients[booking.card_or_client_id],
-      origEventList: booking.event_list
+      origEventList: booking.event_list,
+      complete: complete
     })
   }
 
@@ -179,7 +184,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
     let serviceItems = []
     let total = 0
     let booking = bookings[id]
-    let complete = (booking.total_amount - booking.paid_checkout_total - booking.paid_deposit_total) < 0.01
+    const complete = (booking.total_amount - booking.paid_amount) < 0.01
 
     //artist exists
     if (artists[booking.artist_id_list[0]]) {
@@ -219,6 +224,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         organic: booking.with_organic,
         serviceItems: serviceItems,
         paidAmount: booking.paid_amount,
+        stripeId: booking.stripe_id,
         complete: complete,
         comment: booking.comment,
         status: booking.status,
