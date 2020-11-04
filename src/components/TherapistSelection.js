@@ -34,7 +34,8 @@ function Info() {
 }
 
 const TherapistSelection = ({ 
-  theme, 
+  theme,
+  userInfo,
   services,
   itemQty, 
   bookingDateAddr,
@@ -57,6 +58,11 @@ const TherapistSelection = ({
     return !(qty > 0 && address && therapist)
   }
 
+  useEffect(() => {
+    if (userInfo.id)
+      setAddress(userInfo.address)
+  }, [userInfo])
+  
   const handleAddrChange = address => {
     setAddress(address.replace(', Australia', ''))
   }

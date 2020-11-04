@@ -20,16 +20,44 @@ const dataFetchReducer = (state, action) => {
         hasErrored: true,
         errorMessage: "Data Retrieve Failure"
       }
+    case "UPDATE_INIT":
+      return {
+        ...state,
+        isLoading: false,
+        isUpdating: true,
+        hasErrored: false,
+        errorMessage: ""
+      }
+    case "POST_SUCCESS":
+      return {
+        ...state,
+        isUpdating: false,
+        data: state.data.concat([action.payload])
+      }
+    case "PUT_SUCCESS":
+      return {
+        ...state,
+        isUpdating: false,
+        data: state.data.map(obj => obj.id === action.payload.id ? action.payload : obj)
+      }
+    case "UPDATE_FAILURE":
+      return {
+        ...state,
+        isUpdating: false,
+        hasErrored: true,
+        errorMessage: action.errorMessage
+      }
     default:
       throw new Error()
   }
 }
 
-const useAxiosFetch = (initialUrl, initialData, trigger) => {
+const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) => {
   const [url] = useState(initialUrl)
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
+    isUpdating: false,
     hasErrored: false,
     errorMessage: "",
     data: initialData
@@ -61,8 +89,87 @@ const useAxiosFetch = (initialUrl, initialData, trigger) => {
         }
       }
     }
-    
-    fetchData()
+
+    const createData = async (data) => {
+      dispatch({ type: "UPDATE_INIT"})
+      const config = {
+        method: 'post',
+        headers: {"Content-Type": "application/json"},
+        url: url,
+        data: data
+      }
+
+      try {
+        const result = await axios(config)
+        const error = result.data.error
+        if (!didCancel) {
+          if (error) {
+            alert(error)
+            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+          }
+          else {
+            const id = result.data.id
+            const payload = {...data, id}
+            dispatch({ type: "POST_SUCCESS", payload: payload })
+            await callMe()
+          }
+        }
+      } catch (err) {
+        if (!didCancel) {
+          alert(err)
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
+        }
+      }
+    }
+
+    const updateData = async (data) => {
+      dispatch({ type: "UPDATE_INIT"})
+      const config = {
+        method: 'put',
+        headers: {"Content-Type": "application/json"},
+        url: url,
+        data: data
+      }
+
+      try {
+        const result = await axios(config)
+        const error = result.data.error
+        if (!didCancel) {
+          if (error) {
+            alert(error)
+            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+          }
+          else {
+            dispatch({ type: "PUT_SUCCESS", payload: data })
+            await callMe()
+          }
+        }
+      } catch (err) {
+        if (!didCancel) {
+          alert(err)
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
+        }
+      }
+    }
+
+    if (!state.isLoading && !state.isUpdating) {
+      switch (method) {
+        case 'get': {
+          fetchData()
+          break
+        }
+        case 'post': {
+          createData(data)
+          break
+        }
+        case 'put': {
+          updateData(data)
+          break
+        }
+        default:
+          throw new Error()
+      }
+    }
 
     return () => {
       didCancel = true

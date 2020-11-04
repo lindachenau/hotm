@@ -36,7 +36,8 @@ function Info() {
 }
 
 const ServiceSelection = ({ 
-  theme, 
+  theme,
+  userInfo,
   services,
   itemQty, 
   onSubmit, 
@@ -58,6 +59,11 @@ const ServiceSelection = ({
     setSelectedDate(bookingDate)
     setAddress(bookingAddr)
   }, [bookingAddr, bookingDate])
+
+  useEffect(() => {
+    if (userInfo.id)
+      setAddress(userInfo.address)
+  }, [userInfo])
 
   const missingFields = () => {
     let qty = 0

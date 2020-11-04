@@ -13,8 +13,6 @@ import TextField from '@material-ui/core/TextField'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
 import SimpleDropDown from '../components/SimpleDropDown'
-import { corporate_cards_url, admin_tasks_url } from '../config/dataLinks'
-import axios from "axios"
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -29,7 +27,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-const CorpForm = ({form, setTag}) => {
+const CorpForm = ({form, setTag, addCorpCards, updateCorpCards}) => {
   const [corpName, setCorpName] = useState('')
   const [address, setAddress] = useState('')
   const [contactPerson, setContactPerson] = useState('')
@@ -81,28 +79,13 @@ const CorpForm = ({form, setTag}) => {
       artist_rate: therapistRate        
     }
 
-    let method = 'post'
-    let successMessage = 'The new corporate card was created successfully!'
     if (form) {
       data.id = form.id
-      method = 'put'
-      successMessage = 'The corporate card was updated successfully!'
+      updateCorpCards(data, () => alert('The corporate card was updated successfully!'))
     }
-
-    const config = {
-      method: method,
-      headers: {"Content-Type": "application/json"},
-      url: corporate_cards_url,
-      data: data
+    else {
+      addCorpCards(data, () => alert('The new corporate card was created successfully!'))
     }
-    try {
-      const result = await axios(config)
-      const error = result.data.error
-      const message = error ? error : successMessage
-      alert(message)
-    } catch (err) {
-      alert(err)
-    }      
 
     setTag(null)
   }
@@ -215,7 +198,7 @@ const CorpForm = ({form, setTag}) => {
   )
 }
 
-const TaskForm = ({form, setTag}) => {
+const TaskForm = ({form, setTag, addAdminTasks, updateAdminTasks}) => {
   const [taskName, setTaskName] = useState('')
   const classes = useStyles()
 
@@ -229,27 +212,11 @@ const TaskForm = ({form, setTag}) => {
 
   const handleSave = async() => {
     let data = { description: taskName.trim()}
-    let method = 'post'
-    let successMessage = 'The new task was created successfully!'
     if (form) {
       data.id = form.id
-      method = 'put'
-      successMessage = 'The task was updated successfully!'
-    }
-
-    const config = {
-      method: method,
-      headers: {"Content-Type": "application/json"},
-      url: admin_tasks_url,
-      data: data
-    }
-    try {
-      const result = await axios(config)
-      const error = result.data.error
-      const message = error ? error : successMessage
-      alert(message)
-    } catch (err) {
-      alert(err)
+      updateAdminTasks(data, () => alert('The task was updated successfully!'))
+    } else {
+      addAdminTasks(data, () => alert('The new task was created successfully!'))
     }
 
     setTag(null)
@@ -275,7 +242,7 @@ const TaskForm = ({form, setTag}) => {
   )
 }
 
-const Admin = ({ }) => {
+const Admin = ({ addCorpCards, updateCorpCards, addAdminTasks, updateAdminTasks }) => {
   const { corpCards, adminTasks } = useContext(BookingsStoreContext)
   const [tag, setTag] = useState(null)
   const [label, setLabel] = useState('Choose corporate')
@@ -289,7 +256,7 @@ const Admin = ({ }) => {
     setPlaceholder(formType === 'corporate' ? 'Corporate Card' : 'Therapist Task')
     setLabel(formType === 'corporate' ? 'Choose corporate card' : 'Choose therapist task')
     setList(formType === 'corporate' ? corpCards : adminTasks)
-  }, [formType])
+  }, [formType, corpCards, adminTasks])
 
   useEffect(() => {
     if (tag === null)
@@ -347,8 +314,22 @@ const Admin = ({ }) => {
         label={label}
         placeholder={placeholder}
       />
-      {formType === 'corporate' && tag && <CorpForm form={form} setTag={setTag}/>}
-      {formType === 'task' && tag && <TaskForm form={form} setTag={setTag}/>}
+      {formType === 'corporate' && tag && 
+        <CorpForm 
+          form={form} 
+          setTag={setTag}
+          addCorpCards={addCorpCards}
+          updateCorpCards={updateCorpCards}
+        />
+      }
+      {formType === 'task' && tag && 
+        <TaskForm 
+          form={form} 
+          setTag={setTag}
+          addAdminTasks={addAdminTasks}
+          updateAdminTasks={updateAdminTasks}
+        />
+      }
     </Container>
   )
 }

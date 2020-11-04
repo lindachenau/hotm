@@ -56,7 +56,8 @@ const dataFetchReducer = (state, action) => {
       return {
         ...state,
         isUpdating: false,
-        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
+        // Don't change the bus with updated info because some info from the backend is not there and admin bookings only contain the updated events.
+        // data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "DELETE_SUCCESS":
       return {
@@ -193,6 +194,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         }
       } catch (err) {
         if (!didCancel) {
+          alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
           dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
         }
       }

@@ -17,7 +17,7 @@ const ChooseTherapist = lazy(() => import('../pages/ChooseTherapist'))
 const CorporateBooking = lazy(() => import('../config/CorporateBookingContainer'))
 const PackageBooking = lazy(() => import('../config/PackageBookingContainer'))
 const PaymentLink = lazy(() => import('../config/PaymentLinkContainer'))
-const Admin = lazy(() => import('../pages/Admin'))
+const Admin = lazy(() => import('../config/AdminContainer'))
 
 const Routes = ({ 
   theme, 

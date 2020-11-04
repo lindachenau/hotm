@@ -145,6 +145,13 @@ const TherapistBooking = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // Set default event location as client's address
+  useEffect(() => {
+    if (mode === 'book' && client) {
+      setAddress(client.address)
+    }
+  }, [client])
+
   useEffect(() => {
     if (artist)
       setCalendarId(artist.email)

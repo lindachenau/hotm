@@ -5,7 +5,8 @@ import TherapistSelection from '../components/TherapistSelection'
 const mapStateToProps = state => {
   return {
     bookingDateAddr: state.bookingDateAddr,
-    itemQty: state.itemQty
+    itemQty: state.itemQty,
+    userInfo: state.userInfo
   }
 }
 

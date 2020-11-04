@@ -15,8 +15,12 @@ import {
   ENABLE_STORE,
   FETCH_SERVICES,
   FETCH_ARTISTS,
-  FETCH_CORP_CARDS,
+  FETCH_CORP_CARDS,  
+  ADD_CORP_CARDS,
+  UPDATE_CORP_CARDS,
   FETCH_ADMIN_TASKS,
+  ADD_ADMIN_TASKS,
+  UPDATE_ADMIN_TASKS,
   SEARCH_BOOKING,
   ADD_BOOKING,
   UPDATE_BOOKING,
@@ -245,8 +249,14 @@ const initActivation = {
   artistsTrigger: true,
   corpCardsTrigger: true,
   adminTasksTrigger: true,
+  cardRequestMethod: 'get',
+  card: {},
+  cardCallMe: null,
+  taskRequestMethod: 'get',
+  task: {},
+  taskCallMe: null,
   bookingTrigger: false,
-  requestMethod: 'get',
+  bookingRequestMethod: 'get',
   bookingTypeName: BOOKING_TYPE.T,
   data: {},
   callMe: null,
@@ -276,14 +286,46 @@ export function storeActivation(state = initActivation, action) {
         corpCardsTrigger: !state.corpCardsTrigger
       })
     }
+    case ADD_CORP_CARDS: {
+      return Object.assign({}, state, {
+        cardRequestMethod: 'post',
+        card: action.payload,
+        cardCallMe: action.cardCallMe,
+        corpCardsTrigger: !state.corpCardsTrigger
+      })
+    }
+    case UPDATE_CORP_CARDS: {
+      return Object.assign({}, state, {
+        cardRequestMethod: 'put',
+        card: action.payload,
+        cardCallMe: action.cardCallMe,
+        corpCardsTrigger: !state.corpCardsTrigger
+      })
+    }
     case FETCH_ADMIN_TASKS: {
       return Object.assign({}, state, {
         adminTasksTrigger: !state.adminTasksTrigger
       })
     }       
+    case ADD_ADMIN_TASKS: {
+      return Object.assign({}, state, {
+        taskRequestMethod: 'post',
+        task: action.payload,
+        taskCallMe: action.taskCallMe,
+        adminTasksTrigger: !state.adminTasksTrigger
+      })
+    }       
+    case UPDATE_ADMIN_TASKS: {
+      return Object.assign({}, state, {
+        taskRequestMethod: 'put',
+        task: action.payload,
+        taskCallMe: action.taskCallMe,
+        adminTasksTrigger: !state.adminTasksTrigger
+      })
+    }       
     case SEARCH_BOOKING: {
       return Object.assign({}, state, {
-        requestMethod: 'get',
+        bookingRequestMethod: 'get',
         bookingTrigger: !state.bookingTrigger,
         checkout: false
       })
@@ -291,7 +333,7 @@ export function storeActivation(state = initActivation, action) {
     //create a new booking on the server
     case ADD_BOOKING: {
       return Object.assign({}, state, {
-        requestMethod: 'post',
+        bookingRequestMethod: 'post',
         data: action.payload,
         bookingTypeName: action.bookingTypeName,
         bookingTrigger: !state.bookingTrigger,
@@ -302,7 +344,7 @@ export function storeActivation(state = initActivation, action) {
     //modify an existing booking on the server
     case UPDATE_BOOKING: {
       return Object.assign({}, state, {
-        requestMethod: 'put',
+        bookingRequestMethod: 'put',
         data: action.payload,
         bookingTypeName: action.bookingTypeName,
         bookingTrigger: !state.bookingTrigger,
@@ -313,7 +355,7 @@ export function storeActivation(state = initActivation, action) {
     //delete an existing booking on the server
     case CANCEL_BOOKING: {
       return Object.assign({}, state, {
-        requestMethod: 'delete',
+        bookingRequestMethod: 'delete',
         data: action.payload,
         bookingTrigger: !state.bookingTrigger,
         callMe: null,
@@ -323,7 +365,11 @@ export function storeActivation(state = initActivation, action) {
     case RESET_BOOKING: {
       return Object.assign({}, state, {
         data: {},
+        card: {},
+        task: {},
         callMe: null,
+        cardCallMe: null,
+        taskCallMe: null,
         bookingData: {}
       })
     }

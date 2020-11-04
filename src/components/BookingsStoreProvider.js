@@ -2,7 +2,7 @@ import React, { useState, useEffect, createContext } from "react"
 import useAxiosFetch from '../actions/useAxiosFetch'
 import useAxiosCRUD from '../actions/useAxiosCRUD'
 import { normaliseArtists, normaliseServices, normaliseCorpCards, normaliseAdminTasks, getEvents, getAdminBookings } from '../utils/dataFormatter'
-import { bookings_url, admin_bookings_url, user_url, access_token, artists_url, services_url, corporate_cards_url, admin_tasks_url } from '../config/dataLinks'
+import { bookings_url, admin_bookings_url, clients_url, artists_url, services_url, corporate_cards_url, admin_tasks_url } from '../config/dataLinks'
 import axios from 'axios'
 import moment from 'moment'
 import { BOOKING_TYPE } from "../actions/bookingCreator"
@@ -41,7 +41,8 @@ const initFilter = (fromDate, toDate) => {
 }
 
 const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchArtists, fetchServices, fetchCorpCards, fetchAdminTasks, isArtist}) => {
-  const {servicesTrigger, artistsTrigger, corpCardsTrigger, adminTasksTrigger, storeEnabled, bookingTrigger, requestMethod, bookingTypeName, data, callMe, checkout} = storeActivation
+  const {servicesTrigger, artistsTrigger, cardRequestMethod, corpCardsTrigger, card, cardCallMe, adminTasksTrigger, taskRequestMethod, task, taskCallMe, 
+    storeEnabled, bookingTrigger, bookingRequestMethod, bookingTypeName, data, callMe, checkout} = storeActivation
   const {fromDate, toDate, bookingType} = bookingFilter
   const artistId = bookingFilter.artist ? bookingFilter.artist.id : null
   const clientId = bookingFilter.client ? bookingFilter.client.id : null
@@ -73,7 +74,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const servicesData = useAxiosFetch(services_url, [], servicesTrigger)
+  const servicesData = useAxiosFetch(services_url, [], 'get', {}, null, servicesTrigger)
 
   useEffect(() => {
     if (servicesData.data.length !== 0) {
@@ -94,7 +95,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isArtist])
 
-  const corpCardsData = useAxiosFetch(corporate_cards_url, [], corpCardsTrigger)
+  const corpCardsData = useAxiosFetch(corporate_cards_url, [], cardRequestMethod, card, cardCallMe, corpCardsTrigger)
 
   useEffect(() => {
     if (corpCardsData.data.length !== 0) {
@@ -106,7 +107,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
     setCorpCards(Object.values(corpCardsObj))
   }, [corpCardsObj])
 
-  const adminTasksData = useAxiosFetch(admin_tasks_url, [], adminTasksTrigger)
+  const adminTasksData = useAxiosFetch(admin_tasks_url, [], taskRequestMethod, task, taskCallMe, adminTasksTrigger)
 
   useEffect(() => {
     if (adminTasksData.data.length !== 0) {
@@ -137,7 +138,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
     }
   }, [fromDate, toDate, bookingType, artistId, clientId, corporateId])
 
-  const artistsData = useAxiosFetch(artists_url, [], artistsTrigger)
+  const artistsData = useAxiosFetch(artists_url, [], 'get', {}, null, artistsTrigger)
 
   useEffect(() => {
     if (artistsData.data.length !== 0) {
@@ -147,7 +148,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
     }
   }, [artistsData.data])
 
-  let bookingsData = useAxiosCRUD(bookingUrl, {}, requestMethod, bookingTypeName, data, callMe, bookingTrigger, storeEnabled)
+  let bookingsData = useAxiosCRUD(bookingUrl, {}, bookingRequestMethod, bookingTypeName, data, callMe, bookingTrigger, storeEnabled)
 
   //update client list whenever new bookings are loaded
   useEffect(() => {
@@ -163,7 +164,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
       return list
     }
 
-    if (requestMethod === 'get') {
+    if (bookingRequestMethod === 'get') {
       if (Object.keys(bookingsData.data).length === 0) {
         // No booking found
         setEventsFetched(true)
@@ -182,8 +183,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
       Promise.allSettled(clientList.map(id => {
         const config = {
           method: 'get',
-          headers: { 'Authorization': access_token },
-          url: `${user_url}/${id}`
+          url: `${clients_url}?id=${id}`
         }
         return axios(config)
       }))
@@ -196,8 +196,9 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
             temp[id.toString()] = {
               id,
               name: client.name,
-              phone: client.meta.billing_phone[0],
-              email: "lindachenau@gmail.com"
+              phone: client.phone,
+              email: client.email,
+              address: client.address
             }
           }
         })
@@ -210,7 +211,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   //negate all fetched bookings when a new search starts
   useEffect(() => {
-    if (requestMethod === 'get') {
+    if (bookingRequestMethod === 'get') {
       setEventsFetched(false)
       setAdminBookingsFetched(false)
       setClients({})
@@ -220,11 +221,10 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   //regenerate events whenever clients are updated
   useEffect(() => {
-    if (checkout)
+    if (checkout || !artistsFetched || !servicesFetched || Object.keys(clients).length === 0) //wait until clients are fetched
       return
 
-    if (artistsFetched && servicesFetched && Object.keys(clients).length > 0 && 
-      ((requestMethod === 'get' && bookingType.name === BOOKING_TYPE.T) || (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.T))) {
+    if ((bookingRequestMethod === 'get' && bookingType.name === BOOKING_TYPE.T) || (bookingRequestMethod === 'put' && bookingTypeName === BOOKING_TYPE.T)) {
       setEvents(getEvents(bookingsData.data, artists, clients, services.items))
       setEventsFetched(true)
     }
@@ -237,10 +237,10 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
     if (checkout)
       return
 
-    if (requestMethod === 'get' && bookingType.name === BOOKING_TYPE.C) {
+    if (bookingRequestMethod === 'get' && bookingType.name === BOOKING_TYPE.C) {
       setAdminBookings(getAdminBookings(bookingType.name, bookingsData.data, artists, clients, services.items, corpCardsObj))
       setAdminBookingsFetched(true)
-    } else if (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.C) {
+    } else if (bookingRequestMethod === 'put' && bookingTypeName === BOOKING_TYPE.C) {
       setAdminBookings(getAdminBookings(bookingTypeName, bookingsData.data, artists, clients, services.items, corpCardsObj))
       setAdminBookingsFetched(true)      
     }
@@ -249,13 +249,13 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   //regenerate events whenever clients are updated
   useEffect(() => {
-    if (checkout)
+    if (checkout || Object.keys(clients).length === 0) //wait until clients are fetched
       return
 
-    if (requestMethod === 'get' && bookingType.name === BOOKING_TYPE.P) {
+    if (bookingRequestMethod === 'get' && bookingType.name === BOOKING_TYPE.P) {
       setAdminBookings(getAdminBookings(bookingType.name, bookingsData.data, artists, clients, services.items, corpCardsObj))
       setAdminBookingsFetched(true)
-    } else if (requestMethod === 'put' && bookingTypeName === BOOKING_TYPE.P) {
+    } else if (bookingRequestMethod === 'put' && bookingTypeName === BOOKING_TYPE.P) {
       setAdminBookings(getAdminBookings(bookingTypeName, bookingsData.data, artists, clients, services.items, corpCardsObj))
       setAdminBookingsFetched(true)      
     }

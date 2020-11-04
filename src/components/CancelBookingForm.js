@@ -44,9 +44,11 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
 
   useEffect(() => {
     const booking = bookingType === BOOKING_TYPE.C ? adminBooking : artistBooking
-    setBookingId(booking.id)
-    setChargeId(booking.stripeId)
-    setDeposit(booking.paidAmount)
+    if (booking) {
+      setBookingId(booking.id)
+      setChargeId(booking.stripeId)
+      setDeposit(booking.paidAmount)
+    }
   }, [bookingType, adminBooking, artistBooking])
 
   const handleConfirm = async() => {

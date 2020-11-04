@@ -7,6 +7,7 @@ const initUser = {
   email: '',
   id: '',
   phone: '',
+  address: '',
   loggedIn: false,
   isArtist: false
 }
@@ -19,6 +20,8 @@ export function userInfo(state = initUser, action) {
         lastName: action.payload.lastName,
         nickName: action.payload.nickName,
         email: action.payload.email,
+        phone: action.payload.phone,
+        address: action.payload.address,
         id: action.payload.id,
         loggedIn: action.payload.loggedIn,
         isArtist: action.payload.isArtist

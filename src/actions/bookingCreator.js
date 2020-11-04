@@ -1,4 +1,4 @@
-import { user_url, access_token } from '../config/dataLinks'
+import { clients_url, access_token } from '../config/dataLinks'
 import axios from 'axios'
 export const CHANGE_ORGANIC = 'CHANGE_ORGANIC'
 export const CHANGE_PENSIONER_RATE = 'CHANGE_PENSIONER_RATE'
@@ -17,7 +17,11 @@ export const ENABLE_STORE = 'ENABLE_STORE'
 export const FETCH_ARTISTS = 'FETCH_ARTISTS'
 export const FETCH_SERVICES = 'FETCH_SERVICES'
 export const FETCH_CORP_CARDS = 'FETCH_CORP_CARDS'
+export const ADD_CORP_CARDS = 'ADD_CORP_CARDS'
+export const UPDATE_CORP_CARDS = 'UPDATE_CORP_CARDS'
 export const FETCH_ADMIN_TASKS = 'FETCH_ADMIN_TASKS'
+export const ADD_ADMIN_TASKS = 'ADD_ADMIN_TASKS'
+export const UPDATE_ADMIN_TASKS = 'UPDATE_ADMIN_TASKS'
 export const RESET_BOOKING = 'RESET_BOOKING'
 export const MAKE_BOOKING = 'MAKE_BOOKING'
 export const SEARCH_BOOKING = 'SEARCH_BOOKING'
@@ -102,15 +106,17 @@ export function getClient(clientId) {
       const config = {
         method: 'get',
         headers: { 'Authorization': access_token },
-        url: `${user_url}/${clientId}`
+        url: `${clients_url}?id=${clientId}`
       }
 
       const result = await axios(config)
+      const data = result.data
       const client = {
-        id: result.data.id,
-        name: result.data.name,
-        phone: result.data.meta.billing_phone[0],
-        email: "lindachenau@gmail.com"
+        id: data.id,
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        address: data.address
       }
       dispatch({
         type: RECEIVE_CLIENT,
@@ -151,8 +157,32 @@ export const fetchCorpCards = () => ({
   type: FETCH_CORP_CARDS,
 })
 
+export const addCorpCards = (card, cardCallMe) => ({
+  type: ADD_CORP_CARDS,
+  payload: card,
+  cardCallMe
+})
+
+export const updateCorpCards = (card, cardCallMe) => ({
+  type: UPDATE_CORP_CARDS,
+  payload: card,
+  cardCallMe
+})
+
 export const fetchAdminTasks = () => ({
-  type: FETCH_ADMIN_TASKS,
+  type: FETCH_ADMIN_TASKS
+})
+
+export const addAdminTasks = (task, taskCallMe) => ({
+  type: ADD_ADMIN_TASKS,
+  payload: task,
+  taskCallMe
+})
+
+export const updateAdminTasks = (task, taskCallMe) => ({
+  type: UPDATE_ADMIN_TASKS,
+  payload: task,
+  taskCallMe
 })
 
 export const resetBooking = () => ({
