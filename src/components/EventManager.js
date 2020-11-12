@@ -37,7 +37,7 @@ const EventManager = ({
         const d = date.getDate()
         if (offDays.includes(date.getDay())) {
           offDayList.push({
-            id: i.toString(),
+            id: date.toISOString(), //make the inserted event unique
             start: new Date(y, m, d, 8, 0), //8am
             end: new Date(y, m, d, 18, 0), //6pm
             artistName: artist ? artist.name : '',
@@ -107,10 +107,7 @@ const EventManager = ({
         const offDays = getOffDays(start, end)
         setEvents(mergeThenSort(artEvents, offDays))
       } catch (err) {
-        // const errMessage = err.result.error.message
         console.log(err)
-        // alert(`Event fetch error: ${errMessage}`)
-        // console.log('Event fetch error: ', errMessage)
       }
     }
 
@@ -144,17 +141,10 @@ const EventManager = ({
       const events = draftEvents.filter(event => event.id !== draftEvent.id)
       setDraftEvents(events)
     } else {
+      draftEvent.toBeDeleted = true
       if (draftEvents.length > 0) {
-        let eventList = []
-        draftEvents.forEach(event => {
-          const entry = Object.assign({}, event)
-          if (entry.id === draftEvent.id)
-            entry.toBeDeleted = true
-          eventList.push(entry)
-        })
-        setDraftEvents(eventList)
+        setDraftEvents(mergeThenSort([draftEvent], draftEvents))
       } else {
-        draftEvent.toBeDeleted = true
         setDraftEvents([draftEvent])
       }
     }

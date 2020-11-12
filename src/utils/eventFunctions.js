@@ -86,3 +86,22 @@ export const onNavigate = (date, view, setFromDate, setToDate, setToday) => {
     setToDate(date)      
   }
 }
+
+export const noEvents = (mode, adminBooking, draftEvents) => {
+  if (draftEvents.length === 0)
+    return true
+
+  if (mode === 'book')  
+    return false
+
+  const bookingEvents = adminBooking ? adminBooking.eventList : []    
+  let numEvents = bookingEvents.length
+  for (const item of draftEvents) {
+    if (item.toBeDeleted)
+      numEvents = numEvents - 1
+    else if (item.id.toString().includes('draft')) // Newly added events
+      numEvents = numEvents + 1
+  }
+
+  return numEvents === 0
+}

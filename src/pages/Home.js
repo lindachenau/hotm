@@ -32,7 +32,8 @@ const Home = ({ theme, enableStore, searchBooking, artists }) => {
       width: 'auto',
       height: 'auto',
       [theme.breakpoints.down('sm')]: {
-        maxWidth: '50%'
+        maxWidth: '50%',
+        maxHeight: 180
       }
     },
     title: {

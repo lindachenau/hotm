@@ -1,4 +1,4 @@
-import { contact_phone, payment_link_sender } from '../config/dataLinks'
+import { contact_phone, payment_link_sender, auto_cancellation_timer } from '../config/dataLinks'
 
  //Merge arr2 into arr1; If item with the same id exists in arr1, the item in arr2 is dropped.
   export const mergeArrays = (arr1, arr2) => {
@@ -35,14 +35,15 @@ export function endDate(bookingDate)
   return (new Date(y, mon, d, 23, 59)).toISOString()
 }
 
-export const sendPaymentLink = async (email, link, message) => {
+export const sendPaymentLink = async (email, link, message, cancel=false) => {
+  const cancelWarning = cancel ? '<p>The booking will be automatically cancelled if payment is not received within 12 hours.</p>' : ''
   const response = await fetch(payment_link_sender, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
       email: email,
       body: `<h3>Please click the link below for payment.</h3>
-      <a href=${link}>${message}</a>`,
+      <a href=${link}>${message}</a> ${cancelWarning}`,
       subject: 'Payment link for Hair Beauty Life Co booking',
       source: "cmobileapp0@gmail.com"   
     })
@@ -98,3 +99,18 @@ export const validateClientBooking = defineValidator(
 export const validateTherapistBooking = defineValidator(
   createRule(validPensionerRate, 'Sorry, pensioner rate is only available on Mondays.'),
 )
+
+export const setCancellationTimer = async(bookingType, bookingId) => {
+  const response = await fetch(auto_cancellation_timer, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      bookingType: bookingType,
+      bookingId: bookingId
+    })
+  })
+
+  const {status} = await response.json()
+
+  return status //success if OK
+}

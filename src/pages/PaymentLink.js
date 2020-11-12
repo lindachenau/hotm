@@ -44,6 +44,9 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
   const [bookingTotal, setBookingTotal] = useState(0)
   const [clientPay, setClientPay] = useState(false)
   const [corpName, setCorpName] = useState('')
+  const [cancelled, setCancelled] = useState(false)
+  const [paid, setPaid] = useState(false)
+  const [pay, setPay] = useState(false)
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -59,9 +62,18 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
 
       try {
         const result = await axios(config)
-        setBookingData(result.data)
+        const data = result.data
+
+        // Just in case the client forgets she's paid already.
+        if ((query.payment_type === 'deposit' && data.paid_amount > 0) || 
+          (query.payment_type === 'balance' && (data.total_amount - data.paid_amount) < 0.01)) {
+          setPaid(true)
+        }
+
+        setBookingData(data)
+
       } catch (err) {
-        alert(`Unable to fetch booking data: ${err}. Please call ${contact_phone} to resolve this issue.`)
+        setCancelled(true)
       }
     }
 
@@ -90,6 +102,11 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
         setCorpName(corpCardsObj[cId.toString()].name)
       }
     }
+  }, [bookingData])
+
+  useEffect(() => {
+    if (bookingData && !paid && !cancelled)
+      setPay(true)
   }, [bookingData])
 
   const submit = async (token) => {
@@ -134,17 +151,28 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
         <div className={classes.grow} />
         <img className={classes.logo} src={logo} alt="Hair Beauty Life Co logo" />
         <div className={classes.grow} />
-      </div>      
+      </div>
+      {cancelled &&
       <Typography variant="body1" align="left" color="textPrimary">
-        {`Paying ${query.payment_type} $${amount} for HBLC booking_id: ${query.booking_id}`}
-      </Typography>
+          {`Sorry your HBLC booking_id: ${query.booking_id} has been cancelled.`}
+      </Typography>}
+      {paid &&
       <Typography variant="body1" align="left" color="textPrimary">
-        {`Booking date : ${bookingDate}`}
-      </Typography>
-      <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
-        {`Booking total : $${bookingTotal}`}
-      </Typography>            
-      <StripeForm stripePublicKey={stripePublicKey} handleCharge={submit} loggedIn={true} payMessage="Pay"/>
+          {`You've already paid the ${query.payment_type} for HBLC booking_id: ${query.booking_id}. Thank you!`}
+      </Typography>}
+      {pay &&
+      <>   
+        <Typography variant="body1" align="left" color="textPrimary">
+          {`Paying ${query.payment_type} $${amount} for HBLC booking_id: ${query.booking_id}`}
+        </Typography>
+        <Typography variant="body1" align="left" color="textPrimary">
+          {`Booking date : ${bookingDate}`}
+        </Typography>
+        <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
+          {`Booking total : $${bookingTotal}`}
+        </Typography>            
+        <StripeForm stripePublicKey={stripePublicKey} handleCharge={submit} loggedIn={true} payMessage="Pay"/>
+      </>}
     </Container>
   )
 }

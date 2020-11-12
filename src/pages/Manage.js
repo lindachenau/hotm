@@ -39,9 +39,12 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
 
   // disable EDIT, PAYMENT LINK and DELETE for completed bookings
   useEffect(() => {
-    if (adminBookings.length > 0 || events.length > 0)
-      setCompleted(bookingType === BOOKING_TYPE.C ? adminBookings[activeStep].complete: events[activeStep].complete)
-  }, [activeStep])
+    if (bookingType === BOOKING_TYPE.T && events.length > 0)
+      setCompleted(events[activeStep].complete)
+
+    if (bookingType !== BOOKING_TYPE.T && adminBookings.length > 0)
+      setCompleted(adminBookings[activeStep].complete)
+  }, [activeStep, adminBookings, events])
 
   const handleEdit = () => {
     setPrevActiveStep(activeStep)
@@ -99,14 +102,14 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
           initOpen={false}
           bookingType={bookingType}
           adminBooking={adminBookings[activeStep]}
-          artistBooking={events[activeStep]}
+          clientBooking={events[activeStep]}
         />
         <CancelBookingForm 
           triggerOpen={triggerCancelBookingForm}
           initOpen={false}
           bookingType={bookingType}
           adminBooking={adminBookings[activeStep]}
-          artistBooking={events[activeStep]}
+          clientBooking={events[activeStep]}
         />
       </Container>
       :

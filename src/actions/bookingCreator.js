@@ -45,7 +45,8 @@ export const PUT_OPERATION = {
   UPDATE: 0,
   CHECKOUT: 1,
   PAYMENT: 2,
-  CHECKOUT_PAYMENT: 3
+  CHECKOUT_PAYMENT: 3,
+  DELETE: 4
 }
 
 export const toggleOrganic = () => ({
@@ -208,11 +209,10 @@ export const updateBooking = (bookingInfo, bookingTypeName, callMe, checkout=fal
   checkout
 })
 
-export const cancelBooking = (bookingInfo, bookingTypeName, callMe=null) => ({
+export const cancelBooking = (bookingInfo, bookingTypeName) => ({
   type: CANCEL_BOOKING,
   payload: bookingInfo,
-  bookingTypeName: bookingTypeName,
-  callMe
+  bookingTypeName: bookingTypeName
 })
 
 export const loadBooking = (booking) => ({

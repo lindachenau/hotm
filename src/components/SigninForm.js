@@ -115,7 +115,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
         isArtist: isArtist
       }
       signinUser(payload)
-  }
+    }
     else {
       alert('login failed')
     }

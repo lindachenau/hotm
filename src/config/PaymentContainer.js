@@ -12,7 +12,8 @@ const mapStateToProps = state => {
     userId: state.userInfo.id,
     userName: state.userInfo.firstName + ' ' + state.userInfo.lastName,
     loggedIn: state.userInfo.loggedIn,
-    clientEmail: state.userInfo.email
+    clientEmail: state.userInfo.email,
+    phone: state.userInfo.phone
   }
 }
 const mapDispatchToProps = dispatch => {
@@ -20,7 +21,7 @@ const mapDispatchToProps = dispatch => {
     resetBooking: () => dispatch(resetBooking()),
     addBooking: (bookingInfo, bookingType, callMe) => dispatch(addBooking(bookingInfo, bookingType, callMe)),
     updateBooking: (bookingInfo, bookingType, callMe, checkout) => dispatch(updateBooking(bookingInfo, bookingType, callMe, checkout)),
-    cancelBooking: (bookingInfo, bookingType, callMe) => dispatch(cancelBooking(bookingInfo, bookingType, callMe)),
+    cancelBooking: (bookingInfo, bookingType, callMe) => dispatch(cancelBooking(bookingInfo, bookingType)),
   }
 }
 

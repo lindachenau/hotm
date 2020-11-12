@@ -37,7 +37,7 @@ import {
   BOOKING_TYPE
 } from '../actions/bookingCreator'
 
-import { email_reminder_server } from '../config/dataLinks'
+import { sms_reminder_server } from '../config/dataLinks'
 import axios from 'axios'
 
 const initPriceFactors = {
@@ -327,6 +327,7 @@ export function storeActivation(state = initActivation, action) {
       return Object.assign({}, state, {
         bookingRequestMethod: 'get',
         bookingTrigger: !state.bookingTrigger,
+        callMe: null,
         checkout: false
       })
     }
@@ -357,6 +358,7 @@ export function storeActivation(state = initActivation, action) {
       return Object.assign({}, state, {
         bookingRequestMethod: 'delete',
         data: action.payload,
+        bookingTypeName: action.bookingTypeName,
         bookingTrigger: !state.bookingTrigger,
         callMe: null,
         checkout: false
@@ -428,15 +430,17 @@ export function bookingFilter(state = initBookingFilter, action) {
   }
 }
 
-const sendReminder = async (clientEmail, bookingDate) => {
+const sendReminder = async (bookingType, bookingId, bookingDate, phoneNumber) => {
   try {
     const config = {
       method: 'post',
       headers: {"Content-Type": "application/json"},
-      url: email_reminder_server,
+      url: sms_reminder_server,
       data: {
-        email: clientEmail,
-        appointmentDate: bookingDate
+        bookingType: bookingType,
+        bookingId: bookingId,
+        bookingDate: bookingDate,
+        phoneNumber: phoneNumber
       }
     }
     await axios(config)

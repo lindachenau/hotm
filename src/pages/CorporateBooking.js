@@ -15,7 +15,7 @@ import AddCorporate from '../components/DropdownList'
 import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
 import EventManager from '../components/EventManager'
-import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
+import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onSaveEventDetails, noEvents } from '../utils/eventFunctions'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
   }    
 }))
 
-const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking, updateBooking, cancelBooking}) => {
+const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking, updateBooking}) => {
   /*
    * events: "events" for passing to TheCalendar which will merge "events" from props to its local "events". setEvents is called @ newEvent
    *         moveEvent, resizeEvent, onSaveEventDetails, onNavigate and admin booking retrieval
@@ -189,54 +189,40 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
     bookingData.booking_artist_id = booingArtistId
     
     let eventList = []
-    let deleteList = []
     draftEvents.forEach(draft => {
-      if (draft.toBeDeleted && !draft.id.toString().includes('draft')) {
-        const event = {
-          event_id: draft.id
-        }
-        deleteList.push(event)
+      const existingEvent = !draft.id.toString().includes('draft')
+      let event = {}
+      if (draft.toBeDeleted && existingEvent) {
+        event.event_id = draft.id
+        event.operation = PUT_OPERATION.DELETE
       } else {
-        const event = {
-          artist_id: draft.artistId,
-          event_location: draft.address,
-          contact: draft.contact,
-          job_description: draft.task,
-          comment: draft.comment,
-          booking_date: moment(draft.start).format("YYYY-MM-DD"),
-          artist_start_time: moment(draft.start).format("HH:mm"),
-          booking_start_time: moment(draft.bookingTime).format("HH:mm"),
-          booking_end_time: moment(draft.end).format("HH:mm")
-        }
-        if (mode === 'edit' && !draft.id.toString().includes('draft'))
-          event.event_id = draft.id
+        event.artist_id = draft.artistId
+        event.event_location = draft.address
+        event.contact = draft.contact
+        event.job_description = draft.task
+        event.comment = draft.comment
+        event.booking_date = moment(draft.start).format("YYYY-MM-DD")
+        event.artist_start_time = moment(draft.start).format("HH:mm")
+        event.booking_start_time = moment(draft.bookingTime).format("HH:mm")
+        event.booking_end_time = moment(draft.end).format("HH:mm")
 
-        eventList.push(event)
+        if (existingEvent) {
+          event.event_id = draft.id
+          event.operation = PUT_OPERATION.UPDATE
+        } 
       }
+      eventList.push(event)
     })
 
+    bookingData.event_list = eventList
+
     if (mode === 'book') {
-      bookingData.event_list = eventList
       addBooking(bookingData, BOOKING_TYPE.C, callBack)
-    }
-    else {
+    } else {
       bookingData.booking_id = adminBooking.id
       bookingData.operation = PUT_OPERATION.UPDATE
-      if (deleteList.length > 0) {
-        bookingData.event_list = deleteList
-        if (eventList.length > 0) {
-          cancelBooking(bookingData, BOOKING_TYPE.C)
-          bookingData.event_list = eventList      
-          updateBooking(bookingData, BOOKING_TYPE.C, callBack)
-        }
-        else {
-          cancelBooking(bookingData, BOOKING_TYPE.C, callBack)
-        }
-      } else if (eventList.length > 0) {
-        bookingData.event_list = eventList      
-        updateBooking(bookingData, BOOKING_TYPE.C, callBack)
-      }
-    }    
+      updateBooking(bookingData, BOOKING_TYPE.C, callBack)
+    }
   }
 
   return (
@@ -291,7 +277,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
                   variant="text" 
                   onClick={handleBook} 
                   color="primary" 
-                  disabled={draftEvents.length === 0 || corporate === null}
+                  disabled={noEvents(mode, adminBooking, draftEvents) || corporate === null}
                 >
                   {mode === 'book' ? 'Book all drafts' : 'Save modified drafts'}
                 </Button>

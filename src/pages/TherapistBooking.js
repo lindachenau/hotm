@@ -20,7 +20,8 @@ import { mergeThenSort, resizeEvent, moveEvent, onNavigate, onSaveEventDetails }
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { validateTherapistBooking } from '../utils/misc'
+import { validateTherapistBooking, sendPaymentLink, setCancellationTimer } from '../utils/misc'
+import { payment_link_base } from '../config/dataLinks'
 
 const localizer = momentLocalizer(moment)
 
@@ -227,7 +228,15 @@ const TherapistBooking = ({
     const callBack = (bookingId) => {
       const message = mode === 'book' ? 'Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.' :
         'Updating successful'
+      
       setTriggerSaveAllDrafts(!triggerSaveAllDrafts)
+      
+      if (mode === 'book') {
+        const paymentLink = `${payment_link_base}?booking_type=client&booking_id=${bookingId}&payment_type=deposit&percentage=30`
+        sendPaymentLink(client.email, paymentLink, "Pay the deposit", true)
+        setCancellationTimer(BOOKING_TYPE.T, bookingId)
+      }
+      
       alert(message)
       setDraftEvents([])
       resetBooking()

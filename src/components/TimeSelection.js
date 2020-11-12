@@ -149,7 +149,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
     for (let i = 0; i < slots.length; i++) {
       const slotStart = slots[i].start.getTime()
       const slotEnd = slots[i].end.getTime()
-      if (endTick >= slotStart && startTick <= slotEnd)
+      if (endTick > slotStart && startTick < slotEnd)
         return true
     }
 

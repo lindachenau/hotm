@@ -57,11 +57,6 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
 
       const bookingEvent = (await axios(config)).data
 
-      if (bookingEvent.length === 0) {
-        alert('No booking event found. The booking has probably been cancelled.')
-        return
-      }
-
       if (bookingEvent.admin_booking_id) {
         setBookingEvent({
           adminBooking: true,
@@ -92,7 +87,7 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
       }
       
     } catch (err) {
-      console.log('Booking event fetch error: ', err)
+      alert('No booking event found. The booking has probably been cancelled.')
     }
   }
 

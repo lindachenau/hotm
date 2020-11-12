@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookingType, adminBooking, artistBooking, updateBooking }) {
+export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookingType, adminBooking, clientBooking, updateBooking, cancelBooking }) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const [bookingId, setBookingId] = useState(null)
@@ -43,44 +43,52 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
   }, [triggerOpen, initOpen])
 
   useEffect(() => {
-    const booking = bookingType === BOOKING_TYPE.C ? adminBooking : artistBooking
+    const booking = bookingType === BOOKING_TYPE.C ? adminBooking : clientBooking
     if (booking) {
       setBookingId(booking.id)
       setChargeId(booking.stripeId)
       setDeposit(booking.paidAmount)
     }
-  }, [bookingType, adminBooking, artistBooking])
+  }, [bookingType, adminBooking, clientBooking])
 
   const handleConfirm = async() => {
-    const refund = async(chargeId) => {
-      const response = await fetch(stripe_refund_server, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-          id: chargeId
+    const cancel = () => cancelBooking({booking_id: bookingId}, bookingType)
+
+    if (deposit > 0) {
+      const refund = async(chargeId) => {
+        const response = await fetch(stripe_refund_server, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            id: chargeId
+          })
         })
-      })
-
-      return response
-    }
-
-    const response = await refund(chargeId)
-    const {id, status, errorMessage} = await response.json()
-
-    if (status === 'succeeded') {
-      alert(`Deposit $${deposit} was refunded successfully!`)
-
-      const bookingData = {
-        booking_id: bookingId,
-        operation: PUT_OPERATION.PAYMENT,
-        payment_type: 'credit',
-        payment_amount: -deposit,
-        stripe_id: id
+  
+        return response
       }
-      //Set BOOKING_TYPE to CHECKOUT to prevent events get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
-      updateBooking(bookingData, bookingType === BOOKING_TYPE.C ? BOOKING_TYPE.C : BOOKING_TYPE.T, null, true)
+  
+      const response = await refund(chargeId)
+      const {id, status, errorMessage} = await response.json()
+
+      if (status === 'succeeded') {
+        alert(`Deposit $${deposit} was refunded successfully!`)
+        
+        //Also refund in payment record
+        const bookingData = {
+          booking_id: bookingId,
+          operation: PUT_OPERATION.PAYMENT,
+          payment_type: 'credit',
+          payment_amount: -deposit,
+          stripe_id: id
+        }
+        //Set BOOKING_TYPE to CHECKOUT to prevent events get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
+        updateBooking(bookingData, bookingType === BOOKING_TYPE.C ? BOOKING_TYPE.C : BOOKING_TYPE.T, cancel, true)
+      } else {
+        alert(errorMessage)
+      }
     } else {
-      alert(errorMessage)
+      cancel()
+      alert(`Booking id: ${bookingId} was cancelled successfully!`)
     }
     
     setOpen(false)

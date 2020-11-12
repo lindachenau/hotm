@@ -224,43 +224,38 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
     if (checkout || !artistsFetched || !servicesFetched || Object.keys(clients).length === 0) //wait until clients are fetched
       return
 
-    if ((bookingRequestMethod === 'get' && bookingType.name === BOOKING_TYPE.T) || (bookingRequestMethod === 'put' && bookingTypeName === BOOKING_TYPE.T)) {
-      setEvents(getEvents(bookingsData.data, artists, clients, services.items))
-      setEventsFetched(true)
-    }
+    const bType = bookingRequestMethod === 'get' ? bookingType.name : bookingTypeName
+    if (bType !== BOOKING_TYPE.T)
+      return
+
+    setEvents(getEvents(bookingsData.data, artists, clients, services.items))
+    setEventsFetched(true)
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   // Retrieval is triggered by clientsFetchTrigger while booking update is triggered by bookingsData.data
-  }, [clientsFetchTrigger, bookingsData.data])
+  }, [clientsFetchTrigger, bookingsData.data, artists, services])
   
   //regenerate events whenever bookings data are updated
   useEffect(() => {
-    if (checkout)
+    const bType = bookingRequestMethod === 'get' ? bookingType.name : bookingTypeName
+    if (checkout || bType !== BOOKING_TYPE.C)
       return
 
-    if (bookingRequestMethod === 'get' && bookingType.name === BOOKING_TYPE.C) {
-      setAdminBookings(getAdminBookings(bookingType.name, bookingsData.data, artists, clients, services.items, corpCardsObj))
-      setAdminBookingsFetched(true)
-    } else if (bookingRequestMethod === 'put' && bookingTypeName === BOOKING_TYPE.C) {
-      setAdminBookings(getAdminBookings(bookingTypeName, bookingsData.data, artists, clients, services.items, corpCardsObj))
-      setAdminBookingsFetched(true)      
-    }
+    setAdminBookings(getAdminBookings(bType, bookingsData.data, artists, clients, services.items, corpCardsObj))
+    setAdminBookingsFetched(true)
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [bookingsData.data])
+  }, [bookingsData.data, artists, corpCardsObj])
 
   //regenerate events whenever clients are updated
   useEffect(() => {
-    if (checkout || Object.keys(clients).length === 0) //wait until clients are fetched
+    const bType = bookingRequestMethod === 'get' ? bookingType.name : bookingTypeName
+    if (checkout || bType !== BOOKING_TYPE.P || Object.keys(clients).length === 0) //wait until clients are fetched
       return
 
-    if (bookingRequestMethod === 'get' && bookingType.name === BOOKING_TYPE.P) {
-      setAdminBookings(getAdminBookings(bookingType.name, bookingsData.data, artists, clients, services.items, corpCardsObj))
-      setAdminBookingsFetched(true)
-    } else if (bookingRequestMethod === 'put' && bookingTypeName === BOOKING_TYPE.P) {
-      setAdminBookings(getAdminBookings(bookingTypeName, bookingsData.data, artists, clients, services.items, corpCardsObj))
-      setAdminBookingsFetched(true)      
-    }
+    setAdminBookings(getAdminBookings(bType, bookingsData.data, artists, clients, services.items, corpCardsObj))
+    setAdminBookingsFetched(true)
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [clientsFetchTrigger, bookingsData.data])
+  }, [clientsFetchTrigger, bookingsData.data, artists, services])
 
   return (
     <BookingsStoreContext.Provider value={{services, servicesFetched, corpCards, corpCardsObj, adminTasks, 

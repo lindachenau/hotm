@@ -84,7 +84,7 @@ export default function ForgetPWForm({triggerOpen}) {
           autoFocus
           margin="dense"
           label="username or email"
-          type="userLogin"
+          type="email"
           fullWidth
           onChange={onChangeUserLogin}
         />

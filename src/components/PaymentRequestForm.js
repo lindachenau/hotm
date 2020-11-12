@@ -12,7 +12,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Checkbox from '@material-ui/core/Checkbox'
 import Typography from '@material-ui/core/Typography'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
-import { sendPaymentLink } from '../utils/misc'
+import { sendPaymentLink, setCancellationTimer } from '../utils/misc'
 import { payment_link_base } from '../config/dataLinks'
 
 const useStyles = makeStyles(theme => ({
@@ -45,13 +45,14 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function PaymentRequestForm({ theme, triggerOpen, initOpen, bookingType, adminBooking, artistBooking }) {
+export default function PaymentRequestForm({ theme, triggerOpen, initOpen, bookingType, adminBooking, clientBooking }) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const [paymentType, setPaymentType] = useState('deposit')
   const [percentage, setPercentage] = useState(30)
   const [autoCancel, setAutoCancel] = useState(false)
   const [email, setEmail] = useState(null)
+  const [bookingId, setBookingId] = useState(null)
 
   const classes = useStyles(theme)
 
@@ -67,20 +68,28 @@ export default function PaymentRequestForm({ theme, triggerOpen, initOpen, booki
   }, [triggerOpen, initOpen])
 
   useEffect(() => {
-    if (bookingType === BOOKING_TYPE.C)
+    if (bookingType === BOOKING_TYPE.C) {
       setEmail(adminBooking ? adminBooking.email : null)
-    else
-      setEmail(artistBooking ? artistBooking.client.email : null)
-  }, [bookingType, adminBooking, artistBooking])
+      setBookingId(adminBooking ? adminBooking.id : null)
+    } else {
+      setEmail(clientBooking ? clientBooking.client.email : null)
+      setBookingId(clientBooking ? clientBooking.id : null)
+    }
+  }, [bookingType, adminBooking, clientBooking])
 
   const handleSend = () => {
     let paymentLink
     if (bookingType === BOOKING_TYPE.T)
-      paymentLink = `${payment_link_base}?booking_type=client&booking_id=${artistBooking.id}&payment_type=${paymentType}&percentage=${percentage}`
+      paymentLink = `${payment_link_base}?booking_type=client&booking_id=${clientBooking.id}&payment_type=${paymentType}&percentage=${percentage}`
     else
       paymentLink = `${payment_link_base}?booking_type=admin&booking_id=${adminBooking.id}&payment_type=${paymentType}&percentage=${percentage}`
-
-    sendPaymentLink(email, paymentLink, `Pay the ${paymentType}`)
+    
+    if (autoCancel) {
+      sendPaymentLink(email, paymentLink, `Pay the ${paymentType}`, true)
+      setCancellationTimer(bookingType, bookingId)
+    } else {
+      sendPaymentLink(email, paymentLink, `Pay the ${paymentType}`)
+    }
 
     setOpen(false)
   }

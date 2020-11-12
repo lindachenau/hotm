@@ -136,7 +136,7 @@ export default function EventForm({
   }
 
   const handleDateChange = date => {
-    setSelectedDate(date);
+    setSelectedDate(date)
   }  
 
   return (

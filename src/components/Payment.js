@@ -11,7 +11,7 @@ import { BookingsStoreContext } from './BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import moment from 'moment'
 import { stripe_charge_server } from '../config/dataLinks'
-// import sendReminder from '../reducers/bookingInfo'
+import sendReminder from '../reducers/bookingInfo'
 import { BOOKING_TYPE, PUT_OPERATION  } from '../actions/bookingCreator'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
@@ -52,7 +52,8 @@ function Payment (
     bookingValue, 
     userId, 
     userName,
-    clientEmail
+    clientEmail,
+    phone
   }) {
   const { bookingsData } = useContext(BookingsStoreContext)
   const { bookingInProgress } = bookingsData
@@ -91,9 +92,9 @@ function Payment (
           stripe_id: id
         }
     
-        updateBooking(bookingData, BOOKING_TYPE.T, null, true)
+        updateBooking(BOOKING_TYPE.T, bookingData, BOOKING_TYPE.T, null, true)
   
-        // sendReminder(clientEmail, bookingDate)
+        // sendReminder(bookingId, bookingDate, phone)
         resetBooking()
       }
       else {

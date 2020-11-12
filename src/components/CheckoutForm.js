@@ -170,11 +170,10 @@ export default function CheckoutForm({
   const handleCheckoutLink = async () => {
     const bookingData = {
       booking_id: event.id,
-      operation: PUT_OPERATION.CHECKOUT_PAYMENT,
+      operation: PUT_OPERATION.CHECKOUT,
       actual_start_time: moment(actualStart).format("HH:mm"),
       actual_end_time: moment(actualEnd).format("HH:mm"),
-      comment: `${event.comment} ${checkoutComment}`,
-      payment_type: 'send_link'
+      comment: `${event.comment} ${checkoutComment}`
     }
 
     const paymentLink = `${payment_link_base}?booking_type=client&booking_id=${event.id}&payment_type=balance`

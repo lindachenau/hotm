@@ -11,7 +11,7 @@ export const payment_link_base = process.env.REACT_APP_PAYMENT_LINK_BASE
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v0.17`
+const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v0.18`
 export const services_url = `${HOTM_BOOKING_API}/services`
 export const artists_url = `${HOTM_BOOKING_API}/artists`
 export const bookings_url = `${HOTM_BOOKING_API}/bookings`
@@ -75,6 +75,11 @@ export const stripe_refund_server = `${process.env.REACT_APP_HOTM_SERVER}/refund
 export const email_verification_server = `${process.env.REACT_APP_HOTM_SERVER}/send`
 
 /*
- * Email reminder server running on Node.js deployed to AWS lambda
+ * SMS reminder server running on Node.js deployed to AWS lambda
  */
-export const email_reminder_server = `${process.env.REACT_APP_HOTM_SERVER}/schedule`
+export const sms_reminder_server = `${process.env.REACT_APP_HOTM_SERVER}/schedule`
+
+/*
+ * 12 hours auto cancellation timer running on Node.js deployed to AWS lambda
+ */
+export const auto_cancellation_timer = `${process.env.REACT_APP_HOTM_SERVER}/cancellation-timer`

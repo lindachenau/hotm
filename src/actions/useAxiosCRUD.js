@@ -13,6 +13,11 @@ const convertArrayToObject = (array, key) => {
   }, initialValue)
 }
 
+const removeDeletedBooking = (bookings, id) => {
+  delete bookings[id.toString()]
+  return bookings
+}
+
 const dataFetchReducer = (state, action) => {
   switch (action.type) {
     case "FETCH_INIT":
@@ -49,20 +54,19 @@ const dataFetchReducer = (state, action) => {
     case "POST_SUCCESS":
       return {
         ...state,
-        isUpdating: false,
-        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
+        isUpdating: false
       }
     case "PUT_SUCCESS":
       return {
         ...state,
         isUpdating: false,
-        // Don't change the bus with updated info because some info from the backend is not there and admin bookings only contain the updated events.
-        // data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
+        data: Object.assign({}, state.data, convertArrayToObject([action.payload], 'booking_id'))
       }
     case "DELETE_SUCCESS":
       return {
         ...state,
-        isUpdating: false
+        isUpdating: false,
+        data: Object.assign({}, removeDeletedBooking(state.data, action.payload.id))
       }
     case "UPDATE_FAILURE":
       return {
@@ -134,12 +138,31 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       }
     }
 
+    const readBack = async (url, id) => {
+      const config = {
+        method: 'get',
+        headers: {
+          "Content-Type": "application/json",
+          "Cache-Control": "no-cache, no-store, must-revalidate"
+        },
+        url: `${url}?id=${id}`
+      }
+
+      try {
+        let result = await axios(config)
+        return result.data
+      } catch (err) {
+        return {}  
+      }
+    }
+
     const createData = async (data) => {
       dispatch({ type: "UPDATE_INIT"})
+      const url = bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url
       const config = {
         method: 'post',
         headers: {"Content-Type": "application/json"},
-        url: bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url,
+        url: url,
         data: data
       }
 
@@ -154,10 +177,11 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
           }
           else {
             const bookingId = result.data.booking_id
-            const payload = {...data, booking_id: bookingId}
-            dispatch({ type: "POST_SUCCESS", payload: payload })
+            dispatch({ type: "POST_SUCCESS" })
+
             //Now charge
-            await callMe(bookingId)
+            if (callMe)
+              callMe(bookingId)
           }
         }
       } catch (err) {
@@ -171,10 +195,11 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
 
     const updateData = async (data) => {
       dispatch({ type: "UPDATE_INIT"})
+      const url = bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url
       const config = {
         method: 'put',
         headers: {"Content-Type": "application/json"},
-        url: bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url,
+        url: url,
         data: data
       }
 
@@ -188,8 +213,13 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           }
           else {
-            dispatch({ type: "PUT_SUCCESS", payload: data })
-            await callMe()
+            // Read back the data to get fields inserted by the backend. The updated data will be merged back to state.data so that users can see 
+            // booking cards when they are updated.
+            const payload = await readBack(url, data.booking_id)
+            dispatch({ type: "PUT_SUCCESS", payload: payload })
+
+            if (callMe)
+              callMe()
           }
         }
       } catch (err) {
@@ -203,11 +233,11 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
 
     const deleteData = async (data) => {
       dispatch({ type: "UPDATE_INIT"})
-
+      const url = bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url
       const config = {
         method: 'delete',
         headers: {"Content-Type": "application/json"},
-        url: bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url,
+        url: url,
         data: data
       }
 
@@ -222,7 +252,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
             alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
             dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
           } else {
-            dispatch({ type: "DELETE_SUCCESS" })
+            dispatch({ type: "DELETE_SUCCESS", payload: {id: data.booking_id}})
           }
         }
       } catch (err) {
