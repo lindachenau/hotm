@@ -6,9 +6,13 @@ import { BOOKING_TYPE } from '../actions/bookingCreator'
 const convertArrayToObject = (array, key) => {
   const initialValue = {}
   return array.reduce((obj, item) => {
-    return {
-      ...obj,
-      [item[key].toString()]: item,
+    if (item && item[key]) {
+      return {
+        ...obj,
+        [item[key].toString()]: item,
+      }
+    } else {
+      return {}
     }
   }, initialValue)
 }
@@ -106,8 +110,6 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
     if (!storeEnabled)
       return
 
-    let didCancel = false
-
     const requestData = async () => {
       dispatch({ type: "FETCH_INIT" })
 
@@ -128,13 +130,9 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
 
       try {
         let result = await axios(config)
-        if (!didCancel) {
-          dispatch({ type: "FETCH_SUCCESS", payload: result.data })
-        }
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data })
       } catch (err) {
-        if (!didCancel) {
-          dispatch({ type: "FETCH_FAILURE" })
-        }
+        dispatch({ type: "FETCH_FAILURE" })
       }
     }
 
@@ -170,25 +168,21 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       try {
         const result = await axios(config)
         const error = result.data.error
-        if (!didCancel) {
-          if (error) {
-            alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
-          }
-          else {
-            const bookingId = result.data.booking_id
-            dispatch({ type: "POST_SUCCESS" })
+        if (error) {
+          alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+        }
+        else {
+          const bookingId = result.data.booking_id
+          dispatch({ type: "POST_SUCCESS" })
 
-            //Now charge
-            if (callMe)
-              callMe(bookingId)
-          }
+          //Now charge
+          if (callMe)
+            callMe(bookingId)
         }
       } catch (err) {
-        if (!didCancel) {
-          alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
-        }
+        alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+        dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
       dispatch({ type: "CHARGE_END" })
     }
@@ -207,26 +201,22 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       try {
         const result = await axios(config)
         const error = result.data.error
-        if (!didCancel) {
-          if (error) {
-            alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
-          }
-          else {
-            // Read back the data to get fields inserted by the backend. The updated data will be merged back to state.data so that users can see 
-            // booking cards when they are updated.
-            const payload = await readBack(url, data.booking_id)
-            dispatch({ type: "PUT_SUCCESS", payload: payload })
+        if (error) {
+          alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+        }
+        else {
+          // Read back the data to get fields inserted by the backend. The updated data will be merged back to state.data so that users can see 
+          // booking cards when they are updated.
+          const payload = await readBack(url, data.booking_id)
+          dispatch({ type: "PUT_SUCCESS", payload: payload })
 
-            if (callMe)
-              callMe()
-          }
+          if (callMe)
+            callMe()
         }
       } catch (err) {
-        if (!didCancel) {
-          alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
-        }
+        alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+        dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
       dispatch({ type: "CHARGE_END" })
     }
@@ -244,22 +234,18 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       try {
         const result = await axios(config)
         const error = result.data.error
-        if (!didCancel) {
-          /*
-          * No need to do anything if no error as data hasn't been written into local Booking Store yet.
-          */ 
-          if (error) {
-            alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
-          } else {
-            dispatch({ type: "DELETE_SUCCESS", payload: {id: data.booking_id}})
-          }
+        /*
+        * No need to do anything if no error as data hasn't been written into local Booking Store yet.
+        */ 
+        if (error) {
+          alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+        } else {
+          dispatch({ type: "DELETE_SUCCESS", payload: {id: data.booking_id}})
         }
       } catch (err) {
-        if (!didCancel) {
-          alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
-        }
+        alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+        dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
     }
 
@@ -286,9 +272,6 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       }
     }
 
-    return () => {
-      didCancel = true
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [bookingTrigger])
 

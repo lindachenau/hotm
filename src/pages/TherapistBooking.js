@@ -194,6 +194,12 @@ const TherapistBooking = ({
       return
     }             
 
+    //Disable adding new event if a draft event is already present
+    if (draftEvents.length === 1) {
+      alert('Delete the existing draft event before you add a new one.')
+      return
+    }             
+
     const newId = `draft-${draftId}`
     setDraftId(draftId + 1)
 
@@ -275,7 +281,7 @@ const TherapistBooking = ({
     else {
       bookingData.booking_id = mode === 'edit' ? artistBooking.id : checkoutEvent.id
       bookingData.operation = PUT_OPERATION.UPDATE
-      updateBooking(bookingData, BOOKING_TYPE.T, callBack)
+      updateBooking(bookingData, BOOKING_TYPE.T, callBack, mode === 'checkout') //Set checkout to true in checkout edit
     }
   }
 
@@ -385,6 +391,7 @@ const TherapistBooking = ({
           draftEvents={draftEvents}
           setDraftEvents={setDraftEvents}     
           triggerDeleteEvent={triggerDeleteEvent}
+          therapistBooking={true}
         />        
       </Container>}
     </>

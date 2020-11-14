@@ -264,8 +264,8 @@ export default function RegisterForm({triggerOpen, signinUser}) {
 
       let metaFormData = new FormData()
       metaFormData.set('cookie', cookie)
-      metaFormData.set('billing_firstname', firstName)
-      metaFormData.set('billing_lastname', lastName)
+      metaFormData.set('first_name', firstName)
+      metaFormData.set('last_name', lastName)
       metaFormData.set('billing_company', company)
       metaFormData.set('billing_address_1', address)
       metaFormData.set('billing_city', city)

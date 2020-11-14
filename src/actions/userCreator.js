@@ -16,6 +16,7 @@ export const signinUser = (payload) => {
       dispatch({
         type: SIGN_IN,
         payload: Object.assign({}, payload, {
+          name: user.name,
           phone: user.phone,
           address: user.address
         })

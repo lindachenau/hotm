@@ -23,7 +23,7 @@ import { validateClientBooking } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
 
-const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, travelTime=30, calendarId, offDays, bookingDateAddr, submitBooking, theme}) => {
+const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, travelTime, calendarId, offDays, bookingDateAddr, submitBooking, theme}) => {
   const useStyles = makeStyles(theme => ({
     flex: {
       display: 'flex',

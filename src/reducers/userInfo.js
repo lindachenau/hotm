@@ -1,9 +1,7 @@
 import {SIGN_IN, SIGN_OUT} from '../actions/userCreator'
 
 const initUser = {
-  firstName: '',
-  lastName: '',
-  nickName: '',
+  name: '',
   email: '',
   id: '',
   phone: '',
@@ -16,9 +14,7 @@ export function userInfo(state = initUser, action) {
   switch (action.type) {
     case SIGN_IN: {
       return Object.assign({}, state, {
-        firstName: action.payload.firstName,
-        lastName: action.payload.lastName,
-        nickName: action.payload.nickName,
+        name: action.payload.name,
         email: action.payload.email,
         phone: action.payload.phone,
         address: action.payload.address,

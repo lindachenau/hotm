@@ -17,7 +17,8 @@ const EventManager = ({
   draftEvent,
   draftEvents,
   setDraftEvents,
-  triggerDeleteEvent
+  triggerDeleteEvent,
+  therapistBooking=false
 }) => {
   
   useEffect(() => {
@@ -124,7 +125,6 @@ const EventManager = ({
   
 
   useEffect(() => {
-    // if (draftEvent && (mode === 'book' || (mode === 'edit' && saveModified))) {
     if (draftEvent && (mode === 'book' || saveModified)) {
       setEvents([draftEvent])
       setDraftEvents(mergeThenSort([draftEvent], draftEvents))
@@ -143,7 +143,10 @@ const EventManager = ({
     } else {
       draftEvent.toBeDeleted = true
       if (draftEvents.length > 0) {
-        setDraftEvents(mergeThenSort([draftEvent], draftEvents))
+        if (therapistBooking) //Therapist booking is a single event booking. Just remove it.
+          setDraftEvents([])
+        else
+          setDraftEvents(mergeThenSort([draftEvent], draftEvents))
       } else {
         setDraftEvents([draftEvent])
       }

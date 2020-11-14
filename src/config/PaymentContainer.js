@@ -13,7 +13,8 @@ const mapStateToProps = state => {
     userName: state.userInfo.firstName + ' ' + state.userInfo.lastName,
     loggedIn: state.userInfo.loggedIn,
     clientEmail: state.userInfo.email,
-    phone: state.userInfo.phone
+    phone: state.userInfo.phone,
+    name: state.userInfo.name
   }
 }
 const mapDispatchToProps = dispatch => {

@@ -37,7 +37,7 @@ import {
   BOOKING_TYPE
 } from '../actions/bookingCreator'
 
-import { sms_reminder_server } from '../config/dataLinks'
+import { sms_reminder_server, travel_time_url } from '../config/dataLinks'
 import axios from 'axios'
 
 const initPriceFactors = {
@@ -430,7 +430,7 @@ export function bookingFilter(state = initBookingFilter, action) {
   }
 }
 
-const sendReminder = async (bookingType, bookingId, bookingDate, phoneNumber) => {
+export const sendReminder = async (bookingType, bookingId, bookingDate, phoneNumber, name) => {
   try {
     const config = {
       method: 'post',
@@ -440,14 +440,30 @@ const sendReminder = async (bookingType, bookingId, bookingDate, phoneNumber) =>
         bookingType: bookingType,
         bookingId: bookingId,
         bookingDate: bookingDate,
-        phoneNumber: phoneNumber
+        phoneNumber: phoneNumber,
+        name: name
       }
     }
-    await axios(config)
+    return await axios(config)
   }
   catch (error) {
     console.error(error)
   }
 }
 
-export default sendReminder
+export const travelTime = async (artistId, address, bookingValue) => {
+  try {
+    const config = {
+      method: 'get',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      url: `${travel_time_url}?artist_id=${artistId}&event_location=${address}&total_amount=${bookingValue}`
+    }
+    return await axios(config)
+  }
+  catch (error) {
+    console.error(error)
+  }
+}
+

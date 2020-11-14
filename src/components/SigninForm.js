@@ -106,9 +106,6 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
         }
       }        
       const payload = {
-        firstName: user.firstname,
-        lastName: user.lastname,
-        nickName: user.nickname,
         email: user.email,
         id: user.id,
         loggedIn: true,

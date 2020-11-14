@@ -123,7 +123,6 @@ export default function EventForm({
     else
       onSaveEventDetails(task ? task.name : '', address, contact, comment, start, selectedDate, end)
 
-    // if (mode === 'edit')
     if (mode !== 'book')
       setSaveModified(true)
 

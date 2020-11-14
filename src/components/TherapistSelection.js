@@ -8,6 +8,7 @@ import AddArtists from '../components/AddArtists'
 import LocationSearchInput from './LocationSearchInput'
 
 import { available_artists_url, contact_phone } from '../config/dataLinks'
+import { travelTime } from '../reducers/bookingInfo'
 import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
@@ -42,8 +43,10 @@ const TherapistSelection = ({
   submitBooking,
   onSubmit,
   artists,
+  bookingValue,
   therapist,
   setTherapist,
+  setTravelTime,
   artistBooking}) => {
   
   const classes = useStyles()
@@ -62,12 +65,39 @@ const TherapistSelection = ({
     if (userInfo.id)
       setAddress(userInfo.address)
   }, [userInfo])
+
+  const outTravelRange = async() => {
+    if (address && therapist && bookingValue > 0) {
+      try {
+        const result = await travelTime(therapist.id, address, bookingValue)
+        const data = result.data
+        if (data.can_travel) {
+          setTravelTime(data.travel_time)
+          return false
+        } else {
+          alert('Sorry, the therapist does not provide services at your location. Please choose another therapist.')
+          return true
+        }
+      } catch (err) {
+        console.log(err)
+        return true
+      }
+    }
+  }
+
+  useEffect(() => {
+    outTravelRange()
+  }, [therapist, bookingValue])
   
   const handleAddrChange = address => {
     setAddress(address.replace(', Australia', ''))
   }
 
-  const handleNext = event => {
+  const handleNext = async() => {
+
+    if (await outTravelRange())
+      return
+
     submitBooking(bookingDateAddr.artistStart, bookingDateAddr.bookingDate, bookingDateAddr.bookingEnd, address)
     onSubmit(1)
   }

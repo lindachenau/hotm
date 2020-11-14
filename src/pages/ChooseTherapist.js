@@ -8,6 +8,7 @@ import Payment from '../config/PaymentContainer'
 
 const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
   const [therapist, setTherapist] = useState(null)
+  const [travelTime , setTravelTime] = useState(30)
   
   useEffect(() => {
     resetBooking()
@@ -25,8 +26,10 @@ const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBook
           services={services} 
           theme={theme}
           artists={artists}
+          bookingValue={bookingValue}
           therapist={therapist}
           setTherapist={setTherapist}
+          setTravelTime={setTravelTime}
           newBooking={true}/> 
           : null
       }
@@ -36,6 +39,7 @@ const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBook
         calendarId={therapist? therapist.email : null}
         offDays={therapist? therapist.offDays : []}
         services={services}
+        travelTime={travelTime}
         theme={theme}/> 
         : null
       }
