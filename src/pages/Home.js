@@ -6,7 +6,7 @@ import AddArtists from '../components/AddArtists'
 import { Typography } from '@material-ui/core'
 import { searchBooking } from '../actions/bookingCreator'
 
-const Home = ({ theme, enableStore, searchBooking, artists }) => {
+const Home = ({ theme, resetBooking, enableStore, searchBooking, artists }) => {
   const logo = require('../images/HBLC-Updated-logo-600.png')
   const [location, setLocation] =useState('')
   const [therapist, setTherapist] = useState(null)

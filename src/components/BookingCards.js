@@ -10,9 +10,11 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import EmojiNatureIcon from '@material-ui/icons/EmojiNature'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CommentIcon from '@material-ui/icons/Comment'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BOOKING_STATUS } from '../utils/dataFormatter'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -56,7 +58,8 @@ function EventCard ({ event }) {
         <span>{ `${event.paidAmount}/${event.total} `}</span>
         <FaUserCog/>
         <span>{ event.artists.map(artist => artist.name).join(', ')}</span>
-        {event.complete ? <CheckCircleIcon color='primary'/> : null}
+        {event.status === BOOKING_STATUS.COMPLETED ? <CheckCircleIcon color='primary'/> : null}
+        {event.status === BOOKING_STATUS.DELETED ? <DeleteForeverIcon color='primary'/> : null}
         <ul>
           {event.serviceItems.map( item => <li key={itemKey++}>{ item }</li> )}
         </ul>
@@ -85,7 +88,8 @@ function AdminBookingCard ({ booking }) {
         <span>{`Total hours booked: ${booking.totalHours}`}</span>
         <br/>
         <span>{`Payment status: $${booking.paidAmount}/$${booking.total}`}</span>
-        {booking.complete ? <CheckCircleIcon color='primary'/> : null}
+        {booking.status === BOOKING_STATUS.COMPLETED ? <CheckCircleIcon color='primary'/> : null}
+        {booking.status === BOOKING_STATUS.DELETED ? <DeleteForeverIcon color='primary'/> : null}
         <br/>
         <ul>
           {booking.eventList.map(event => <li key={itemKey++}>{event}</li>)}

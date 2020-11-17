@@ -60,6 +60,7 @@ const Routes = ({
             <Route exact path='/' render={() => 
               <Home 
                 theme={theme}
+                resetBooking={resetBooking}
                 enableStore={enableStore}
                 searchBooking={searchBooking}
                 artists={artists}/>}

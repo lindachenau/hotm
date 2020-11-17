@@ -1,6 +1,12 @@
 import { getBookingValue } from './getBookingValue'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
 
+export const BOOKING_STATUS = {
+  OPEN: 0,
+  COMPLETED: 1,
+  DELETED: 2
+}
+
 function offDays(workingDays) 
 {
   const week = [0, 1, 2, 3, 4, 5, 6]
@@ -145,7 +151,12 @@ export function getAdminBookings(bookingTypeName, bookings, artists, clients, se
     const title = bookingTypeName === BOOKING_TYPE.C ? corpCards[cId].name : `${servicesMenu[booking.service_item.toString()].description}`
     const contact = bookingTypeName === BOOKING_TYPE.C ? `${corpCards[cId].contactPerson} - ${corpCards[cId].contactPhone}` : `${clients[cId].name} - ${clients[cId].phone}`
     const email = bookingTypeName === BOOKING_TYPE.C ? corpCards[cId].contactEmail : clients[cId].email
-    const complete = (booking.total_amount - booking.paid_amount) < 0.01
+    let status = BOOKING_STATUS.OPEN
+    
+    if (booking.deleted) 
+      status = BOOKING_STATUS.DELETED
+    else if ((booking.total_amount - booking.paid_amount) < 0.01)
+      status = BOOKING_STATUS.COMPLETED
 
     let eventList = []
     booking.event_list.forEach(event => {
@@ -168,7 +179,7 @@ export function getAdminBookings(bookingTypeName, bookings, artists, clients, se
       cId: booking.card_or_client_id,
       client: clients[booking.card_or_client_id],
       origEventList: booking.event_list,
-      complete: complete
+      status: status
     })
   }
 
@@ -184,7 +195,12 @@ export function getEvents(bookings, artists, clients, servicesMenu)
     let serviceItems = []
     let total = 0
     let booking = bookings[id]
-    const complete = (booking.total_amount - booking.paid_amount) < 0.01
+    let status = BOOKING_STATUS.OPEN
+    
+    if (booking.deleted) 
+      status = BOOKING_STATUS.DELETED
+    else if ((booking.total_amount - booking.paid_amount) < 0.01)
+      status = BOOKING_STATUS.COMPLETED
 
     //artist exists
     if (artists[booking.artist_id_list[0]]) {
@@ -201,7 +217,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         }
       }
 
-      if (complete)
+      if (status === BOOKING_STATUS.COMPLETED)
         total = booking.total_amount
       else
         total = getBookingValue(servicesMenu, priceFactors, itemQty)
@@ -225,12 +241,10 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         serviceItems: serviceItems,
         paidAmount: booking.paid_amount,
         stripeId: booking.stripe_id,
-        complete: complete,
+        status: status,
         comment: booking.comment,
-        status: booking.status,
-        //inconsistent data checkout status with null actual_start_time & actual_end_time
-        actualStart: (booking.status === 'checkout' && booking.actual_start_time) ? localDate(booking.booking_date, booking.actual_start_time) : null,
-        actualEnd: (booking.status === 'checkout' && booking.actual_end_time) ? localDate(booking.booking_date, booking.actual_end_time) : null,
+        actualStart: booking.actual_start_time ? localDate(booking.booking_date, booking.actual_start_time) : null,
+        actualEnd: booking.actual_end_time ? localDate(booking.booking_date, booking.actual_end_time) : null,
         total: total,
         origBooking: booking
       })

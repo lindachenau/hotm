@@ -43,7 +43,7 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
   }, [triggerOpen, initOpen])
 
   useEffect(() => {
-    const booking = bookingType === BOOKING_TYPE.C ? adminBooking : clientBooking
+    const booking = bookingType === BOOKING_TYPE.T ? clientBooking : adminBooking 
     if (booking) {
       setBookingId(booking.id)
       setChargeId(booking.stripeId)
@@ -52,7 +52,10 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
   }, [bookingType, adminBooking, clientBooking])
 
   const handleConfirm = async() => {
-    const cancel = () => cancelBooking({booking_id: bookingId}, bookingType)
+    const cancel = () => {
+      cancelBooking({booking_id: bookingId}, bookingType)
+      alert(`Deposit $${deposit} was refunded successfully!`)
+    }
 
     if (deposit > 0) {
       const refund = async(chargeId) => {
@@ -71,8 +74,6 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
       const {id, status, errorMessage} = await response.json()
 
       if (status === 'succeeded') {
-        alert(`Deposit $${deposit} was refunded successfully!`)
-        
         //Also refund in payment record
         const bookingData = {
           booking_id: bookingId,
@@ -82,12 +83,12 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
           stripe_id: id
         }
         //Set BOOKING_TYPE to CHECKOUT to prevent events get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
-        updateBooking(bookingData, bookingType === BOOKING_TYPE.C ? BOOKING_TYPE.C : BOOKING_TYPE.T, cancel, true)
+        updateBooking(bookingData, bookingType === BOOKING_TYPE.T ? BOOKING_TYPE.T : BOOKING_TYPE.C, cancel, true)
       } else {
         alert(errorMessage)
       }
     } else {
-      cancel()
+      cancelBooking({booking_id: bookingId}, bookingType)
       alert(`Booking id: ${bookingId} was cancelled successfully!`)
     }
     

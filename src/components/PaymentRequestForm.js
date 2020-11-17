@@ -68,12 +68,12 @@ export default function PaymentRequestForm({ theme, triggerOpen, initOpen, booki
   }, [triggerOpen, initOpen])
 
   useEffect(() => {
-    if (bookingType === BOOKING_TYPE.C) {
-      setEmail(adminBooking ? adminBooking.email : null)
-      setBookingId(adminBooking ? adminBooking.id : null)
-    } else {
+    if (bookingType === BOOKING_TYPE.T) {
       setEmail(clientBooking ? clientBooking.client.email : null)
       setBookingId(clientBooking ? clientBooking.id : null)
+    } else {
+      setEmail(adminBooking ? adminBooking.email : null)
+      setBookingId(adminBooking ? adminBooking.id : null)
     }
   }, [bookingType, adminBooking, clientBooking])
 

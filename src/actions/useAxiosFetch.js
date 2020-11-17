@@ -64,7 +64,6 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) =
   })
 
   useEffect(() => {
-    let didCancel = false
 
     const fetchData = async () => {
       dispatch({ type: "FETCH_INIT" })
@@ -80,13 +79,9 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) =
         }
         
         let result = await axios(config)
-        if (!didCancel) {
-          dispatch({ type: "FETCH_SUCCESS", payload: result.data })
-        }
+        dispatch({ type: "FETCH_SUCCESS", payload: result.data })
       } catch (err) {
-        if (!didCancel) {
-          dispatch({ type: "FETCH_FAILURE" })
-        }
+        dispatch({ type: "FETCH_FAILURE" })
       }
     }
 
@@ -102,23 +97,19 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) =
       try {
         const result = await axios(config)
         const error = result.data.error
-        if (!didCancel) {
-          if (error) {
-            alert(error)
-            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
-          }
-          else {
-            const id = result.data.id
-            const payload = {...data, id}
-            dispatch({ type: "POST_SUCCESS", payload: payload })
-            await callMe()
-          }
+        if (error) {
+          alert(error)
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+        }
+        else {
+          const id = result.data.id
+          const payload = {...data, id}
+          dispatch({ type: "POST_SUCCESS", payload: payload })
+          await callMe()
         }
       } catch (err) {
-        if (!didCancel) {
-          alert(err)
-          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
-        }
+        alert(err)
+        dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
     }
 
@@ -134,21 +125,17 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) =
       try {
         const result = await axios(config)
         const error = result.data.error
-        if (!didCancel) {
-          if (error) {
-            alert(error)
-            dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
-          }
-          else {
-            dispatch({ type: "PUT_SUCCESS", payload: data })
-            await callMe()
-          }
+        if (error) {
+          alert(error)
+          dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
+        }
+        else {
+          dispatch({ type: "PUT_SUCCESS", payload: data })
+          await callMe()
         }
       } catch (err) {
-        if (!didCancel) {
-          alert(err)
-          dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
-        }
+        alert(err)
+        dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
     }
 
@@ -171,9 +158,6 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) =
       }
     }
 
-    return () => {
-      didCancel = true
-    }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trigger])
 

@@ -17,8 +17,8 @@ const convertArrayToObject = (array, key) => {
   }, initialValue)
 }
 
-const removeDeletedBooking = (bookings, id) => {
-  delete bookings[id.toString()]
+const markBookingDeleted = (bookings, id) => {
+  bookings[id].deleted = true
   return bookings
 }
 
@@ -70,7 +70,7 @@ const dataFetchReducer = (state, action) => {
       return {
         ...state,
         isUpdating: false,
-        data: Object.assign({}, removeDeletedBooking(state.data, action.payload.id))
+        data: Object.assign({}, markBookingDeleted(state.data, action.payload.id))
       }
     case "UPDATE_FAILURE":
       return {
@@ -79,12 +79,12 @@ const dataFetchReducer = (state, action) => {
         hasErrored: true,
         errorMessage: action.errorMessage
       }
-    case "CHARGE_START":
+    case "INPROGRESS_START":
       return {
         ...state,
         bookingInProgress: true
       }
-    case "CHARGE_END":
+    case "INPROGRESS_END":
         return {
           ...state,
           bookingInProgress: false
@@ -164,7 +164,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         data: data
       }
 
-      dispatch({ type: "CHARGE_START" })
+      dispatch({ type: "INPROGRESS_START" })
       try {
         const result = await axios(config)
         const error = result.data.error
@@ -184,7 +184,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
         dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
-      dispatch({ type: "CHARGE_END" })
+      dispatch({ type: "INPROGRESS_END" })
     }
 
     const updateData = async (data) => {
@@ -197,7 +197,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         data: data
       }
 
-      dispatch({ type: "CHARGE_START" })
+      dispatch({ type: "INPROGRESS_START" })
       try {
         const result = await axios(config)
         const error = result.data.error
@@ -218,7 +218,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
         dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
-      dispatch({ type: "CHARGE_END" })
+      dispatch({ type: "INPROGRESS_END" })
     }
 
     const deleteData = async (data) => {
@@ -231,6 +231,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         data: data
       }
 
+      dispatch({ type: "INPROGRESS_START" })
       try {
         const result = await axios(config)
         const error = result.data.error
@@ -247,8 +248,8 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
         dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
+      dispatch({ type: "INPROGRESS_END" })
     }
-
     if (!state.isLoading && !state.isUpdating) {
       switch (method) {
         case 'get': {

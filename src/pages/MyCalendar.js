@@ -35,8 +35,8 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
   const calendarId = userEmail
   
   useEffect(() => {
-    setFromDate(moment(today).startOf('month').startOf('week')._d)
-    setToDate(moment(today).endOf('month').endOf('week')._d)
+    setFromDate(moment(today).startOf('week')._d)
+    setToDate(moment(today).endOf('week')._d)
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 

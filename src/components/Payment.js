@@ -7,8 +7,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
-import { BookingsStoreContext } from './BookingsStoreProvider'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import moment from 'moment'
 import { stripe_charge_server } from '../config/dataLinks'
 import { sendReminder } from '../reducers/bookingInfo'
@@ -26,11 +24,6 @@ const useStyles = makeStyles(theme => ({
   },
   textField : {
     width: "100%"
-  },
-  progress: {
-    display: 'flex',
-    justifyContent: 'center',
-    padding: 40
   }
 }))
 
@@ -56,8 +49,6 @@ function Payment (
     phone,
     name
   }) {
-  const { bookingsData } = useContext(BookingsStoreContext)
-  const { bookingInProgress } = bookingsData
   const [value, setValue] = useState('');
 
   const classes = useStyles()
@@ -142,13 +133,11 @@ function Payment (
         status: ''
       }
     }
-
     addBooking(bookingData, BOOKING_TYPE.T, charge)
   }
 
   return (
     <Container maxWidth="sm" style={{paddingTop: 20, paddingBottom: 20}}>
-      {bookingInProgress && <div className={classes.progress}><CircularProgress color='primary' /></div>}
       <Paper className={classes.paper}>
         <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
           Deposit payable: $ {depositPayable.toString()}

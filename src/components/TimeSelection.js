@@ -69,8 +69,8 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
     if (bookingDateAddr.bookingDate) {
       const today = bookingDateAddr.bookingDate
       setToday(today)
-      setFromDate(moment(today).startOf('month').startOf('week')._d)
-      setToDate(moment(today).endOf('month').endOf('week')._d)
+      setFromDate(moment(today).startOf('week')._d)
+      setToDate(moment(today).endOf('week')._d)
   
       const newEvent = {
         id: 'draft-1',
@@ -85,8 +85,9 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
       setEvents([newEvent])
       setDraftEvents([newEvent])  
     } else {
-      setFromDate(moment(today).startOf('month').startOf('week')._d)
-      setToDate(moment(today).endOf('month').endOf('week')._d)
+      setFromDate(moment(today).startOf('week')._d)
+      setToDate(moment(today).endOf('week')._d)
+
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])

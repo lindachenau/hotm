@@ -106,8 +106,8 @@ const TherapistBooking = ({
 
       if (!location.state ) {
         setCalendarId(theArtist[0].email)
-        setFromDate(moment(today).startOf('month').startOf('week')._d)
-        setToDate(moment(today).endOf('month').endOf('week')._d)        
+        setFromDate(moment(today).startOf('week')._d)
+        setToDate(moment(today).endOf('week')._d)        
       } else {
         let booking
         if (location.state.edit) {
@@ -118,8 +118,8 @@ const TherapistBooking = ({
           booking = checkoutEvent
         }
         setToday(booking.start)
-        setFromDate(moment(booking.start).startOf('month').startOf('week')._d)
-        setToDate(moment(booking.start).endOf('month').endOf('week')._d)                     
+        setFromDate(moment(booking.start).startOf('week')._d)
+        setToDate(moment(booking.start).endOf('week')._d)                     
         
         setCalendarId(booking.artists[0].email)
         setAddress(booking.address)

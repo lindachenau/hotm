@@ -7,8 +7,10 @@ import StripeForm from '../components/StripeForm'
 import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
-import { stripe_charge_server, bookings_url, admin_bookings_url, contact_phone } from '../config/dataLinks'
+import { stripe_charge_server, bookings_url, admin_bookings_url } from '../config/dataLinks'
+import { sendReminder } from '../reducers/bookingInfo'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
+import { localDate } from '../utils/dataFormatter'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
@@ -41,12 +43,15 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
   const [bookingData, setBookingData] = useState(null)
   const [amount, setAmount] = useState(0)
   const [bookingDate, setBookingDate] = useState('')
+  const [bookingType, setBookingType] = useState(null)
   const [bookingTotal, setBookingTotal] = useState(0)
+  const [bookingTime, setBookingTime] = useState()
   const [clientPay, setClientPay] = useState(false)
   const [corpName, setCorpName] = useState('')
   const [cancelled, setCancelled] = useState(false)
   const [paid, setPaid] = useState(false)
   const [pay, setPay] = useState(false)
+  const [donePay, seDonePay] = useState(false)
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -87,19 +92,26 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
       const cId = query.booking_type === 'client' ? bookingData.client_id : bookingData.card_or_client_id
       const amount = query.payment_type === 'deposit' ? (bookingData.total_amount * query.percentage / 100).toFixed(2) : 
         (bookingData.total_amount - bookingData.paid_amount).toFixed(2)
+      
       setAmount(amount)
       setBookingTotal(bookingData.total_amount)
       if (query.booking_type === 'client') {
         getClient(cId)
         setBookingDate(bookingData.booking_date)
+        setBookingTime(localDate(bookingData.booking_date, bookingData.booking_start_time))  
         setClientPay(true)
+        setBookingType(BOOKING_TYPE.T)
       } else if (bookingData.booking_type === BOOKING_TYPE.P) {
         getClient(cId)
         setBookingDate(bookingData.event_list[0].booking_date)
+        setBookingTime(localDate(bookingData.event_list[0].booking_date, bookingData.event_list[0].booking_start_time))  
         setClientPay(true)
+        setBookingType(BOOKING_TYPE.P)
       } else {
         setBookingDate(bookingData.event_list[0].booking_date)
+        setBookingTime(localDate(bookingData.event_list[0].booking_date, bookingData.event_list[0].booking_start_time))  
         setCorpName(corpCardsObj[cId.toString()].name)
+        setBookingType(BOOKING_TYPE.C)
       }
     }
   }, [bookingData])
@@ -138,7 +150,12 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
         stripe_id: id
       }
   
-      updateBooking(bookingInfo, query.booking_type === 'client' ? BOOKING_TYPE.T : BOOKING_TYPE.C, null, true)
+      updateBooking(bookingInfo, bookingType, null, true)
+      //Payment successful. Set a reminder for the client. Corporate doesn't need a reminder.
+      if (clientPay) {
+        sendReminder(bookingType, query.booking_id, bookingTime, client.phone, client.name)
+      }
+      seDonePay(true)
     }
     else {
       alert("Your card was declined.")
@@ -171,7 +188,7 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
         <Typography variant="body1" align="left" color="textPrimary" gutterBottom>
           {`Booking total : $${bookingTotal}`}
         </Typography>            
-        <StripeForm stripePublicKey={stripePublicKey} handleCharge={submit} loggedIn={true} payMessage="Pay"/>
+        <StripeForm stripePublicKey={stripePublicKey} handleCharge={submit} loggedIn={!donePay} payMessage="Pay"/>
       </>}
     </Container>
   )

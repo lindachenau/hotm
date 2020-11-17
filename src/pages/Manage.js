@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef, useContext } from "react"
 import { Redirect, withRouter } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import IconButton from '@material-ui/core/IconButton'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import BookingCards from '../components/BookingCards'
 import { FaFileInvoiceDollar } from "react-icons/fa"
 import EditIcon from '@material-ui/icons/Edit'
@@ -10,6 +11,8 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever'
 import PaymentRequestForm from '../components/PaymentRequestForm'
 import CancelBookingForm from '../config/CancelBookingFormContainer'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
+import { BOOKING_STATUS } from '../utils/dataFormatter'
 
 const useStyles = makeStyles(theme => ({
   flex: {
@@ -18,10 +21,17 @@ const useStyles = makeStyles(theme => ({
   },
   grow: {
     flexGrow: 1,
-  }
+  },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center',
+    padding: 40
+  }  
 }))
 
 const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bookingType, prevActiveStep, setPrevActiveStep}) => {
+  const { bookingsData } = useContext(BookingsStoreContext)
+  const { bookingInProgress } = bookingsData
   // bookingType = bookingFilter.bookingType.name
   const [activeStep, setActiveStep] = useState(prevActiveStep)
   const didMountRef = useRef(false)
@@ -40,10 +50,10 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
   // disable EDIT, PAYMENT LINK and DELETE for completed bookings
   useEffect(() => {
     if (bookingType === BOOKING_TYPE.T && events.length > 0)
-      setCompleted(events[activeStep].complete)
+      setCompleted(events[activeStep].status === BOOKING_STATUS.COMPLETED || events[activeStep].status === BOOKING_STATUS.DELETED)
 
     if (bookingType !== BOOKING_TYPE.T && adminBookings.length > 0)
-      setCompleted(adminBookings[activeStep].complete)
+      setCompleted(adminBookings[activeStep].status === BOOKING_STATUS.COMPLETED || adminBookings[activeStep].status === BOOKING_STATUS.DELETED)
   }, [activeStep, adminBookings, events])
 
   const handleEdit = () => {
@@ -84,6 +94,11 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
           activeStep={activeStep}
           setActiveStep={setActiveStep}
         />
+        {bookingInProgress ?
+        <div className={classes.progress}>
+          <CircularProgress color='primary' />
+        </div>
+        :
         <div className={classes.flex}>
           <IconButton edge="start" color="primary" onClick={handleEdit} disabled={completed}>
             <EditIcon/>
@@ -96,7 +111,7 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
           <IconButton edge="start" color="primary" onClick={handleDelete} disabled={completed}>
             <DeleteForeverIcon/>
           </IconButton>           
-        </div>
+        </div>}
         <PaymentRequestForm 
           triggerOpen={triggerPaymentRequestForm}
           initOpen={false}

@@ -1,5 +1,7 @@
-import React, {useState} from 'react'
+import React, {useState, useContext} from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import { BookingsStoreContext } from './BookingsStoreProvider'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import Button from '@material-ui/core/Button'
 import {
   CardElement,
@@ -15,7 +17,11 @@ const useStyles = makeStyles(() => ({
   },
   card: {
     marginTop: 10,
-  }
+  },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center'
+  }  
 }))
 
 const createOptions = () => {
@@ -36,6 +42,8 @@ const createOptions = () => {
 }
 
 function CardForm ({loggedIn, stripe, handleCharge, payMessage}) {
+  const { bookingsData } = useContext(BookingsStoreContext)
+  const { bookingInProgress } = bookingsData
   const [errorMessage, setErrorMessage] = useState('')
   const classes = useStyles()
 
@@ -75,7 +83,12 @@ function CardForm ({loggedIn, stripe, handleCharge, payMessage}) {
         <div className={classes.stripe} role="alert">
           {errorMessage}
         </div>
-        <Button variant="contained" color="secondary" fullWidth type='submit' disabled={!loggedIn}>{payMessage}</Button>
+        {bookingInProgress ?
+        <div className={classes.progress}>
+          <CircularProgress color='primary' />
+        </div>
+        :
+        <Button variant="contained" color="secondary" fullWidth type='submit' disabled={!loggedIn}>{payMessage}</Button>}
       </form>
     </div>
   )

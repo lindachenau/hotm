@@ -26,7 +26,6 @@ import {
   UPDATE_BOOKING,
   CANCEL_BOOKING,
   RESET_BOOKING,
-  ASSIGN_ARTISTS,
   LOAD_BOOKING,
   SET_FROM_DATE,
   SET_TO_DATE,
@@ -39,6 +38,7 @@ import {
 
 import { sms_reminder_server, travel_time_url } from '../config/dataLinks'
 import axios from 'axios'
+import moment from 'moment'
 
 const initPriceFactors = {
   organic: false,
@@ -439,7 +439,7 @@ export const sendReminder = async (bookingType, bookingId, bookingDate, phoneNum
       data: {
         bookingType: bookingType,
         bookingId: bookingId,
-        bookingDate: bookingDate,
+        bookingDate: `${moment(bookingDate).format("dddd, DD/MM/YYYY")} ${moment(bookingDate).format('LT')}`,
         phoneNumber: phoneNumber,
         name: name
       }
