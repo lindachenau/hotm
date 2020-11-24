@@ -185,6 +185,9 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
         break                              
     case '/admin':
       title = 'Admin'
+      break
+    case '/payment':
+      title = 'Payment'
       break                              
     default:
       title = 'Home'

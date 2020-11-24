@@ -5,8 +5,7 @@ import SignoutForm from '../components/SignoutForm'
 
 const mapStateToProps = state => {
   return {
-    firstName: state.userInfo.firstName,
-    lastName: state.userInfo.lastName,
+    name: state.userInfo.name,
     email: state.userInfo.email
   }
 }

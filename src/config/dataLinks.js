@@ -81,6 +81,11 @@ export const email_verification_server = `${process.env.REACT_APP_HOTM_SERVER}/s
 export const sms_reminder_server = `${process.env.REACT_APP_HOTM_SERVER}/schedule`
 
 /*
+ * SMS reminder deletion running on Node.js deployed to AWS lambda
+ */
+export const delete_sms_reminder = `${process.env.REACT_APP_HOTM_SERVER}/deletereminder`
+
+/*
  * 12 hours auto cancellation timer running on Node.js deployed to AWS lambda
  */
 export const auto_cancellation_timer = `${process.env.REACT_APP_HOTM_SERVER}/cancellation-timer`

@@ -122,7 +122,7 @@ export default function Filter({
             multiArtists={false}
             setTags={setArtist}
             tags={artist}
-            label="Select artist"
+            label="Select therapist"
           />
         </div>
         <div className={classes.padding}>

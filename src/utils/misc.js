@@ -1,4 +1,8 @@
-import { contact_phone, payment_link_sender, auto_cancellation_timer } from '../config/dataLinks'
+import { contact_phone, payment_link_sender, auto_cancellation_timer, sms_reminder_server, delete_sms_reminder, travel_time_url } from '../config/dataLinks'
+import moment from 'moment'
+import axios from 'axios'
+import { localDate } from '../utils/dataFormatter'
+import { BOOKING_TYPE } from '../actions/bookingCreator'
 
  //Merge arr2 into arr1; If item with the same id exists in arr1, the item in arr2 is dropped.
   export const mergeArrays = (arr1, arr2) => {
@@ -114,3 +118,77 @@ export const setCancellationTimer = async(bookingType, bookingId) => {
 
   return status //success if OK
 }
+
+export const sendReminder = async (bookingType, bookingId, bookingDate, phoneNumber, name) => {
+  try {
+    const config = {
+      method: 'post',
+      headers: {"Content-Type": "application/json"},
+      url: sms_reminder_server,
+      data: {
+        bookingType: bookingType,
+        bookingId: bookingId,
+        bookingDate: bookingDate,
+        localDate: `${moment(bookingDate).format("dddd, DD/MM/YYYY")} ${moment(bookingDate).format('LT')}`,
+        phoneNumber: phoneNumber,
+        name: name
+      }
+    }
+    return await axios(config)
+  }
+  catch (error) {
+    console.error(error)
+  }
+}
+
+const deleteReminder = async (bookingType, bookingId) => {
+  try {
+    const config = {
+      method: 'post',
+      headers: {"Content-Type": "application/json"},
+      url: delete_sms_reminder,
+      data: {
+        bookingType: bookingType,
+        bookingId: bookingId
+      }
+    }
+    return await axios(config)
+  }
+  catch (error) {
+    console.error(error)
+  }
+}
+
+export const removeReminders = (bookingType, bookingId, eventList) => {
+  if (bookingType === BOOKING_TYPE.T) {
+    deleteReminder(bookingType, bookingId)
+  }
+  else if (bookingType === BOOKING_TYPE.P) {
+    let bTimes = []
+    for (const e of eventList) {
+      const time = localDate(e.booking_date, e.booking_start_time).getTime()
+      if (!bTimes.includes(time))
+        bTimes.push(time)
+    }
+    for (let i = 1; i <= bTimes.length; i++) {
+      deleteReminder(bookingType, `${bookingId}-${i}`)
+    }        
+  }
+}
+
+export const travelTime = async (artistId, address, bookingValue) => {
+  try {
+    const config = {
+      method: 'get',
+      headers: {
+        "Content-Type": "application/json"
+      },
+      url: `${travel_time_url}?artist_id=${artistId}&event_location=${address}&total_amount=${bookingValue}`
+    }
+    return await axios(config)
+  }
+  catch (error) {
+    console.error(error)
+  }
+}
+

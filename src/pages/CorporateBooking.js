@@ -149,7 +149,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
 
     //Disable adding new event before artist and corporate selection
     if (artist === null || corporate === null) {
-      alert('Select artist and corporate before creating an event.')
+      alert('Select therapist and corporate before creating an event.')
       return
     }             
   

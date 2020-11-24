@@ -8,7 +8,7 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { stripe_charge_server, bookings_url, admin_bookings_url } from '../config/dataLinks'
-import { sendReminder } from '../reducers/bookingInfo'
+import { sendReminder } from '../utils/misc'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 
@@ -45,13 +45,13 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
   const [bookingDate, setBookingDate] = useState('')
   const [bookingType, setBookingType] = useState(null)
   const [bookingTotal, setBookingTotal] = useState(0)
-  const [bookingTime, setBookingTime] = useState()
   const [clientPay, setClientPay] = useState(false)
   const [corpName, setCorpName] = useState('')
   const [cancelled, setCancelled] = useState(false)
   const [paid, setPaid] = useState(false)
   const [pay, setPay] = useState(false)
   const [donePay, seDonePay] = useState(false)
+  const [bookingTime, setBookingTime] = useState([])
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -98,18 +98,24 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
       if (query.booking_type === 'client') {
         getClient(cId)
         setBookingDate(bookingData.booking_date)
-        setBookingTime(localDate(bookingData.booking_date, bookingData.booking_start_time))  
+        setBookingTime(localDate(bookingData.booking_date, bookingData.booking_start_time))
         setClientPay(true)
         setBookingType(BOOKING_TYPE.T)
       } else if (bookingData.booking_type === BOOKING_TYPE.P) {
         getClient(cId)
         setBookingDate(bookingData.event_list[0].booking_date)
-        setBookingTime(localDate(bookingData.event_list[0].booking_date, bookingData.event_list[0].booking_start_time))  
+        let bTimes = []
+        for (const e of bookingData.event_list) {
+          const time = localDate(e.booking_date, e.booking_start_time)
+          const tick = time.getTime()
+          if (!bTimes.some(bTime => bTime.getTime() === tick))
+            bTimes.push(time)
+        }
+        setBookingTime(bTimes)
         setClientPay(true)
         setBookingType(BOOKING_TYPE.P)
       } else {
         setBookingDate(bookingData.event_list[0].booking_date)
-        setBookingTime(localDate(bookingData.event_list[0].booking_date, bookingData.event_list[0].booking_start_time))  
         setCorpName(corpCardsObj[cId.toString()].name)
         setBookingType(BOOKING_TYPE.C)
       }
@@ -153,7 +159,9 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
       updateBooking(bookingInfo, bookingType, null, true)
       //Payment successful. Set a reminder for the client. Corporate doesn't need a reminder.
       if (clientPay) {
-        sendReminder(bookingType, query.booking_id, bookingTime, client.phone, client.name)
+        for (let i = 1; i <= bookingTime.length; i++) {
+          sendReminder(bookingType, `${query.booking_id}-${i}`, bookingTime[i-1], client.phone, client.name)
+        }
       }
       seDonePay(true)
     }

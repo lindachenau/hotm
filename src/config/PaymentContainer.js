@@ -10,7 +10,7 @@ const mapStateToProps = state => {
     bookingDateAddr: state.bookingDateAddr,
     priceFactors: state.priceFactors,
     userId: state.userInfo.id,
-    userName: state.userInfo.firstName + ' ' + state.userInfo.lastName,
+    userName: state.userInfo.name,
     loggedIn: state.userInfo.loggedIn,
     clientEmail: state.userInfo.email,
     phone: state.userInfo.phone,

@@ -11,10 +11,17 @@ const ServiceMenu = ({
   pensionerRate, 
   toggleOrganic, 
   togglePensionerRate, 
+  skills=[],
   artistBooking }) => {
   
   const items = services.items
   const cats = services.cats
+  const displayCat = (catId) => {
+    if (skills.length === 0 || skills.includes(catId))
+      return true
+    else
+      return false
+  }
   
   return (
     <>
@@ -31,6 +38,7 @@ const ServiceMenu = ({
         label="Use organic products"
       />
       {cats.map( cat => 
+        displayCat(cat.catId) && 
         <ServicePerCat
           theme={theme}
           items={items}

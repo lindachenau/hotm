@@ -9,7 +9,7 @@ import TextField from '@material-ui/core/TextField'
 import SigninForm from '../config/SigninFormContainer'
 import moment from 'moment'
 import { stripe_charge_server } from '../config/dataLinks'
-import { sendReminder } from '../reducers/bookingInfo'
+import { sendReminder } from '../utils/misc'
 import { BOOKING_TYPE, PUT_OPERATION  } from '../actions/bookingCreator'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY

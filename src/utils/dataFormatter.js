@@ -37,6 +37,7 @@ export function normaliseArtists(artistArr)
         title: artistArr[i].title,
         offDays: offDays(artistArr[i].working_days),
         bio: artistArr[i].bio,
+        skills: artistArr[i].skill_categories.split(",").map(x => parseInt(x)),
         hashtag: artistArr[i].hashtag ? artistArr[i].hashtag.replace('#', '') : "haironthemove2u"
       }
     }
@@ -120,13 +121,14 @@ export function normaliseServices(serviceArr)
       }
     }
     cats.push({
-      "name": serviceArr[i].cat,
-      "list": list
+      name: serviceArr[i].cat,
+      list: list,
+      catId : i + 1
     })
   }
   return { 
-    "items": services, 
-    "cats": cats
+    items: services, 
+    cats: cats
   }
 }
 

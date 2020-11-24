@@ -8,6 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { stripe_refund_server } from '../config/dataLinks'
+import { removeReminders } from '../utils/misc'
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -52,8 +53,10 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
   }, [bookingType, adminBooking, clientBooking])
 
   const handleConfirm = async() => {
+
     const cancel = () => {
       cancelBooking({booking_id: bookingId}, bookingType)
+      removeReminders(bookingType, bookingId, adminBooking.origEventList)
       alert(`Deposit $${deposit} was refunded successfully!`)
     }
 
@@ -89,6 +92,7 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
       }
     } else {
       cancelBooking({booking_id: bookingId}, bookingType)
+      removeReminders(bookingType, bookingId, adminBooking.origEventList)
       alert(`Booking id: ${bookingId} was cancelled successfully!`)
     }
     

@@ -100,6 +100,11 @@ const TherapistBooking = ({
   }, [])  
 
   useEffect(() => {
+    if (artist)
+      resetBooking()
+  }, [artist])
+
+  useEffect(() => {
     const theArtist = Object.values(artists).filter(artist => artist.email === userEmail)
     if (artistSignedIn && theArtist.length > 0) {
       setArtist(theArtist[0])
@@ -190,7 +195,7 @@ const TherapistBooking = ({
 
     //Disable adding new event before artist, package and client selection
     if (artist === null || artistBookingItems.length === 0 || client === null) {
-      alert('Select artist, service items and client before creating an event.')
+      alert('Select therapist, service items and client before creating an event.')
       return
     }             
 
@@ -342,7 +347,7 @@ const TherapistBooking = ({
                 </Button>
                 </div>}                   
             <div className={classes.padding}>
-              <ServiceMenu services={services} artistBooking={true} />
+              <ServiceMenu services={services} artistBooking={true} skills={artist ? artist.skills : []}/>
             </div>
           </Grid>
           <Grid item xs={12} md={8}>                     

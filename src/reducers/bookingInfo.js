@@ -36,10 +36,6 @@ import {
   BOOKING_TYPE
 } from '../actions/bookingCreator'
 
-import { sms_reminder_server, travel_time_url } from '../config/dataLinks'
-import axios from 'axios'
-import moment from 'moment'
-
 const initPriceFactors = {
   organic: false,
   pensionerRate: false
@@ -427,43 +423,6 @@ export function bookingFilter(state = initBookingFilter, action) {
     }    
     default:
       return state
-  }
-}
-
-export const sendReminder = async (bookingType, bookingId, bookingDate, phoneNumber, name) => {
-  try {
-    const config = {
-      method: 'post',
-      headers: {"Content-Type": "application/json"},
-      url: sms_reminder_server,
-      data: {
-        bookingType: bookingType,
-        bookingId: bookingId,
-        bookingDate: `${moment(bookingDate).format("dddd, DD/MM/YYYY")} ${moment(bookingDate).format('LT')}`,
-        phoneNumber: phoneNumber,
-        name: name
-      }
-    }
-    return await axios(config)
-  }
-  catch (error) {
-    console.error(error)
-  }
-}
-
-export const travelTime = async (artistId, address, bookingValue) => {
-  try {
-    const config = {
-      method: 'get',
-      headers: {
-        "Content-Type": "application/json"
-      },
-      url: `${travel_time_url}?artist_id=${artistId}&event_location=${address}&total_amount=${bookingValue}`
-    }
-    return await axios(config)
-  }
-  catch (error) {
-    console.error(error)
   }
 }
 

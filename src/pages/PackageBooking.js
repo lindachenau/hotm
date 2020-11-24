@@ -146,7 +146,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
 
     //Disable adding new event before artist, package and client selection
     if (artist === null || bookingPackage === null || client === null) {
-      alert('Select artist, package and client before creating an event.')
+      alert('Select therapist, package and client before creating an event.')
       return
     }       
   

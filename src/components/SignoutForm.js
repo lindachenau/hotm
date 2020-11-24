@@ -30,7 +30,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export default function SignoutForm({firstName, lastName, email, triggerOpen, signoutUser, resetBooking}) {
+export default function SignoutForm({name, email, triggerOpen, signoutUser, resetBooking}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
 
@@ -67,7 +67,7 @@ export default function SignoutForm({firstName, lastName, email, triggerOpen, si
       </div>
       <DialogContent className={classes.container2}>
         <Typography variant='h6' align='center'>
-          { `${firstName} ${lastName}` }
+          {name}
         </Typography>
         <Typography variant='body2' align='center'>
           {email}

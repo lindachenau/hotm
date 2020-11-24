@@ -8,7 +8,7 @@ import AddArtists from '../components/AddArtists'
 import LocationSearchInput from './LocationSearchInput'
 
 import { available_artists_url, contact_phone } from '../config/dataLinks'
-import { travelTime } from '../reducers/bookingInfo'
+import { travelTime } from '../utils/misc'
 import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
@@ -114,7 +114,7 @@ const TherapistSelection = ({
           label="Choose therapist"
         />
       </div>
-      <ServiceMenu services={services} artistBooking={artistBooking} />
+      <ServiceMenu services={services} artistBooking={artistBooking} skills={therapist ? therapist.skills : []}/>
       <Info/>
       <div className={classes.paddingT}>
         <LocationSearchInput address={address} changeAddr={handleAddrChange}/>

@@ -17,6 +17,11 @@ const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBook
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  useEffect(() => {
+    if (therapist)
+      resetBooking()
+  }, [therapist])
+  
   return (
     <React.Fragment>
       <ChooseTherapistSteps activeStep={bookingStage}/>
