@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog } from "react-icons/fa"
+import { FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog } from "react-icons/fa"
 import EmojiNatureIcon from '@material-ui/icons/EmojiNature'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
@@ -89,7 +89,6 @@ function TherapistEventCard ({ event }) {
 
 function AdminEventCard ({ event }) {
   const classes = useStyles()
-  let itemKey = 0
 
   return (
     <Paper className={classes.paper} elevation={6}>

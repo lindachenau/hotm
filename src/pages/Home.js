@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import AddArtists from '../components/AddArtists'
 import { Typography } from '@material-ui/core'
-import { searchBooking } from '../actions/bookingCreator'
 
 const Home = ({ theme, resetBooking, enableStore, searchBooking, artists }) => {
   const logo = require('../images/HBLC-Updated-logo-600.png')

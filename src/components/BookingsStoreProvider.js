@@ -6,8 +6,6 @@ import { bookings_url, admin_bookings_url, clients_url, artists_url, services_ur
 import axios from 'axios'
 import moment from 'moment'
 import { BOOKING_TYPE } from "../actions/bookingCreator"
-import { GoMail } from "react-icons/go"
-
 
 /*
  * Booking store provider handles all async requests to services, artists, bookings and clients APIs.

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'
+import React, { useState } from 'react'
 import StripeForm from './StripeForm'
 import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'

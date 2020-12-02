@@ -6,10 +6,7 @@ import Alert from '@material-ui/lab/Alert'
 import ServiceMenu from '../config/ServiceMenuContainer'
 import AddArtists from '../components/AddArtists'
 import LocationSearchInput from './LocationSearchInput'
-
-import { available_artists_url, contact_phone } from '../config/dataLinks'
 import { travelTime } from '../utils/misc'
-import moment from 'moment'
 
 const useStyles = makeStyles(theme => ({
   flex: {
