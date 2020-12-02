@@ -1,4 +1,4 @@
-import { contact_phone, payment_link_sender, auto_cancellation_timer, sms_reminder_server, delete_sms_reminder, travel_time_url } from '../config/dataLinks'
+import { contact_phone, payment_link_sender, auto_cancellation_timer, sms_reminder_server, delete_sms_reminder, travel_time_url, email_verification_server,  } from '../config/dataLinks'
 import moment from 'moment'
 import axios from 'axios'
 import { localDate } from '../utils/dataFormatter'
@@ -141,7 +141,17 @@ export const sendReminder = async (bookingType, bookingId, bookingDate, phoneNum
   }
 }
 
-const deleteReminder = async (bookingType, bookingId) => {
+export const sendReminders = async (bookingType, bookingId, bookingTime, phoneNumber, name) => {
+  if (bookingType === BOOKING_TYPE.T) {
+    sendReminder(bookingType, bookingId, bookingTime[0], phoneNumber, name)
+  } else {
+    for (let i = 1; i <= bookingTime.length; i++) {
+      sendReminder(bookingType, `${bookingId}-${i}`, bookingTime[i-1], phoneNumber, name)
+    }
+  }
+}
+
+export const deleteReminder = async (bookingType, bookingId) => {
   try {
     const config = {
       method: 'post',
@@ -159,9 +169,9 @@ const deleteReminder = async (bookingType, bookingId) => {
   }
 }
 
-export const removeReminders = (bookingType, bookingId, eventList) => {
+export const removeReminders = async (bookingType, bookingId, eventList) => {
   if (bookingType === BOOKING_TYPE.T) {
-    deleteReminder(bookingType, bookingId)
+    await deleteReminder(bookingType, bookingId)
   }
   else if (bookingType === BOOKING_TYPE.P) {
     let bTimes = []
@@ -171,7 +181,7 @@ export const removeReminders = (bookingType, bookingId, eventList) => {
         bTimes.push(time)
     }
     for (let i = 1; i <= bTimes.length; i++) {
-      deleteReminder(bookingType, `${bookingId}-${i}`)
+      await deleteReminder(bookingType, `${bookingId}-${i}`)
     }        
   }
 }
@@ -189,6 +199,27 @@ export const travelTime = async (artistId, address, bookingValue) => {
   }
   catch (error) {
     console.error(error)
+  }
+}
+
+export const sendVerification = async (email, setKey) => {
+  try {
+    const reqConfig = {
+      method: 'post',
+      headers: {"Content-Type": "application/json"},
+      url: email_verification_server,
+      data: {
+        email: email
+      }
+    }
+
+    const sendRes = await axios(reqConfig)
+    setKey(sendRes.data.code)
+    return true
+  }
+  catch (error) {
+    alert(error)
+    return false
   }
 }
 

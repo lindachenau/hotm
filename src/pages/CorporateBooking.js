@@ -15,7 +15,7 @@ import AddCorporate from '../components/DropdownList'
 import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
 import EventManager from '../components/EventManager'
-import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onSaveEventDetails, noEvents } from '../utils/eventFunctions'
+import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onView, onSaveEventDetails, noEvents } from '../utils/eventFunctions'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 import CircularProgress from '@material-ui/core/CircularProgress'
@@ -301,6 +301,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
               resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               newEvent={newEvent}
               onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
+              onView={(view) => onView(view, setFromDate, setToDate, today)}
               triggerSaveAllDrafts={triggerSaveAllDrafts}
               triggerDeleteEvent={triggerDeleteEvent}
               eventToDelete={draftEvent? draftEvent.id : null}

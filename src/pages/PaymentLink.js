@@ -8,7 +8,7 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { stripe_charge_server, bookings_url, admin_bookings_url } from '../config/dataLinks'
-import { sendReminder } from '../utils/misc'
+import { sendReminders } from '../utils/misc'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 
@@ -158,11 +158,9 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
   
       updateBooking(bookingInfo, bookingType, null, true)
       //Payment successful. Set a reminder for the client. Corporate doesn't need a reminder.
-      if (clientPay) {
-        for (let i = 1; i <= bookingTime.length; i++) {
-          sendReminder(bookingType, `${query.booking_id}-${i}`, bookingTime[i-1], client.phone, client.name)
-        }
-      }
+      if (clientPay) 
+        sendReminders(bookingType, query.booking_id, bookingTime, client.phone, client.name)
+      
       seDonePay(true)
     }
     else {

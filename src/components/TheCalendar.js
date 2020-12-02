@@ -25,6 +25,7 @@ const TheCalendar = ({
   resizeEvent,
   newEvent,
   onNavigate,
+  onView,
   triggerSaveAllDrafts, 
   triggerDeleteEvent, 
   eventToDelete
@@ -68,6 +69,7 @@ const TheCalendar = ({
       onSelectSlot={newEvent}
       onSelectEvent={onSelectEvent}
       onNavigate={onNavigate}
+      onView={onView}
       views={['month', 'week', 'day']}
       defaultView={Views.WEEK}
       date={defaultDate}

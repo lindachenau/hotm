@@ -16,12 +16,13 @@ import EventForm from '../components/EventForm'
 import ServiceMenu from '../config/ServiceMenuContainer'
 import ArtistBookingItems from '../components/ArtistBookingItems'
 import EventManager from '../components/EventManager'
-import { mergeThenSort, resizeEvent, moveEvent, onNavigate, onSaveEventDetails } from '../utils/eventFunctions'
+import { mergeThenSort, resizeEvent, moveEvent, onNavigate, onView, onSaveEventDetails } from '../utils/eventFunctions'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { validateTherapistBooking, sendPaymentLink, setCancellationTimer } from '../utils/misc'
 import { payment_link_base } from '../config/dataLinks'
+import { sendReminder, deleteReminder } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
 
@@ -87,7 +88,8 @@ const TherapistBooking = ({
   const [estimatedDuration, setEstimatedDuration] = useState(0)
   
   useEffect(() => {
-    resetBooking()
+    if (!location.state) //booking mode
+      resetBooking()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -100,7 +102,7 @@ const TherapistBooking = ({
   }, [])  
 
   useEffect(() => {
-    if (artist)
+    if (artist && !location.state) //Only reset booking on artist change in booking mode
       resetBooking()
   }, [artist])
 
@@ -109,11 +111,11 @@ const TherapistBooking = ({
     if (artistSignedIn && theArtist.length > 0) {
       setArtist(theArtist[0])
 
-      if (!location.state ) {
+      if (!location.state) { //booking mode
         setCalendarId(theArtist[0].email)
         setFromDate(moment(today).startOf('week')._d)
         setToDate(moment(today).endOf('week')._d)        
-      } else {
+      } else { //redirect from Manage bookings or MyCalendar
         let booking
         if (location.state.edit) {
           setMode('edit')
@@ -236,6 +238,9 @@ const TherapistBooking = ({
   }
 
   const handleBook = async() => {
+    let bookingData = {}
+    const event = draftEvents[0]
+
     const callBack = (bookingId) => {
       const message = mode === 'book' ? 'Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.' :
         'Updating successful'
@@ -246,6 +251,9 @@ const TherapistBooking = ({
         const paymentLink = `${payment_link_base}?booking_type=client&booking_id=${bookingId}&payment_type=deposit&percentage=30`
         sendPaymentLink(client.email, paymentLink, "Pay the deposit", true)
         setCancellationTimer(BOOKING_TYPE.T, bookingId)
+      } else {
+        deleteReminder(BOOKING_TYPE.T, bookingId)
+        sendReminder(BOOKING_TYPE.T, bookingId, event.bookingTime, client.phone, client.name)
       }
       
       alert(message)
@@ -254,10 +262,6 @@ const TherapistBooking = ({
       if (mode !== 'book')
         setBrowsing(true)
     }
-
-    let bookingData = {}
-    
-    const event = draftEvents[0]
 
     const { valid, reason } = await validateTherapistBooking(priceFactors.pensionerRate, event.start)
     if (!valid) {
@@ -360,6 +364,7 @@ const TherapistBooking = ({
               resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               newEvent={newEvent}
               onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
+              onView={(view) => onView(view, setFromDate, setToDate, today)}
               triggerSaveAllDrafts={triggerSaveAllDrafts}
               triggerDeleteEvent={triggerDeleteEvent}
               eventToDelete={draftEvent? draftEvent.id : null}

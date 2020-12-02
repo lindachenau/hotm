@@ -6,7 +6,9 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
-import { reset_pw_url } from '../config/dataLinks'
+import { clients_url, reset_password_url } from '../config/dataLinks'
+import { sendVerification } from '../utils/misc'
+import EmailVeriForm from './EmailVeriForm'
 import axios from 'axios'
 
 const useStyles = makeStyles(() => ({
@@ -34,7 +36,11 @@ const useStyles = makeStyles(() => ({
 export default function ForgetPWForm({triggerOpen}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
-  const [userLogin, setUserLogin] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [triggerEmailConfirm, setTriggerEmailConfirm] = useState(false)
+  const [key, setKey] = useState()
+  const [userId, setUserId] = useState(null)
 
   const classes = useStyles()
 
@@ -49,54 +55,110 @@ export default function ForgetPWForm({triggerOpen}) {
     setOpen(false)
   }
 
-  const onChangeUserLogin = event => {
-    setUserLogin(event.target.value)
+  const onChangeEmail = event => {
+    setEmail(event.target.value.trim())
+  }
+
+  const onChangePassword = event => {
+    setPassword(event.target.value.trim())
+  }  
+
+  const handleConfirm = code => {
+    const secret = code.join('')
+    if (key === secret) {
+      setTriggerEmailConfirm(!triggerEmailConfirm)
+      handleResetPW()
+    }
+    else {
+      alert('The code you entered is incorrect.')
+    }
   }
 
   const handleResetPW = async () => {
-    const url = reset_pw_url + userLogin
-
-    let response = await axios(url)
-
-    if (response.status === 200) {
-      let data = response.data
-
-      if (data.status === 'ok') {
-        alert('An email to reset your password has been sent to you.')
-        setOpen(false)
-      }
-      else {
-        alert(data.error)
+    const config = {
+      method: 'post',
+      headers: {"Content-Type": "application/json"},
+      url: reset_password_url,
+      data: {
+        client_id: userId,
+        password: password
       }
     }
-    else {
-      alert('username or email not found')
+
+    try {
+      let result = await axios(config)
+      alert('Your password has been reset successfully.')
+      setOpen(false)
+    } catch (err) {
+      console.log(err)
     }
   }
 
+  const handleSubmit = async () => {
+    //Check if the user exists first
+    const config = {
+      method: 'get',
+      headers: { 
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      },
+      url: clients_url + '?name=' + email
+    }
+
+    try {
+      let result = await axios(config)
+      if (result.data.length !== 1) {
+        alert('The email you entered does not exist in our user database.')
+        return
+      }
+      setUserId(result.data[0].id)
+    } catch (err) {
+      console.log(err)
+      return
+    }    
+
+    const sent = await sendVerification(email, setKey)
+    
+    if (!sent) return
+
+    //open the confirmation dialog
+    setTriggerEmailConfirm(!triggerEmailConfirm)
+  }
+
   return (
-    <Dialog open={open}>
-    <DialogContent>
-        <DialogContentText>
-          To reset password, please enter your username or email.
-        </DialogContentText>
-        <TextField
-          autoFocus
-          margin="dense"
-          label="username or email"
-          type="email"
-          fullWidth
-          onChange={onChangeUserLogin}
-        />
-      </DialogContent>
-      <DialogActions className={classes.button}>
-        <Button variant="contained" onClick={handleClose} color="secondary" fullWidth>
-          Cancel
-        </Button>
-        <Button variant="contained" onClick={handleResetPW} color="secondary" fullWidth>
-          Submit
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <>
+      <Dialog open={open}>
+      <DialogContent>
+          <DialogContentText>
+            To reset password, please enter your email.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="email"
+            type="email"
+            fullWidth
+            onChange={onChangeEmail}
+          />
+          <TextField
+            required
+            margin="dense"
+            label="password"
+            type="password"
+            fullWidth
+            defaultValue={password}
+            onChange={onChangePassword}
+          />
+        </DialogContent>
+        <DialogActions className={classes.button}>
+          <Button variant="contained" onClick={handleClose} color="secondary" fullWidth>
+            Cancel
+          </Button>
+          <Button variant="contained" onClick={handleSubmit} color="secondary" fullWidth>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <EmailVeriForm email={email} handleConfirm={handleConfirm} triggerOpen={triggerEmailConfirm}/>
+    </>
   )
 }

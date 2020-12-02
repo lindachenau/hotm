@@ -8,7 +8,7 @@ import moment from 'moment'
 import axios from "axios"
 import Container from '@material-ui/core/Container'
 import EventManager from '../components/EventManager'
-import { onNavigate } from '../utils/eventFunctions'
+import { onNavigate, onView } from '../utils/eventFunctions'
 import { booking_events_url } from '../config/dataLinks' 
 import { localDate, getEvents } from '../utils/dataFormatter'
 import CheckoutForm from '../components/CheckoutForm'
@@ -57,7 +57,7 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
 
       const bookingEvent = (await axios(config)).data
 
-      if (bookingEvent.admin_booking_id) {
+      if (bookingEvent.admin_booking_id) { //Corporate or package bookings
         setBookingEvent({
           adminBooking: true,
           id: bookingEvent.admin_booking_id,
@@ -115,6 +115,7 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
           resizeEvent={null}
           newEvent={null}
           onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
+          onView={(view) => onView(view, setFromDate, setToDate, today)}
           triggerSaveAllDrafts={null}
           triggerDeleteEvent={null}
           eventToDelete={null}

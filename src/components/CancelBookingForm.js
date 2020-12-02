@@ -56,7 +56,7 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
 
     const cancel = () => {
       cancelBooking({booking_id: bookingId}, bookingType)
-      removeReminders(bookingType, bookingId, adminBooking.origEventList)
+      removeReminders(bookingType, bookingId, adminBooking?.origEventList)
       alert(`Deposit $${deposit} was refunded successfully!`)
     }
 
@@ -92,7 +92,7 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
       }
     } else {
       cancelBooking({booking_id: bookingId}, bookingType)
-      removeReminders(bookingType, bookingId, adminBooking.origEventList)
+      removeReminders(bookingType, bookingId, adminBooking?.origEventList)
       alert(`Booking id: ${bookingId} was cancelled successfully!`)
     }
     

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useReducer } from 'react'
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import { clients_url, access_token } from '../config/dataLinks'
+import { clients_url } from '../config/dataLinks'
 import useDebounce from '../utils/useDebounce'
 import axios from "axios"
 
@@ -45,8 +45,7 @@ export default function AddClient({client, setClient, label, disabled=false}) {
 
       const config = {
         method: 'get',
-        headers: { 
-          'Authorization': access_token,
+        headers: {
           "Cache-Control": "no-cache, no-store, must-revalidate"
         },
         url: clients_url + '?name=' + searchKey

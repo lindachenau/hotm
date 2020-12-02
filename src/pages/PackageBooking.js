@@ -16,12 +16,13 @@ import AddClient from '../components/AddClient'
 import EventForm from '../components/EventForm'
 import EventDrafts from '../components/EventDrafts'
 import EventManager from '../components/EventManager'
-import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onSaveEventDetails, noEvents } from '../utils/eventFunctions'
+import { mergeThenSort, onSelectEvent, resizeEvent, moveEvent, onNavigate, onView, onSaveEventDetails, noEvents } from '../utils/eventFunctions'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { sendPaymentLink, setCancellationTimer } from '../utils/misc'
 import { payment_link_base } from '../config/dataLinks'
+import { sendReminders, removeReminders } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
 
@@ -179,6 +180,9 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
   }
   
   const handleBook = () => {
+    let bookingData = {}
+    let eventList = []
+
     const callBack = (bookingId) => {
       const message = mode === 'book' ? 'Booking successful! A deposit payment link has been sent to the client. Booking will be automatically cancelled if not paid within 12 hours.' :
       'Updating successful'      
@@ -189,6 +193,30 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
         const paymentLink = `${payment_link_base}?booking_type=admin&booking_id=${bookingId}&payment_type=deposit&percentage=30`
         sendPaymentLink(client.email, paymentLink, "Pay the deposit", true)
         setCancellationTimer(BOOKING_TYPE.P, bookingId)
+      } else {
+        removeReminders(BOOKING_TYPE.P, adminBooking.id, adminBooking.origEventList)
+        //Find new booking times
+        let eventTime = {}
+        for (const e of adminBooking.origEventList) 
+          eventTime[e.event_id] = localDate(e.booking_date, e.booking_start_time)
+        
+        for (const draft of draftEvents) {
+          if (draft.toBeDeleted && !draft.id.toString().includes('draft'))
+            delete eventTime[draft.id]
+          else  
+            eventTime[draft.id] = draft.bookingTime
+        }
+
+        //Fine unique booking times
+        const bTimeArr = Object.values(eventTime)
+        let bookingTime = []
+        for (const time of bTimeArr) {
+          const tick = time.getTime()
+          if (!bookingTime.some(bTime => bTime.getTime() === tick))
+          bookingTime.push(time)
+        }
+
+        sendReminders(BOOKING_TYPE.P, adminBooking.id, bookingTime, client.phone, client.name)
       }
 
       alert(message)
@@ -197,7 +225,6 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
       setBrowsing(true)      
     }
 
-    let bookingData = {}
     const itemNum = bookingPackage.id
     bookingData.booking_type = BOOKING_TYPE.P
     bookingData.card_or_client_id = client.id
@@ -205,7 +232,6 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
     bookingData.booking_artist_id = booingArtistId
     bookingData.total_amount = services.items[itemNum.toString()].price
     
-    let eventList = []
     draftEvents.forEach(draft => {
       const existingEvent = !draft.id.toString().includes('draft')
       let event = {}
@@ -319,6 +345,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
               resizeEvent={({event, start, end}) => resizeEvent(event, start, end, setEvents, draftEvents, setDraftEvents)}
               newEvent={newEvent}
               onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
+              onView={(view) => onView(view, setFromDate, setToDate, today)}
               triggerSaveAllDrafts={triggerSaveAllDrafts}
               triggerDeleteEvent={triggerDeleteEvent}
               eventToDelete={draftEvent? draftEvent.id : null}

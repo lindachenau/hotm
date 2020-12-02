@@ -24,6 +24,7 @@ import moment from 'moment'
 import { sendPaymentLink } from '../utils/misc'
 import { payment_link_base } from '../config/dataLinks'
 import CheckoutPaymentForm from '../components/CheckoutPaymentForm'
+import { BOOKING_STATUS } from '../utils/dataFormatter'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -122,9 +123,9 @@ export default function CheckoutForm({
   const [actualStart, setActualStart] = useState(null)
   const [actualEnd, setActualEnd] = useState(null)
   const [checkoutComment, setCheckoutComment] = useState('')
+  const [checkedOut, setCheckedOut] = useState(false)
   const { adminBooking } = event
   const futureEvent = event.end ? event.end.getTime() > (new Date).getTime() : false
-  const checkedOut = event.status ? (event.status === 'checkout' && event.actualStart && event.actualEnd) : false
   const [triggerCheckoutPaymentForm, setTriggerCheckoutPaymentForm] = useState(false)
 
   const classes = useStyles(theme)
@@ -147,6 +148,13 @@ export default function CheckoutForm({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [triggerOpen, initOpen])
+
+  useEffect(() => {
+    if (event.adminBooking)
+      setCheckedOut(event.status === 'checkout' && event.actualStart && event.actualEnd)
+    else 
+      setCheckedOut(event.status === BOOKING_STATUS.COMPLETED && event.actualStart && event.actualEnd)
+  }, [event])
 
   const handleCheckout = () => {
     const bookingData = {

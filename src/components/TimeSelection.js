@@ -18,7 +18,7 @@ import HelpIcon from '@material-ui/icons/Help'
 import Button from '@material-ui/core/Button'
 import EventManager from './EventManager'
 import EventForm from '../components/EventForm'
-import { moveEvent, onNavigate, onSaveEventDetails, mergeThenSort } from '../utils/eventFunctions'
+import { moveEvent, onNavigate, onView, onSaveEventDetails, mergeThenSort } from '../utils/eventFunctions'
 import { validateClientBooking } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
@@ -234,6 +234,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
             resizeEvent={null}
             newEvent={newEvent}
             onNavigate={(date, view) => onNavigate(date, view, setFromDate, setToDate, setToday)}
+            onView={(view) => onView(view, setFromDate, setToDate, today)}
             triggerSaveAllDrafts={null}
             triggerDeleteEvent={triggerDeleteEvent}
             eventToDelete={draftEvent? draftEvent.id : null}

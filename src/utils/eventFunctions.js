@@ -87,6 +87,22 @@ export const onNavigate = (date, view, setFromDate, setToDate, setToday) => {
   }
 }
 
+export const onView = (view, setFromDate, setToDate, today) => {
+  if (view === 'month') {
+    const start = moment(today).startOf('month').startOf('week')._d
+    const end = moment(today).endOf('month').endOf('week')._d
+    setFromDate(start)
+    setToDate(end)      
+  }
+
+  if (view === 'week') {
+    const start = moment(today).startOf('week')._d
+    const end = moment(today).endOf('week')._d
+    setFromDate(start)
+    setToDate(end)      
+  }
+}
+
 export const noEvents = (mode, adminBooking, draftEvents) => {
   if (draftEvents.length === 0)
     return true

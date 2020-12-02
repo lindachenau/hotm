@@ -6,7 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
-import { register_nonce_url, register_url, update_user_meta_url, email_verification_server, user_url, access_token } from '../config/dataLinks'
+import { register_nonce_url, register_url, update_user_meta_url, user_url, access_token } from '../config/dataLinks'
+import { sendVerification } from '../utils/misc'
 import axios from 'axios'
 import EmailVeriForm from './EmailVeriForm'
 
@@ -178,27 +179,6 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     return false
   }
 
-  const sendVerification = async () => {
-    try {
-      const reqConfig = {
-        method: 'post',
-        headers: {"Content-Type": "application/json"},
-        url: email_verification_server,
-        data: {
-          email: email
-        }
-      }
-
-      const sendRes = await axios(reqConfig)
-      setKey(sendRes.data.code)
-      return true
-    }
-    catch (error) {
-      alert(error)
-      return false
-    }
-  }
-
   const handleConfirm = code => {
     const secret = code.join('')
     if (key === secret) {
@@ -314,13 +294,12 @@ export default function RegisterForm({triggerOpen, signinUser}) {
      * username and email are unique. Now verify email by sending a verification link to email.
      * Call EMAIL_VERIFICATION server to do so.
      */ 
-    const sent = await sendVerification()
+    const sent = await sendVerification(email, setKey)
     
     if (!sent) return
 
     //open the confirmation dialog
     setTriggerEmailConfirm(!triggerEmailConfirm)
-
   }
 
   return (
