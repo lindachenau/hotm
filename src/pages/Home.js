@@ -46,6 +46,7 @@ const Home = ({ theme, resetBooking, enableStore, searchBooking, artists }) => {
     //Pre-fetch client booking events in the background
     enableStore()
     searchBooking()
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [])
 
   useEffect(() => {
@@ -61,6 +62,7 @@ const Home = ({ theme, resetBooking, enableStore, searchBooking, artists }) => {
         })
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [therapist])
 
   return (

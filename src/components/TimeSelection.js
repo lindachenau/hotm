@@ -94,11 +94,13 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
 
   useEffect(() => {
     setDraftEvent(null)
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [triggerDeleteEvent])
 
   useEffect(() => {
     if (events.length > 0 && events[0].type !== 'draft')
       slots2CheckConflicts(mergeThenSort(slots, events))
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [events])
 
   const onSelectEvent = (event) => {

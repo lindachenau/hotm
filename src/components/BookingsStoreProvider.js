@@ -134,6 +134,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
       setBookingUrl(newFilter)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [fromDate, toDate, bookingType, artistId, clientId, corporateId])
 
   const artistsData = useAxiosFetch(artists_url, [], 'get', {}, null, artistsTrigger)
@@ -144,6 +145,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
       setArtists(normaliseArtists(artistsData.data))
       setArtistsFetched(true)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [artistsData.data])
 
   let bookingsData = useAxiosCRUD(bookingUrl, {}, bookingRequestMethod, bookingTypeName, data, callMe, bookingTrigger, storeEnabled)
@@ -229,8 +231,8 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
     setEvents(getEvents(bookingsData.data, artists, clients, services.items))
     setEventsFetched(true)
 
+  // Retrieval is triggered by clientsFetchTrigger while booking update is triggered by bookingsData.data  
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // Retrieval is triggered by clientsFetchTrigger while booking update is triggered by bookingsData.data
   }, [clientsFetchTrigger, bookingsData.data, artists, services])
   
   //regenerate events whenever bookings data are updated

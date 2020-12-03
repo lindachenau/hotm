@@ -84,7 +84,7 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
 
     enableStore()
     fetchBooking()
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [])
 
   useEffect(() => {
@@ -120,11 +120,13 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
         setBookingType(BOOKING_TYPE.C)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [bookingData])
 
   useEffect(() => {
     if (bookingData && !paid && !cancelled)
       setPay(true)
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [bookingData])
 
   const submit = async (token) => {

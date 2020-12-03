@@ -20,6 +20,7 @@ const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBook
   useEffect(() => {
     if (therapist)
       resetBooking()
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [therapist])
   
   return (

@@ -78,8 +78,14 @@ const TherapistBooking = ({
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
   const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)  
+  const [prevArtist, setPrevArtist] = useState(null)
+  const [triggerDeleteArtist, setTriggerDeleteArtist] = useState(false)
+  const [artistToDelete, setArtistToDelete] = useState(null)  
   const items = services.items
-  // This component has 3 modes of operations - book, edit and view. edit and view are redirected from "Manage bookings".
+  /*
+  * This component has 3 modes of operations - book, edit and checkout. 
+  * edit is redirected from "Manage Bookings" and checkout is redirected from "My Calendar".
+  */ 
   const [mode, setMode] = useState('book')
   const [saveModified, setSaveModified] = useState(false)
   const [browsing, setBrowsing] = useState(false)
@@ -104,6 +110,18 @@ const TherapistBooking = ({
   useEffect(() => {
     if (artist && !location.state) //Only reset booking on artist change in booking mode
       resetBooking()
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
+  }, [artist])
+
+  useEffect(() => {
+    //The selected artist has been explicitly removed. Send a trigger to remove all events of the removed artist.
+    if (prevArtist && artist === null) {
+      setTriggerDeleteArtist(!triggerDeleteArtist)
+      setArtistToDelete(prevArtist.id)
+    }
+
+    setPrevArtist(artist)
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [artist])
 
   useEffect(() => {
@@ -115,7 +133,7 @@ const TherapistBooking = ({
         setCalendarId(theArtist[0].email)
         setFromDate(moment(today).startOf('week')._d)
         setToDate(moment(today).endOf('week')._d)        
-      } else { //redirect from Manage bookings or MyCalendar
+      } else { //redirect from Manage bookings or My Calendar
         let booking
         if (location.state.edit) {
           setMode('edit')
@@ -158,11 +176,14 @@ const TherapistBooking = ({
     if (mode === 'book' && client) {
       setAddress(client.address)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [client])
 
+  // Set calendar id to the artist email to fetch events from her Goggle Calendar
   useEffect(() => {
     if (artist)
       setCalendarId(artist.email)
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [artist])
 
   const getDuration = () => {
@@ -175,6 +196,7 @@ const TherapistBooking = ({
     return duration
   }
 
+  // Update booked items and duration whenever quantity changes
   useEffect(() => {
     let artItems = []
     for (let id of Object.keys(itemQty)) {
@@ -187,21 +209,22 @@ const TherapistBooking = ({
     }
     setArtistBookingItems(artItems)
     setEstimatedDuration(getDuration())
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [itemQty])
 
   const newEvent = (event) => {
 
-    //Disable adding new event in month view
+    // Disable adding new event in month view
     if (event.slots.length === 1)
       return
 
-    //Disable adding new event before artist, package and client selection
+    // Disable adding new event before artist, package and client selection
     if (artist === null || artistBookingItems.length === 0 || client === null) {
       alert('Select therapist, service items and client before creating an event.')
       return
     }             
 
-    //Disable adding new event if a draft event is already present
+    // Disable adding new event if a draft event is already present
     if (draftEvents.length === 1) {
       alert('Delete the existing draft event before you add a new one.')
       return
@@ -227,6 +250,7 @@ const TherapistBooking = ({
   }
 
   const onSelectEvent = (event) => {
+    // Only draft event is selectable.
     if (event.type !== 'draft')
       return
     setDraftEvent(event)
@@ -368,6 +392,8 @@ const TherapistBooking = ({
               triggerSaveAllDrafts={triggerSaveAllDrafts}
               triggerDeleteEvent={triggerDeleteEvent}
               eventToDelete={draftEvent? draftEvent.id : null}
+              triggerDeleteArtist={triggerDeleteArtist}
+              artistToDelete={artistToDelete}
             />
           </Grid>
         </Grid>

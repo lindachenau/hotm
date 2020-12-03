@@ -54,7 +54,17 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
 
     if (bookingType !== BOOKING_TYPE.T && adminBookings.length > 0)
       setCompleted(adminBookings[activeStep].status === BOOKING_STATUS.COMPLETED || adminBookings[activeStep].status === BOOKING_STATUS.DELETED)
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [activeStep, adminBookings, events])
+
+  useEffect(() => {
+    // Don't reset on mount
+    if (didMountRef.current)
+      setActiveStep(0)
+    else
+      didMountRef.current = true
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
+  }, [eventsFetched, adminBookingsFetched])
 
   const handleEdit = () => {
     setPrevActiveStep(activeStep)
@@ -72,14 +82,6 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
   const handleDelete = () => {
     setTriggerCancelBookingForm(!triggerCancelBookingForm)
   }
-
-  useEffect(() => {
-    // Don't reset on mount
-    if (didMountRef.current)
-      setActiveStep(0)
-    else
-      didMountRef.current = true
-  }, [eventsFetched, adminBookingsFetched])
 
   return (
     <>

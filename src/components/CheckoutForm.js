@@ -124,7 +124,7 @@ export default function CheckoutForm({
   const [checkoutComment, setCheckoutComment] = useState('')
   const [checkedOut, setCheckedOut] = useState(false)
   const { adminBooking } = event
-  const futureEvent = event.end ? event.end.getTime() > (new Date).getTime() : false
+  const futureEvent = event.end ? event.end.getTime() > new Date().getTime() : false
   const [triggerCheckoutPaymentForm, setTriggerCheckoutPaymentForm] = useState(false)
 
   const classes = useStyles(theme)

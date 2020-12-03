@@ -256,6 +256,7 @@ const Admin = ({ addCorpCards, updateCorpCards, addAdminTasks, updateAdminTasks 
     setPlaceholder(formType === 'corporate' ? 'Corporate Card' : 'Therapist Task')
     setLabel(formType === 'corporate' ? 'Choose corporate card' : 'Choose therapist task')
     setList(formType === 'corporate' ? corpCards : adminTasks)
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [formType, corpCards, adminTasks])
 
   useEffect(() => {
@@ -288,6 +289,7 @@ const Admin = ({ addCorpCards, updateCorpCards, addAdminTasks, updateAdminTasks 
         setForm(null)
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [tag])
 
   return (

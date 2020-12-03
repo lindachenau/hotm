@@ -74,6 +74,9 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
   const [triggerEventForm, setTriggerEventForm] = useState(false)
   const [triggerSaveAllDrafts, setTriggerSaveAllDrafts] = useState(false)
   const [triggerDeleteEvent, setTriggerDeleteEvent] = useState(false)
+  const [prevArtist, setPrevArtist] = useState(null)
+  const [triggerDeleteArtist, setTriggerDeleteArtist] = useState(false)
+  const [artistToDelete, setArtistToDelete] = useState(null)
   // This component has 2 modes of operations - book and edit. edit is redirected from "Manage bookings".
   const [mode, setMode] = useState('book')
   const [saveModified, setSaveModified] = useState(false)
@@ -112,6 +115,17 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
+
+  useEffect(() => {
+    //The selected artist has been explicitly removed. Send a trigger to remove all events of the removed artist.
+    if (prevArtist && artist === null) {
+      setTriggerDeleteArtist(!triggerDeleteArtist)
+      setArtistToDelete(prevArtist.id)
+    }
+
+    setPrevArtist(artist)
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
+  }, [artist])
 
   useEffect(() => {
     if (mode !== 'book') {
@@ -305,6 +319,8 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
               triggerSaveAllDrafts={triggerSaveAllDrafts}
               triggerDeleteEvent={triggerDeleteEvent}
               eventToDelete={draftEvent? draftEvent.id : null}
+              triggerDeleteArtist={triggerDeleteArtist}
+              artistToDelete={artistToDelete}
             />
           </Grid>
         </Grid>

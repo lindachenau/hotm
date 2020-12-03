@@ -61,6 +61,7 @@ const TherapistSelection = ({
   useEffect(() => {
     if (userInfo.id)
       setAddress(userInfo.address)
+  // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [userInfo])
 
   const outTravelRange = async() => {
@@ -84,6 +85,7 @@ const TherapistSelection = ({
 
   useEffect(() => {
     outTravelRange()
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [therapist, bookingValue])
   
   const handleAddrChange = address => {

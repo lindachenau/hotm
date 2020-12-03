@@ -28,7 +28,9 @@ const TheCalendar = ({
   onView,
   triggerSaveAllDrafts, 
   triggerDeleteEvent, 
-  eventToDelete
+  eventToDelete,
+  triggerDeleteArtist=null,
+  artistToDelete=null
 }) => {
   const [localEvents, setLocalEvents] = useState(events)
   const eventColors = {
@@ -54,6 +56,12 @@ const TheCalendar = ({
     setLocalEvents(events)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerDeleteEvent])
+
+  useEffect(() => {
+    const events = localEvents.filter(event => (event.artistId !== artistToDelete || event.type === 'draft'))
+    setLocalEvents(events)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerDeleteArtist])
 
   return (
     <DragAndDropCalendar

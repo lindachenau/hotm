@@ -40,6 +40,18 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [])
 
+  useEffect(() => {
+    // Client is fetched. Update the contact now in Checkout form.
+    if (Object.keys(client).length) {
+      const contact = `${client.name} ${client.phone}`
+      setBookingEvent(Object.assign({}, bookingEvent, {
+        client: client,
+        contact: contact
+      }))
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
+  }, [client])
+
   const onSelectEvent = async (event) => {
     if (event.type !== 'hotm')
       return
@@ -90,17 +102,6 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
       alert('No booking event found. The booking has probably been cancelled.')
     }
   }
-
-  useEffect(() => {
-    //Client is fetched. Update the contact now in Checkout form.
-    if (Object.keys(client).length) {
-      const contact = `${client.name} ${client.phone}`
-      setBookingEvent(Object.assign({}, bookingEvent, {
-        client: client,
-        contact: contact
-      }))
-    }
-}, [client])
 
   return (
     <>
