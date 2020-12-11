@@ -24,11 +24,13 @@ export const booking_events_url = `${HOTM_BOOKING_API}/booking_events`
 export const clients_url = `${HOTM_BOOKING_API}/clients`
 export const travel_time_url = `${HOTM_BOOKING_API}/travel_time`
 export const reset_password_url = `${HOTM_BOOKING_API}/reset_password.php`
+
 /*
- * Simulated data for testing
+ * HBLC logo 120x120 
  */
-// export const artists_url = 'http://localhost:5000/artists'
-// export const bookings_url = 'http://localhost:5000/bookings'
+export const hblc_logo = 'https://procomhost.com/wp-content/uploads/2020/12/HBLC-logo-120.png'
+
+export const booking_website = 'https://hblc.vercel.app'
 
 /*
  * JSON API Auth & JSON API User Plugin

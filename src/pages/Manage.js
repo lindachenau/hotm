@@ -116,14 +116,12 @@ const Manage = ({ events, eventsFetched, adminBookings, adminBookingsFetched, bo
         </div>}
         <PaymentRequestForm 
           triggerOpen={triggerPaymentRequestForm}
-          initOpen={false}
           bookingType={bookingType}
           adminBooking={adminBookings[activeStep]}
           clientBooking={events[activeStep]}
         />
         <CancelBookingForm 
           triggerOpen={triggerCancelBookingForm}
-          initOpen={false}
           bookingType={bookingType}
           adminBooking={adminBookings[activeStep]}
           clientBooking={events[activeStep]}

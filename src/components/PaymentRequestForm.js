@@ -13,7 +13,7 @@ import Checkbox from '@material-ui/core/Checkbox'
 import Typography from '@material-ui/core/Typography'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
 import { sendPaymentLink, setCancellationTimer } from '../utils/misc'
-import { payment_link_base } from '../config/dataLinks'
+import { payment_link_base, hblc_logo, booking_website } from '../config/dataLinks'
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function PaymentRequestForm({ theme, triggerOpen, initOpen, bookingType, adminBooking, clientBooking }) {
+export default function PaymentRequestForm({ theme, triggerOpen, bookingType, adminBooking, clientBooking }) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const [paymentType, setPaymentType] = useState('deposit')
@@ -62,10 +62,9 @@ export default function PaymentRequestForm({ theme, triggerOpen, initOpen, booki
     }
     else {
       didMountRef.current = true
-      setOpen(initOpen)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [triggerOpen, initOpen])
+  }, [triggerOpen])
 
   useEffect(() => {
     if (bookingType === BOOKING_TYPE.T) {
@@ -84,12 +83,13 @@ export default function PaymentRequestForm({ theme, triggerOpen, initOpen, booki
     else
       paymentLink = `${payment_link_base}?booking_type=admin&booking_id=${adminBooking.id}&payment_type=${paymentType}&percentage=${percentage}`
     
-    if (autoCancel) {
-      sendPaymentLink(email, paymentLink, `Pay the ${paymentType}`, true)
+    const content = `<a href=${booking_website}><img src=${hblc_logo} alt="HBLC logo"/></a>
+    <h3>Thanks for booking with Hair Beauty Life Co. Please click the link below for payment.</h3>
+    <a href=${paymentLink}>Pay the ${paymentType}</a>`
+
+    sendPaymentLink(email, content, autoCancel)      
+    if (autoCancel) 
       setCancellationTimer(bookingType, bookingId)
-    } else {
-      sendPaymentLink(email, paymentLink, `Pay the ${paymentType}`)
-    }
 
     setOpen(false)
   }

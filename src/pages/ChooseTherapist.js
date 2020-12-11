@@ -6,7 +6,7 @@ import TherapistSelection from '../config/TherapistSelectionContainer'
 import Confirmation from '../config/ConfirmationContainer'
 import Payment from '../config/PaymentContainer'
 
-const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
+const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists, triggerSignin, setTriggerSignin }) => {
   const [therapist, setTherapist] = useState(null)
   const [travelTime , setTravelTime] = useState(30)
   
@@ -67,7 +67,9 @@ const ChooseTherapist = ({ location, bookingStage, changeBookingStage, resetBook
         therapist={therapist}
         items={services.items} 
         bookingValue={bookingValue}
-        depositPayable={depositPayable}/> 
+        depositPayable={depositPayable}
+        triggerSignin={triggerSignin}
+        setTriggerSignin={setTriggerSignin}/> 
         : null
       }
     </React.Fragment>

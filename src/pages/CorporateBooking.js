@@ -330,7 +330,6 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
           setSaveModified={setSaveModified}
           draftEvent={draftEvent}
           triggerOpen={triggerEventForm}
-          initOpen={false}
           taskList={adminTasks}
           task={task}
           setTask={setTask}

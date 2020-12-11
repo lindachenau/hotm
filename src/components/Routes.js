@@ -40,6 +40,7 @@ const Routes = ({
   const [prevActiveStep, setPrevActiveStep] = useState(0)
   //Admin and therapist booking event for checkout pop-up in MyCalendar
   const [bookingEvent, setBookingEvent] = useState({adminBookings: false})
+  const [triggerSignin, setTriggerSignin] = useState(false)
 
   useEffect(() => {
     setBookingValue(getBookingValue(services.items, priceFactors, itemQty))
@@ -53,7 +54,15 @@ const Routes = ({
     <HashRouter>
       <ScrollToTop>
         <CssBaseline />
-        <Topbar bookingValue={bookingValue} loggedIn={loggedIn} isArtist={isArtist} artists={artists} setArtistSignedIn={setArtistSignedIn}/>
+        <Topbar 
+          bookingValue={bookingValue} 
+          loggedIn={loggedIn} 
+          isArtist={isArtist} 
+          artists={artists} 
+          setArtistSignedIn={setArtistSignedIn}
+          triggerSignin={triggerSignin}
+          setTriggerSignin={setTriggerSignin}
+        />
         <Suspense fallback={<CircularProgress/>}>
         {servicesFetched &&
           <Switch>
@@ -74,8 +83,11 @@ const Routes = ({
                 bookingValue={bookingValue}
                 depositPayable={depositPayable}
                 artists={artists}
-                resetBooking={resetBooking}/>} 
-             />
+                resetBooking={resetBooking}
+                triggerSignin={triggerSignin}
+                setTriggerSignin={setTriggerSignin}
+              />} 
+            />
             <Route path='/choose-therapist' render={() => 
               <ChooseTherapist 
                 theme={theme} 
@@ -85,7 +97,10 @@ const Routes = ({
                 bookingValue={bookingValue}
                 depositPayable={depositPayable}
                 artists={artists}
-                resetBooking={resetBooking}/>} 
+                resetBooking={resetBooking}
+                triggerSignin={triggerSignin}
+                setTriggerSignin={setTriggerSignin}
+              />} 
             />            
             <Route path='/therapist-booking'> 
               {isArtist ? 

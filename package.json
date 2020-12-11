@@ -12,9 +12,7 @@
     "css-loader": "^3.2.0",
     "date-fns": "^2.0.0-beta.5",
     "eslint-plugin-react-hooks": "^2.2.0",
-    "faker": "^4.1.0",
     "font-awesome": "^4.7.0",
-    "gh-pages": "^2.2.0",
     "moment": "^2.24.0",
     "node-sass": "^4.14.1",
     "now": "^19.0.1",
@@ -38,7 +36,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "react-scripts build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "cypress:open": "cypress open"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -54,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "cypress": "^6.0.1"
   }
 }

@@ -22,7 +22,7 @@ import {
 } from '@material-ui/pickers'
 import moment from 'moment'
 import { sendPaymentLink } from '../utils/misc'
-import { payment_link_base } from '../config/dataLinks'
+import { payment_link_base, hblc_logo, booking_website } from '../config/dataLinks'
 import CheckoutPaymentForm from '../components/CheckoutPaymentForm'
 import { BOOKING_STATUS } from '../utils/dataFormatter'
 
@@ -113,7 +113,6 @@ export default function CheckoutForm({
   theme,
   event,
   triggerOpen,
-  initOpen,
   updateBooking,
   setBrowsing
 }) {
@@ -143,10 +142,9 @@ export default function CheckoutForm({
     }
     else {
       didMountRef.current = true
-      setOpen(initOpen)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [triggerOpen, initOpen])
+  }, [triggerOpen])
 
   useEffect(() => {
     if (event.adminBooking)
@@ -184,7 +182,11 @@ export default function CheckoutForm({
     }
 
     const paymentLink = `${payment_link_base}?booking_type=client&booking_id=${event.id}&payment_type=balance`
-    const status = await sendPaymentLink(event.client.email, paymentLink, "Pay the balance")
+    const content = `<a href=${booking_website}><img src=${hblc_logo} alt="HBLC logo"/></a>
+    <h3>Thanks for booking with Hair Beauty Life Co. Please click the link below for payment.</h3>
+    <a href=${paymentLink}>Pay the balance</a>`
+        
+    const status = await sendPaymentLink(event.client.email, content)
     //Set BOOKING_TYPE to CHECKOUT to prevent events get automatically updated on bookingsData.data useEffect trigger in BookingStoreProvider
     const message = status === 'success' ? 'Payment link sent & checkout successful!' : 'Payment link sent failure. Please send it again manually.' 
     updateBooking(bookingData, BOOKING_TYPE.T, () => alert(message), true)  
@@ -289,7 +291,6 @@ export default function CheckoutForm({
       <CheckoutPaymentForm
         event={event}
         triggerOpen={triggerCheckoutPaymentForm}
-        initOpen={false}
         actualStart={actualStart}
         actualEnd={actualEnd}
         comment={`${event.comment} ${checkoutComment}`}

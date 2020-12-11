@@ -28,7 +28,6 @@ export default function CheckoutPaymentForm({
   theme,
   event,
   triggerOpen,
-  initOpen,
   actualStart,
   actualEnd,
   comment,
@@ -45,10 +44,9 @@ export default function CheckoutPaymentForm({
     }
     else {
       didMountRef.current = true
-      setOpen(initOpen)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [triggerOpen, initOpen])
+  }, [triggerOpen])
 
   useEffect(() => {
     if (event && event.origBooking) 

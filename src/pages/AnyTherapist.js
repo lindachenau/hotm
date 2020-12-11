@@ -6,7 +6,7 @@ import ServiceSelection from '../config/ServiceSelectionContainer'
 import Confirmation from '../config/ConfirmationContainer'
 import Payment from '../config/PaymentContainer'
 
-const AnyTherapist = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists }) => {
+const AnyTherapist = ({ bookingStage, changeBookingStage, resetBooking, services, theme, bookingValue, depositPayable, artists, triggerSignin, setTriggerSignin }) => {
 
   useEffect(() => {
     resetBooking()
@@ -40,7 +40,9 @@ const AnyTherapist = ({ bookingStage, changeBookingStage, resetBooking, services
         theme={theme} 
         items={services.items} 
         bookingValue={bookingValue}
-        depositPayable={depositPayable}/> 
+        depositPayable={depositPayable}
+        triggerSignin={triggerSignin}
+        setTriggerSignin={setTriggerSignin}/> 
         : null
       }
     </React.Fragment>

@@ -51,7 +51,6 @@ export default function EventForm({
   withTravelTime = true,
   withDuration = true,
   withComment = true,
-  initOpen, 
   taskList, 
   task, 
   setTask,
@@ -92,10 +91,9 @@ export default function EventForm({
     }
     else {
       didMountRef.current = true
-      setOpen(initOpen)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [triggerOpen, initOpen])
+  }, [triggerOpen])
 
   const onChangeLocation = address => {
     setAddress(address.replace(', Australia', ''))

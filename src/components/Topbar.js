@@ -127,10 +127,9 @@ const userMenu = [
   }
 ];
 
-function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtistSignedIn}) {
+function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtistSignedIn, triggerSignin, setTriggerSignin}) {
   const classes = useStyles()
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [triggerSignin, setTriggerSignin] = useState(false)
   const [triggerSignout, setTriggerSignout] = useState(false)
   const [triggerFilter, setTriggerFilter] = useState(false)
   const currentPath = location.pathname

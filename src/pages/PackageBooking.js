@@ -21,7 +21,7 @@ import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { sendPaymentLink, setCancellationTimer } from '../utils/misc'
-import { payment_link_base } from '../config/dataLinks'
+import { payment_link_base, hblc_logo, booking_website } from '../config/dataLinks'
 import { sendReminders, removeReminders } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
@@ -206,7 +206,12 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
 
       if (mode === 'book') {
         const paymentLink = `${payment_link_base}?booking_type=admin&booking_id=${bookingId}&payment_type=deposit&percentage=30`
-        sendPaymentLink(client.email, paymentLink, "Pay the deposit", true)
+        const content = `<a href=${booking_website}><img src=${hblc_logo} alt="HBLC logo"/></a>
+        <h3>You have booked with Hair Beauty Life Co for ${bookingPackage.name}.</h3>        
+        <h3>Please click the link below for payment.</h3>
+        <a href=${paymentLink}>Pay the deposit</a>`
+
+        sendPaymentLink(client.email, content, true)        
         setCancellationTimer(BOOKING_TYPE.P, bookingId)
       } else {
         removeReminders(BOOKING_TYPE.P, adminBooking.id, adminBooking.origEventList)
@@ -375,7 +380,6 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
           setSaveModified={setSaveModified}
           draftEvent={draftEvent}
           triggerOpen={triggerEventForm}
-          initOpen={false}
           taskList={adminTasks}
           task={task}
           setTask={setTask}

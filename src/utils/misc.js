@@ -39,15 +39,14 @@ export function endDate(bookingDate)
   return (new Date(y, mon, d, 23, 59)).toISOString()
 }
 
-export const sendPaymentLink = async (email, link, message, cancel=false) => {
+export const sendPaymentLink = async (email, content, cancel=false) => {
   const cancelWarning = cancel ? '<p>The booking will be automatically cancelled if payment is not received within 12 hours.</p>' : ''
   const response = await fetch(payment_link_sender, {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify({
       email: email,
-      body: `<h3>Please click the link below for payment.</h3>
-      <a href=${link}>${message}</a> ${cancelWarning}`,
+      body: `${content}${cancelWarning}`,
       subject: 'Payment link for Hair Beauty Life Co booking',
       source: "cmobileapp0@gmail.com"   
     })

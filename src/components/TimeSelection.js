@@ -254,7 +254,6 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
         withDuration={false}
         withComment={false}
         triggerOpen={triggerEventForm}
-        initOpen={false}
         onSaveEventDetails={(task, address, contact, comment, start, bookingTime, end) => 
           onSaveEventDetails(task, address, contact, comment, start, bookingTime, end, draftEvent, setDraftEvent)}
         onDeleteEvent={() => setTriggerDeleteEvent(!triggerDeleteEvent)}

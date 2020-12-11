@@ -64,8 +64,23 @@ const TherapistSelection = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps    
   }, [userInfo])
 
+  const allOnlineServices = () => {
+    let allOnline = true
+    for (let id of Object.keys(itemQty)) {
+      if (!services.items[id].onlineBooking)
+        allOnline = false
+    }
+
+    return allOnline
+  }
+
   const outTravelRange = async() => {
     if (address && therapist && bookingValue > 0) {
+      if (allOnlineServices) {
+        setTravelTime(0)
+        return false        
+      }
+
       try {
         const result = await travelTime(therapist.id, address, bookingValue)
         const data = result.data

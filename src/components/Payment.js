@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import StripeForm from './StripeForm'
 import Container from '@material-ui/core/Container'
 import Paper from '@material-ui/core/Paper'
@@ -6,7 +6,6 @@ import Button from '@material-ui/core/Button'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import TextField from '@material-ui/core/TextField'
-import SigninForm from '../config/SigninFormContainer'
 import moment from 'moment'
 import { stripe_charge_server } from '../config/dataLinks'
 import { sendReminder } from '../utils/misc'
@@ -47,11 +46,18 @@ function Payment (
     userName,
     clientEmail,
     phone,
-    name
+    name,
+    triggerSignin, 
+    setTriggerSignin
   }) {
   const [value, setValue] = useState('');
 
   const classes = useStyles()
+
+  useEffect(() => {
+    if (!loggedIn)
+      setTriggerSignin(!triggerSignin)
+  }, [])
 
   const handleChange = event => {
     setValue(event.target.value);
@@ -159,7 +165,6 @@ function Payment (
       <Button variant="text" color="primary" size='large' onClick={() => changeBookingStage(2)}>
         back
       </Button>
-      <SigninForm initOpen={!loggedIn}/>
     </Container>
   )
 }

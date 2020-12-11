@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookingType, adminBooking, clientBooking, updateBooking, cancelBooking }) {
+export default function CancelBookingForm({ theme, triggerOpen, bookingType, adminBooking, clientBooking, updateBooking, cancelBooking }) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const [bookingId, setBookingId] = useState(null)
@@ -37,10 +37,9 @@ export default function CancelBookingForm({ theme, triggerOpen, initOpen, bookin
     }
     else {
       didMountRef.current = true
-      setOpen(initOpen)
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [triggerOpen, initOpen])
+  }, [triggerOpen])
 
   useEffect(() => {
     const booking = bookingType === BOOKING_TYPE.T ? clientBooking : adminBooking 

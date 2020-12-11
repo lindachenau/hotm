@@ -21,7 +21,7 @@ import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import { validateTherapistBooking, sendPaymentLink, setCancellationTimer } from '../utils/misc'
-import { payment_link_base } from '../config/dataLinks'
+import { payment_link_base, hblc_logo, booking_website } from '../config/dataLinks'
 import { sendReminder, deleteReminder } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
@@ -273,7 +273,19 @@ const TherapistBooking = ({
       
       if (mode === 'book') {
         const paymentLink = `${payment_link_base}?booking_type=client&booking_id=${bookingId}&payment_type=deposit&percentage=30`
-        sendPaymentLink(client.email, paymentLink, "Pay the deposit", true)
+        const bookingTime = `${moment(event.bookingTime).format("DD/MM/YYYY")} ${moment(event.bookingTime).format("HH:mm")}`
+        let serviceItems = []
+        for (let id of Object.keys(itemQty)) {
+          serviceItems.push(`<li>${items[id].description} Qty ${itemQty[id]}</li>`)
+        }
+        const itemDisplay = `<ul>${serviceItems.join('')}</ul>`
+        const content = `<a href=${booking_website}><img src=${hblc_logo} alt="HBLC logo"/></a>
+        <h3>You have booked with Hair Beauty Life Co on ${bookingTime} for the following services.</h3>
+        ${itemDisplay}
+        <h3>Please click the link below for payment.</h3>
+        <a href=${paymentLink}>Pay the deposit</a>`
+
+        sendPaymentLink(client.email, content, true)
         setCancellationTimer(BOOKING_TYPE.T, bookingId)
       } else {
         deleteReminder(BOOKING_TYPE.T, bookingId)
@@ -406,7 +418,6 @@ const TherapistBooking = ({
           withContact={false}
           withTask={false}
           triggerOpen={triggerEventForm}
-          initOpen={false}
           estimatedDuration={estimatedDuration}
           onSaveEventDetails={(task, address, contact, comment, start, bookingTime, end) => 
             onSaveEventDetails(task, address, contact, comment, start, bookingTime, end, draftEvent, setDraftEvent)}

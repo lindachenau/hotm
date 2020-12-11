@@ -139,7 +139,6 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
         <CheckoutForm
           event={bookingEvent}
           triggerOpen={triggerCheckoutForm}
-          initOpen={false}
           updateBooking={updateBooking}
           setBrowsing={setBrowsing}
         />
