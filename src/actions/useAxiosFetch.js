@@ -52,7 +52,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) => {
+const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger, apiToken) => {
   const [url] = useState(initialUrl)
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
@@ -89,7 +89,10 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) =
       dispatch({ type: "UPDATE_INIT"})
       const config = {
         method: 'post',
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiToken}`
+        },
         url: url,
         data: data
       }
@@ -117,7 +120,10 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger) =
       dispatch({ type: "UPDATE_INIT"})
       const config = {
         method: 'put',
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiToken}`
+        },
         url: url,
         data: data
       }

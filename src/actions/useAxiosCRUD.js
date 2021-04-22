@@ -95,7 +95,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, bookingTrigger, storeEnabled) => {
+const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, bookingTrigger, storeEnabled, apiToken) => {
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -159,7 +159,10 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       const url = bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url
       const config = {
         method: 'post',
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiToken}`
+        },
         url: url,
         data: data
       }
@@ -192,7 +195,10 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       const url = bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url
       const config = {
         method: 'put',
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiToken}`
+        },
         url: url,
         data: data
       }
@@ -226,7 +232,10 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       const url = bookingTypeName === BOOKING_TYPE.T ? bookings_url : admin_bookings_url
       const config = {
         method: 'delete',
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiToken}`
+        },
         url: url,
         data: data
       }

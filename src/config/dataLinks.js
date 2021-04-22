@@ -1,6 +1,6 @@
 const miniOrangeAccessKey = process.env.REACT_APP_MINIORANGE_ACCESS_KEY
 /*
- * Hair On the Move 2 U Home page
+ * Hair Beauty Life Co Home page
  */
 export const hblc_url = process.env.REACT_APP_HBLC_URL
 export const home_url = process.env.REACT_APP_HOTM_BACKEND
@@ -11,7 +11,7 @@ export const payment_link_base = process.env.REACT_APP_PAYMENT_LINK_BASE
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v0.19`
+const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v0.20`
 export const services_url = `${HOTM_BOOKING_API}/services`
 export const artists_url = `${HOTM_BOOKING_API}/artists`
 export const bookings_url = `${HOTM_BOOKING_API}/bookings`
@@ -23,7 +23,8 @@ export const calendar_events_url = `${HOTM_BOOKING_API}/calendar_events`
 export const booking_events_url = `${HOTM_BOOKING_API}/booking_events`
 export const clients_url = `${HOTM_BOOKING_API}/clients`
 export const travel_time_url = `${HOTM_BOOKING_API}/travel_time`
-export const reset_password_url = `${HOTM_BOOKING_API}/reset_password.php`
+export const api_token_login = `${HOTM_BOOKING_API}/login`
+// export const api_token_login = `${HOTM_BOOKING_API}/Authorisation/login.php`
 
 /*
  * HBLC logo 120x120 
@@ -54,7 +55,7 @@ export const access_token = miniOrangeAccessKey
 export const instagram_url = "https://www.instagram.com/explore/tags/"
 
 /*
- * Hair On the Move 2 U Terms & Conditions
+ * Hair Beauty Life Co Terms & Conditions
  */
 export const term_url = `${hblc_url}/terms-conditions/`
 

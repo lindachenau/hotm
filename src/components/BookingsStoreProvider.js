@@ -6,6 +6,7 @@ import { bookings_url, admin_bookings_url, clients_url, artists_url, services_ur
 import axios from 'axios'
 import moment from 'moment'
 import { BOOKING_TYPE } from "../actions/bookingCreator"
+import { api_token_login } from "../config/dataLinks"
 
 /*
  * Booking store provider handles all async requests to services, artists, bookings and clients APIs.
@@ -60,6 +61,39 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   const [corpCardsObj, setCorpCardsObj] = useState({})
   const [corpCards, setCorpCards] = useState([])
   const [adminTasks, setAdminTasks] = useState([])
+  const [apiToken, setApiToken] = useState()
+
+  //Renew API access token every 23 hours
+  useEffect(() => {
+    const getAPIToken = async() => {
+      const config = {
+        method: 'post',
+        headers: {"Content-Type": "application/json"},
+        url: api_token_login,
+        data: {
+          "email" : process.env.REACT_APP_API_TOKEN_EMAIL,
+          "password" : process.env.REACT_APP_API_TOKEN_PASSWORD
+        }          
+      }
+
+      try {
+        const result = await axios(config)
+        console.log()
+        setApiToken(result.data.jwt)
+      } catch(err) {
+        console.log('API login failed', err)
+      }
+    }
+
+    const handle = setInterval(() => {
+      getAPIToken()
+    }, 82800000)
+
+    getAPIToken()
+
+    return () => {clearInterval(handle)}
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   //Fetch services and artists every 60 minutes in case the data in the backend has changed
   useEffect(() => {
@@ -72,7 +106,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const servicesData = useAxiosFetch(services_url, [], 'get', {}, null, servicesTrigger)
+  const servicesData = useAxiosFetch(services_url, [], 'get', {}, null, servicesTrigger, apiToken)
 
   useEffect(() => {
     if (servicesData.data.length !== 0) {
@@ -93,7 +127,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isArtist])
 
-  const corpCardsData = useAxiosFetch(corporate_cards_url, [], cardRequestMethod, card, cardCallMe, corpCardsTrigger)
+  const corpCardsData = useAxiosFetch(corporate_cards_url, [], cardRequestMethod, card, cardCallMe, corpCardsTrigger, apiToken)
 
   useEffect(() => {
     if (corpCardsData.data.length !== 0) {
@@ -105,7 +139,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
     setCorpCards(Object.values(corpCardsObj))
   }, [corpCardsObj])
 
-  const adminTasksData = useAxiosFetch(admin_tasks_url, [], taskRequestMethod, task, taskCallMe, adminTasksTrigger)
+  const adminTasksData = useAxiosFetch(admin_tasks_url, [], taskRequestMethod, task, taskCallMe, adminTasksTrigger, apiToken)
 
   useEffect(() => {
     if (adminTasksData.data.length !== 0) {
@@ -148,7 +182,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [artistsData.data])
 
-  let bookingsData = useAxiosCRUD(bookingUrl, {}, bookingRequestMethod, bookingTypeName, data, callMe, bookingTrigger, storeEnabled)
+  let bookingsData = useAxiosCRUD(bookingUrl, {}, bookingRequestMethod, bookingTypeName, data, callMe, bookingTrigger, storeEnabled, apiToken)
 
   //update client list whenever new bookings are loaded
   useEffect(() => {

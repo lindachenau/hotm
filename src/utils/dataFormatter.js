@@ -3,8 +3,9 @@ import { BOOKING_TYPE } from '../actions/bookingCreator'
 
 export const BOOKING_STATUS = {
   OPEN: 0,
-  COMPLETED: 1,
-  DELETED: 2
+  COMPLETED: 1, //Fully paid
+  DELETED: 2, 
+  CHECKEDOUT: 3 //Checked out but balance is unpaid
 }
 
 function offDays(workingDays) 
@@ -203,6 +204,8 @@ export function getEvents(bookings, artists, clients, servicesMenu)
       status = BOOKING_STATUS.DELETED
     else if ((booking.total_amount - booking.paid_amount) < 0.01)
       status = BOOKING_STATUS.COMPLETED
+    else if (booking.status === 'checkout')
+      status = BOOKING_STATUS.CHECKEDOUT
 
     //artist exists
     if (artists[booking.artist_id_list[0]]) {

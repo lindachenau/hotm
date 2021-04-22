@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
-import { clients_url, reset_password_url } from '../config/dataLinks'
+import { clients_url } from '../config/dataLinks'
 import { sendVerification } from '../utils/misc'
 import EmailVeriForm from './EmailVeriForm'
 import axios from 'axios'
@@ -78,7 +78,7 @@ export default function ForgetPWForm({triggerOpen}) {
     const config = {
       method: 'post',
       headers: {"Content-Type": "application/json"},
-      url: reset_password_url,
+      url: clients_url,
       data: {
         client_id: userId,
         password: password
@@ -86,8 +86,12 @@ export default function ForgetPWForm({triggerOpen}) {
     }
 
     try {
-      let result = await axios(config)
-      alert('Your password has been reset successfully.')
+      let response = await axios(config)
+      if (response.status === 200)
+        alert('Your password has been reset successfully.')
+      else
+        alert('Your password reset failed.')
+
       setOpen(false)
     } catch (err) {
       console.log(err)

@@ -150,7 +150,7 @@ export default function CheckoutForm({
     if (event.adminBooking)
       setCheckedOut(event.status === 'checkout' && event.actualStart && event.actualEnd)
     else 
-      setCheckedOut(event.status === BOOKING_STATUS.COMPLETED && event.actualStart && event.actualEnd)
+      setCheckedOut((event.status === BOOKING_STATUS.COMPLETED || event.status === BOOKING_STATUS.CHECKEDOUT) && event.actualStart && event.actualEnd)
   }, [event])
 
   const handleCheckout = () => {

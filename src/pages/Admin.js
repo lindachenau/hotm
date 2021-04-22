@@ -36,11 +36,12 @@ const CorpForm = ({form, setTag, addCorpCards, updateCorpCards}) => {
   const [hblcRate, setHblcRate] = useState('')
   const [therapistRate, setTherapistRate] = useState('')
   const [abn, setAbn] = useState('')
+  const [note, setNote] = useState('')
   const [disableSave, setDisableSave] = useState(true)
   const classes = useStyles()
 
   useEffect(() => {
-    if (corpName && address && contactPerson && contactEmail && contactPhone && hblcRate && therapistRate && abn)
+    if (corpName && address && contactPerson && contactEmail && contactPhone && hblcRate && therapistRate)
       setDisableSave(false)
     else
       setDisableSave(true)
@@ -76,7 +77,8 @@ const CorpForm = ({form, setTag, addCorpCards, updateCorpCards}) => {
       contact_email: contactEmail.trim(),
       contact_phone: contactPhone.trim(),
       hotm_rate: hblcRate,
-      artist_rate: therapistRate        
+      artist_rate: therapistRate,
+      note: note    
     }
 
     if (form) {
@@ -180,7 +182,6 @@ const CorpForm = ({form, setTag, addCorpCards, updateCorpCards}) => {
         </Grid>
         <Grid item xs={12}>
           <TextField
-            required
             margin="dense"
             label="ABN"
             type="text"
@@ -188,6 +189,16 @@ const CorpForm = ({form, setTag, addCorpCards, updateCorpCards}) => {
             defaultValue={abn}
             value={abn}
             onChange={event => setAbn(event.target.value)}
+          />
+          <TextField
+            label="Additional information"
+            multiline
+            margin="dense"
+            type="text"
+            fullWidth
+            defaultValue={note}
+            value={note}
+            onChange={event => setNote(event.target.value)}
           />
         </Grid>
       </Grid>
