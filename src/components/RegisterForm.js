@@ -11,7 +11,7 @@ import { sendVerification } from '../utils/misc'
 import axios from 'axios'
 import EmailVeriForm from './EmailVeriForm'
 
-const logo = require('../images/HBLC-Updated-logo-600.png')
+const logo = require('../images/HBLC-logo-600.png')
 
 const useStyles = makeStyles(theme => ({
   container1: {

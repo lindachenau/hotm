@@ -14,7 +14,7 @@ import { localDate } from '../utils/dataFormatter'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
-const logo = require('../images/HBLC-Updated-logo-600.png')
+const logo = require('../images/HBLC-logo-600.png')
 
 const useStyles = makeStyles(theme => ({
   container1: {

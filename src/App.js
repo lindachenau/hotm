@@ -10,15 +10,15 @@ import BookingsStoreProvider from './config/BookingsStoreProviderContainer'
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#e382b1',
+      main: '#FD8795',
       contrastText: "#fff"
     },
     secondary: {
-      main: '#ace8e6',
-      contrastText: "#325f9c"
+      main: '#124762',
+      contrastText: "#fff"
     },
     text: {
-      primary: '#325f9c'
+      primary: '#124762'
     }
   },
   // typography: {

@@ -27,7 +27,8 @@ export function normaliseArtists(artistArr)
   for (let i = 0; i < artistArr.length; i++ ) {
     //Filter out invalid entries so that artist selection can display the list properly
     let state = artistArr[i].state.toUpperCase()
-    if (validStates.includes(state) && artistArr[i].name && validEmails.includes(artistArr[i].email)) {
+    // if (validStates.includes(state) && artistArr[i].name && validEmails.includes(artistArr[i].email)) {
+    if (validStates.includes(state) && artistArr[i].name && artistArr[i].email !== 'tttttt') {
       const id = artistArr[i].id
       artists[id.toString()] = {
         id: id,

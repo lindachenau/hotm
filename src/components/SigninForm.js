@@ -11,7 +11,7 @@ import axios from 'axios'
 import ForgetPWForm from './ForgetPWForm'
 import RegisterForm from './RegisterForm'
 
-const logo = require('../images/HBLC-Updated-logo-600.png')
+const logo = require('../images/HBLC-logo-600.png')
 
 const useStyles = makeStyles(theme => ({
   container1: {
