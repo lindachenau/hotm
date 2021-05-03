@@ -4,9 +4,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import AddArtists from '../components/AddArtists'
 import { Typography } from '@material-ui/core'
+import logo from '../images/HBLC-logo-600.png'
 
 const Home = ({ theme, resetBooking, enableStore, searchBooking, artists }) => {
-  const logo = require('../images/HBLC-logo-600.png')
   const [location, setLocation] =useState('')
   const [therapist, setTherapist] = useState(null)
   const anyTherapist = {

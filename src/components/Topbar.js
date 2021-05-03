@@ -30,8 +30,8 @@ import SignoutForm from '../config/SignoutFormContainer'
 import Filter from '../config/FilterContainer'
 import CalendarLoader from '../components/CalendarLoader'
 import { hblc_url } from '../config/dataLinks'
-
-const logo = require('../images/HBLC-logo-192.png')
+import logo from '../images/HBLC-logo-192.png'
+// const logo = require('../images/HBLC-logo-192.png')
 
 const useStyles = makeStyles(theme => ({
   grow: {

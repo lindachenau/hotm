@@ -10,8 +10,7 @@ import { register_nonce_url, register_url, update_user_meta_url, user_url, acces
 import { sendVerification } from '../utils/misc'
 import axios from 'axios'
 import EmailVeriForm from './EmailVeriForm'
-
-const logo = require('../images/HBLC-logo-600.png')
+import logo from '../images/HBLC-logo-600.png'
 
 const useStyles = makeStyles(theme => ({
   container1: {

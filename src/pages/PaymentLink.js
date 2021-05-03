@@ -11,10 +11,11 @@ import { stripe_charge_server, bookings_url, admin_bookings_url } from '../confi
 import { sendReminders } from '../utils/misc'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
+import logo from '../images/HBLC-logo-600.png'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
-const logo = require('../images/HBLC-logo-600.png')
+
 
 const useStyles = makeStyles(theme => ({
   container1: {
