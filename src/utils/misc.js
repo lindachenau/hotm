@@ -3,6 +3,7 @@ import moment from 'moment'
 import axios from 'axios'
 import { localDate } from '../utils/dataFormatter'
 import { BOOKING_TYPE } from '../actions/bookingCreator'
+import { admin_email } from '../config/dataLinks'
 
  //Merge arr2 into arr1; If item with the same id exists in arr1, the item in arr2 is dropped.
   export const mergeArrays = (arr1, arr2) => {
@@ -48,7 +49,7 @@ export const sendPaymentLink = async (email, content, cancel=false) => {
       email: email,
       body: `${content}${cancelWarning}`,
       subject: 'Payment link for Hair Beauty Life Co booking',
-      source: "cmobileapp0@gmail.com"   
+      source: admin_email  
     })
   })
 

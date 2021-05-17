@@ -21,8 +21,8 @@ export function normaliseArtists(artistArr)
   let artists = {}
 
   const validStates = ['NSW', 'VIC', 'TAS', 'QLD', 'SA', 'WA']
-  const validEmails = ['info@lyndlerichards.com', 'lindachenau@gmail.com', 'we@connectmobileapps.com.au', 'grace@connectmobileapps.com.au', 
-  'cmobileapp0@gmail.com', 'jeongjen@gmail.com', 'hello@connectmobilephoneapps.page', 'sootyyu@gmail.com', 'monica@gmail.com']
+  // const validEmails = ['info@lyndlerichards.com', 'lindachenau@gmail.com', 'we@connectmobileapps.com.au', 'grace@connectmobileapps.com.au', 
+  // 'cmobileapp0@gmail.com', 'jeongjen@gmail.com', 'hello@connectmobilephoneapps.page', 'sootyyu@gmail.com', 'monica@gmail.com']
   
   for (let i = 0; i < artistArr.length; i++ ) {
     //Filter out invalid entries so that artist selection can display the list properly

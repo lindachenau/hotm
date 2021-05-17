@@ -24,14 +24,15 @@ export const booking_events_url = `${HOTM_BOOKING_API}/booking_events`
 export const clients_url = `${HOTM_BOOKING_API}/clients`
 export const travel_time_url = `${HOTM_BOOKING_API}/travel_time`
 export const api_token_login = `${HOTM_BOOKING_API}/login`
-// export const api_token_login = `${HOTM_BOOKING_API}/Authorisation/login.php`
 
 /*
- * HBLC logo 120x120 
+ * HBLC logo 120x120 hosted in the live website for payment link embedded logo
  */
 export const hblc_logo = 'https://procomhost.com/wp-content/uploads/2020/12/HBLC-logo-120.png'
 
-export const booking_website = 'https://hblc.vercel.app'
+export const booking_website = 'https://hblc1.vercel.app'
+
+export const admin_email = 'admin@hairbeautylifeco.com'
 
 /*
  * JSON API Auth & JSON API User Plugin
