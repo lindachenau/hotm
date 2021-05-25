@@ -6,7 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
-import { register_nonce_url, register_url, update_user_meta_url, user_url, access_token } from '../config/dataLinks'
+import { register_nonce_url, register_url, update_user_meta_url, clients_url, access_token } from '../config/dataLinks'
 import { sendVerification } from '../utils/misc'
 import axios from 'axios'
 import EmailVeriForm from './EmailVeriForm'
@@ -154,7 +154,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     const config1 = {
       method: 'get',
       headers: { 'Authorization': access_token },
-      url: `${user_url}?search=${email}`
+      url: `${clients_url}?name=${email}`
     }
 
     const users1 = await axios(config1)
@@ -166,7 +166,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     const config2 = {
       method: 'get',
       headers: { 'Authorization': access_token },
-      url: `${user_url}?search=${username}`
+      url: `${clients_url}?name=${username}`
     }
 
     const users2 = await axios(config2)

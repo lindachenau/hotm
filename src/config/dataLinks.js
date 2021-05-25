@@ -44,7 +44,8 @@ export const auth_url = `${home_url}/api/auth/generate_auth_cookie`
 export const reset_pw_url = `${home_url}/api/user/retrieve_password/?user_login=`
 
 /*
- * miniOrange API Authentication
+ * miniOrange API Authentication => 
+ * No longer used and replaced by clients_url 25/05/2021
  */
 export const user_url = `${home_url}/wp-json/wp/v2/users`
 // Client-ID : Client-Secret authentication
