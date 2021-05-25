@@ -11,7 +11,7 @@ export const payment_link_base = process.env.REACT_APP_PAYMENT_LINK_BASE
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v1.0`
+const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v1.1`
 export const services_url = `${HOTM_BOOKING_API}/services`
 export const artists_url = `${HOTM_BOOKING_API}/artists`
 export const bookings_url = `${HOTM_BOOKING_API}/bookings`

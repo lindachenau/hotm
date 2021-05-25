@@ -6,6 +6,7 @@ import Topbar from './Topbar'
 import { BookingsStoreContext } from './BookingsStoreProvider'
 import { getBookingValue, getDepositPayable } from '../utils/getBookingValue'
 import CircularProgress from '@material-ui/core/CircularProgress'
+import { Typography } from '@material-ui/core'
 
 //Use route based lazy loading to split the code to smaller chunks
 const Home = lazy(() => import('../pages/Home'))
@@ -32,7 +33,7 @@ const Routes = ({
   loggedIn, 
   isArtist, 
   userEmail }) => {
-  const { services, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists } = 
+  const { services, artistsFetched, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists } = 
     useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
@@ -41,6 +42,7 @@ const Routes = ({
   //Admin and therapist booking event for checkout pop-up in MyCalendar
   const [bookingEvent, setBookingEvent] = useState({adminBookings: false})
   const [triggerSignin, setTriggerSignin] = useState(false)
+  const ready = artistsFetched && servicesFetched
 
   useEffect(() => {
     setBookingValue(getBookingValue(services.items, priceFactors, itemQty))
@@ -64,7 +66,6 @@ const Routes = ({
           setTriggerSignin={setTriggerSignin}
         />
         <Suspense fallback={<CircularProgress/>}>
-        {servicesFetched &&
           <Switch>
             <Route exact path='/' render={() => 
               <Home 
@@ -74,21 +75,28 @@ const Routes = ({
                 searchBooking={searchBooking}
                 artists={artists}/>}
             />
-            <Route path='/any-therapist' render={() => 
-              <AnyTherapist 
-                theme={theme} 
-                services={services} 
-                bookingStage={bookingStage} 
-                changeBookingStage={changeBookingStage} 
-                bookingValue={bookingValue}
-                depositPayable={depositPayable}
-                artists={artists}
-                resetBooking={resetBooking}
-                triggerSignin={triggerSignin}
-                setTriggerSignin={setTriggerSignin}
-              />} 
-            />
-            <Route path='/choose-therapist' render={() => 
+            <Route path='/any-therapist'>
+              {ready ? 
+                <AnyTherapist 
+                  theme={theme} 
+                  services={services} 
+                  bookingStage={bookingStage} 
+                  changeBookingStage={changeBookingStage} 
+                  bookingValue={bookingValue}
+                  depositPayable={depositPayable}
+                  artists={artists}
+                  resetBooking={resetBooking}
+                  triggerSignin={triggerSignin}
+                  setTriggerSignin={setTriggerSignin}
+                />
+                :
+                <Typography variant="h5" align="center" color="textPrimary">
+                  Sorry service data is not available.
+                </Typography>
+              }
+            </Route>
+            <Route path='/choose-therapist'>
+            {ready ? 
               <ChooseTherapist 
                 theme={theme} 
                 services={services} 
@@ -100,8 +108,13 @@ const Routes = ({
                 resetBooking={resetBooking}
                 triggerSignin={triggerSignin}
                 setTriggerSignin={setTriggerSignin}
-              />} 
-            />            
+              />
+              :
+              <Typography variant="h5" align="center" color="textPrimary">
+                Sorry service data is not available.
+              </Typography>
+              }
+            </Route>
             <Route path='/therapist-booking'> 
               {isArtist ? 
                 <TherapistBooking 
@@ -184,7 +197,7 @@ const Routes = ({
                 <Redirect to="/" />
               }
             </Route>    
-          </Switch>}
+          </Switch>
         </Suspense>
       </ScrollToTop>
     </HashRouter>
