@@ -148,6 +148,12 @@ export function localDate(bookingDate, bookingTime)
 export function getAdminBookings(bookingTypeName, bookings, artists, clients, servicesMenu, corpCards)
 {
   let adminBookings = []
+  const deletedClient = {
+    name: "Deleted Client",
+    phone: "",
+    email: "",
+    address: ""
+  }
 
   for (const id in bookings) {
     const booking = bookings[id]
@@ -181,7 +187,7 @@ export function getAdminBookings(bookingTypeName, bookings, artists, clients, se
       serviceItem: booking.service_item,
       eventList: eventList,
       cId: booking.card_or_client_id,
-      client: clients[booking.card_or_client_id],
+      client: clients[booking.card_or_client_id] ? clients[booking.card_or_client_id] : deletedClient,
       origEventList: booking.event_list,
       status: status
     })
@@ -194,6 +200,12 @@ export function getAdminBookings(bookingTypeName, bookings, artists, clients, se
 export function getEvents(bookings, artists, clients, servicesMenu)
 {
   let events = []
+  const deletedClient = {
+    name: "Deleted Client",
+    phone: "",
+    email: "",
+    address: ""
+  }
 
   for (let id in bookings) {
     let serviceItems = []
@@ -242,7 +254,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
         address: booking.event_address,
         artists: booking.artist_id_list.map(id => artists[id]),
         artistName: booking.artist_id_list.map(id => artists[id].name).join(', '),
-        client: clients[booking.client_id],
+        client: clients[booking.client_id] ? clients[booking.client_id] : deletedClient,
         organic: booking.with_organic,
         serviceItems: serviceItems,
         paidAmount: booking.paid_amount,

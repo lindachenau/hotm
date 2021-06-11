@@ -227,12 +227,15 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
           if (result.status === 'fulfilled') {
             let client = result.value.data
             let id = client.id
-            temp[id.toString()] = {
-              id,
-              name: client.name,
-              phone: client.phone,
-              email: client.email,
-              address: client.address
+            // id is undefined if the client is deleted
+            if (id) {
+              temp[id.toString()] = {
+                id,
+                name: client.name,
+                phone: client.phone,
+                email: client.email,
+                address: client.address
+              }
             }
           }
         })

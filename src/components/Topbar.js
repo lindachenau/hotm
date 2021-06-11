@@ -25,6 +25,7 @@ import SearchIcon from '@material-ui/icons/Search'
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd'
 import AssignmentTurnedInIcon from '@material-ui/icons/AssignmentTurnedIn'
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount'
+import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone'
 import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
 import Filter from '../config/FilterContainer'
@@ -99,6 +100,10 @@ const artistMenu = [
     pathname: hblc_url,
     external: true,
     icon: <LinkIcon />
+  },
+  {
+    label: `App v${process.env.REACT_APP_VERSION}`,
+    icon: <PhoneIphoneIcon />
   }
 ];
 
@@ -123,6 +128,10 @@ const userMenu = [
     pathname: hblc_url,
     external: true,
     icon: <LinkIcon />
+  },
+  {
+    label: `App v${process.env.REACT_APP_VERSION}`,
+    icon: <PhoneIphoneIcon />
   }
 ];
 
@@ -227,8 +236,6 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
                 </List>
               </div>
             </Drawer>
-            <span>&nbsp;</span>
-            <span>{ `v${process.env.REACT_APP_VERSION}` }</span>
           </React.Fragment>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>

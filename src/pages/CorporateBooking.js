@@ -135,7 +135,7 @@ const CorporateBooking = ({location, theme, adminBooking, artists, userEmail, ar
         const entry = {
           id: event.event_id,
           type: 'draft',
-          title: 'HOTM Booking',
+          title: 'HBLC Booking',
           allDay: false,
           start: localDate(event.booking_date, event.artist_start_time),
           bookingTime: localDate(event.booking_date, event.booking_start_time),

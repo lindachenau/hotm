@@ -154,7 +154,7 @@ const TherapistBooking = ({
         const entry = {
           id: booking.id,
           type: 'draft',
-          title: 'HOTM Booking',
+          title: 'HBLC Booking',
           allDay: false,
           start: booking.start,
           bookingTime: booking.bookingTime,

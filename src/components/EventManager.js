@@ -74,7 +74,7 @@ const EventManager = ({
             artistName: artist ? artist.name : '',
             artistId: artist ? artist.id : '',
             address: item.location ? item.location : '',
-            type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
+            type: item.summary === 'HBLC Booking' ? 'hotm' : 'private'
           }
         })
         const offDays = getOffDays(start, end)
@@ -102,7 +102,7 @@ const EventManager = ({
             artistName: artist ? artist.name : '',
             artistId: artist ? artist.id : '',
             address: item.location ? item.location : '',
-            type: item.summary === 'HOTM Booking' ? 'hotm' : 'private'
+            type: item.summary === 'HBLC Booking' ? 'hotm' : 'private'
           }
         })
         const offDays = getOffDays(start, end)

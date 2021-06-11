@@ -89,26 +89,11 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
     if (response.status === 200 && response.data.user) {
       let user = response.data.user
       setOpen(false)
-
-      let isArtist = false
       
-      if (user.capabilities.staff_members || user.capabilities.editor) {
-        isArtist = true
-
-        //Sign in artist to Google for Calendar access
-        if (window.gapi) {
-          // if (!window.gapi.auth2.getAuthInstance().isSignedIn.get())
-          window.gapi.auth2.getAuthInstance().signIn()
-        }
-        else {
-          console.log("Error: gapi not loaded")
-        }
-      }        
       const payload = {
         email: user.email,
         id: user.id,
-        loggedIn: true,
-        isArtist: isArtist
+        loggedIn: true
       }
       signinUser(payload)
     }
