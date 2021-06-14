@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Typography from '@material-ui/core/Typography'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import { makeStyles } from '@material-ui/core/styles'
 import { auth_url } from '../config/dataLinks'
 import axios from 'axios'
@@ -41,7 +42,11 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down('sm')]: {
       maxHeight: 120,
     }
-  }
+  },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center'
+  }    
 }))
 
 export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
@@ -51,6 +56,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
   const [password, setPassword] = useState('')
   const [triggerForgetPW, setTriggerForgetPW] = useState(false)
   const [triggerRegister, setTriggerRegister] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const classes = useStyles(theme)
 
@@ -84,8 +90,9 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
       data: signinFormData
     }
 
+    setIsLoading(true)
     let response = await axios(config)
-
+    setIsLoading(false)
     if (response.status === 200 && response.data.user) {
       let user = response.data.user
       setOpen(false)
@@ -140,11 +147,17 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
             onChange={onChangePassword}
           />
         </DialogContent>
-        <DialogActions className={classes.button1}>
-          <Button variant="contained" onClick={handleSignin} color="secondary" fullWidth>
-            Sign in
-          </Button>
-        </DialogActions>
+        {isLoading ?
+          <div className={classes.progress}>
+            <CircularProgress color='primary' />
+          </div>
+         :
+          <DialogActions className={classes.button1}>
+            <Button variant="contained" onClick={handleSignin} color="secondary" fullWidth>
+              Sign in
+            </Button>
+          </DialogActions>
+        }
         <div className={classes.container2}>
           <div className={classes.grow} />
           <Button variant="text" onClick={handleForget} color="primary">
