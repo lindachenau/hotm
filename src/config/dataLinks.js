@@ -28,7 +28,7 @@ export const api_token_login = `${HOTM_BOOKING_API}/login`
 /*
  * HBLC logo 120x120 hosted in the live website for payment link embedded logo
  */
-export const hblc_logo = 'https://procomhost.com/wp-content/uploads/2020/12/HBLC-logo-120.png'
+export const hblc_logo = 'https://hairbeautylifeco.com/wp-content/uploads/2021/06/HBLC-logo-120.png'
 
 export const booking_website = 'https://hblc1.vercel.app'
 
