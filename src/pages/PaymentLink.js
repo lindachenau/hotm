@@ -51,7 +51,7 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
   const [cancelled, setCancelled] = useState(false)
   const [paid, setPaid] = useState(false)
   const [pay, setPay] = useState(false)
-  const [donePay, seDonePay] = useState(false)
+  const [donePay, setDonePay] = useState(false)
   const [bookingTime, setBookingTime] = useState([])
 
   useEffect(() => {
@@ -99,7 +99,7 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
       if (query.booking_type === 'client') {
         getClient(cId)
         setBookingDate(bookingData.booking_date)
-        setBookingTime(localDate(bookingData.booking_date, bookingData.booking_start_time))
+        setBookingTime([localDate(bookingData.booking_date, bookingData.booking_start_time)])
         setClientPay(true)
         setBookingType(BOOKING_TYPE.T)
       } else if (bookingData.booking_type === BOOKING_TYPE.P) {
@@ -139,7 +139,7 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
         body: JSON.stringify({
           id: token.id,
           description: `${who}'s ${query.payment_type} for booking ID: ${bookingId} on ${bookingDate}`,
-          amount: (amount * 100).toFixed(0)
+          amount: (amount * 100).toFixed(0) 
         })
       })
 
@@ -164,7 +164,7 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
       if (clientPay) 
         sendReminders(bookingType, query.booking_id, bookingTime, client.phone, client.name)
       
-      seDonePay(true)
+      setDonePay(true)
     }
     else {
       alert("Your card was declined.")
