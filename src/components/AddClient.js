@@ -26,7 +26,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-export default function AddClient({client, setClient, label, disabled=false}) {
+export default function AddClient({apiToken, client, setClient, label, disabled=false}) {
   const [open, setOpen] = useState(false)
   const [options, setOptions] = useState(client !== null ? [client] : [])
   const [searchKey, setSearchKey] = useState('')
@@ -46,7 +46,8 @@ export default function AddClient({client, setClient, label, disabled=false}) {
       const config = {
         method: 'get',
         headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate"
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Authorization": `Bearer ${apiToken}`
         },
         url: clients_url + '?name=' + searchKey
       }

@@ -4,7 +4,7 @@ import SigninForm from '../components/SigninForm'
 
 const mapDispatchToProps = dispatch => {
   return {
-    signinUser: (payload) => dispatch(signinUser(payload))
+    signinUser: (apiToken, payload) => dispatch(signinUser(apiToken, payload))
   }
 }
 

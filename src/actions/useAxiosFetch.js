@@ -73,7 +73,8 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger, a
           method: 'get',
           headers: {
             "Content-Type": "application/json",
-            "Cache-Control": "no-cache, no-store, must-revalidate"
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            "Authorization": `Bearer ${apiToken}`
           },
           url: url
         }
@@ -145,7 +146,7 @@ const useAxiosFetch = (initialUrl, initialData, method, data, callMe, trigger, a
       }
     }
 
-    if (!state.isLoading && !state.isUpdating) {
+    if (!state.isLoading && !state.isUpdating && apiToken) {
       switch (method) {
         case 'get': {
           fetchData()

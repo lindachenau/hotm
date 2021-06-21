@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef} from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -6,7 +6,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import ExitToAppIcon from '@material-ui/icons/ExitToApp'
-
 
 const useStyles = makeStyles(() => ({
   container1: {
@@ -30,7 +29,7 @@ const useStyles = makeStyles(() => ({
   }
 }))
 
-export default function SignoutForm({name, email, triggerOpen, signoutUser, resetBooking}) {
+export default function SignoutForm({triggerOpen, signoutUser, resetBooking, name, email}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
 

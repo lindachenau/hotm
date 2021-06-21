@@ -1,4 +1,4 @@
-import { clients_url, access_token } from '../config/dataLinks'
+import { clients_url } from '../config/dataLinks'
 import axios from 'axios'
 export const CHANGE_ORGANIC = 'CHANGE_ORGANIC'
 export const CHANGE_PENSIONER_RATE = 'CHANGE_PENSIONER_RATE'
@@ -10,9 +10,6 @@ export const DEC_ITEM_QTY = 'DEC_ITEM_QTY'
 export const GET_AVAIL_ARTISTS = 'GET_AVAIL_ARTISTS'
 export const RECEIVE_AVAIL_ARTISTS = 'RECEIVE_AVAIL_ARTISTS'
 export const ERROR_AVAIL_ARTISTS = 'ERROR_AVAIL_ARTISTS'
-export const FETCH_CLIENT = 'FETCH_CLIENT'
-export const RECEIVE_CLIENT = 'RECEIVE_CLIENT'
-export const ERROR_CLIENT = 'ERROR_CLIENT'
 export const ENABLE_STORE = 'ENABLE_STORE'
 export const FETCH_ARTISTS = 'FETCH_ARTISTS'
 export const FETCH_SERVICES = 'FETCH_SERVICES'
@@ -92,41 +89,6 @@ export function getAvailArtist(url) {
       console.log("Artists fetching error")
       dispatch({
         type: ERROR_AVAIL_ARTISTS
-      })
-    }
-  }
-}
-
-export function getClient(clientId) {
-  return async function(dispatch) {
-    dispatch({
-      type: FETCH_CLIENT
-    })
-
-    try {
-      const config = {
-        method: 'get',
-        headers: { 'Authorization': access_token },
-        url: `${clients_url}?id=${clientId}`
-      }
-
-      const result = await axios(config)
-      const data = result.data
-      const client = {
-        id: data.id,
-        name: data.name,
-        phone: data.phone,
-        email: data.email,
-        address: data.address
-      }
-      dispatch({
-        type: RECEIVE_CLIENT,
-        payload: client
-      })
-    } catch (err) {
-      console.log("Client fetching error")
-      dispatch({
-        type: ERROR_CLIENT
       })
     }
   }

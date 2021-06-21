@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
@@ -12,6 +12,7 @@ import axios from 'axios'
 import ForgetPWForm from './ForgetPWForm'
 import RegisterForm from './RegisterForm'
 import logo from '../images/HBLC-logo-600.png'
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 
 const useStyles = makeStyles(theme => ({
   container1: {
@@ -50,6 +51,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
+  const { apiToken } = useContext(BookingsStoreContext)
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const[username, setUsername] = useState('')
@@ -94,15 +96,15 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
     let response = await axios(config)
     setIsLoading(false)
     if (response.status === 200 && response.data.user) {
-      let user = response.data.user
+      const user = response.data.user
       setOpen(false)
-      
+
       const payload = {
         email: user.email,
         id: user.id,
         loggedIn: true
       }
-      signinUser(payload)
+      signinUser(apiToken, payload)
     }
     else {
       alert('login failed')
@@ -177,7 +179,7 @@ export default function SigninForm({theme, triggerOpen, signinUser, initOpen}) {
         </div>
       </Dialog>
       <ForgetPWForm triggerOpen={triggerForgetPW}/>
-      <RegisterForm triggerOpen={triggerRegister} signinUser={signinUser}/>
+      <RegisterForm triggerOpen={triggerRegister} signinUser={signinUser} apiToken={apiToken}/>
     </>
   )
 }

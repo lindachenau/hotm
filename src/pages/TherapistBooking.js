@@ -89,7 +89,7 @@ const TherapistBooking = ({
   const [mode, setMode] = useState('book')
   const [saveModified, setSaveModified] = useState(false)
   const [browsing, setBrowsing] = useState(false)
-  const { bookingsData } = useContext(BookingsStoreContext)
+  const { bookingsData, apiToken } = useContext(BookingsStoreContext)
   const { bookingInProgress } = bookingsData
   const [estimatedDuration, setEstimatedDuration] = useState(0)
   
@@ -341,6 +341,7 @@ const TherapistBooking = ({
             <LocationSearchInput address={address} changeAddr={(address) => {setAddress(address.replace(', Australia', ''))}}/>  
             <div className={classes.padding}>
               <AddClient
+                apiToken={apiToken}
                 disabled={mode !== 'book'}
                 setClient={setClient}
                 client={client}

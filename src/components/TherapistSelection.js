@@ -33,10 +33,10 @@ function Info() {
 
 const TherapistSelection = ({ 
   theme,
-  userInfo,
   services,
   itemQty, 
   bookingDateAddr,
+  userInfo,
   submitBooking,
   onSubmit,
   artists,
@@ -45,8 +45,7 @@ const TherapistSelection = ({
   setTherapist,
   setTravelTime,
   artistBooking}) => {
-  
-  const classes = useStyles()
+    const classes = useStyles()
   const [address, setAddress] = useState(bookingDateAddr.bookingAddr)
     
   const missingFields = () => {
@@ -82,7 +81,7 @@ const TherapistSelection = ({
       }
 
       try {
-        const result = await travelTime(therapist.id, address, bookingValue)
+        const result = await travelTime(apiToken, therapist.id, address, bookingValue)
         const data = result.data
         if (data.can_travel) {
           setTravelTime(data.travel_time)

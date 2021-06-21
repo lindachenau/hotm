@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { Redirect, withRouter } from 'react-router-dom'
 import TheCalendar from '../components/TheCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
@@ -12,11 +12,15 @@ import { onNavigate, onView } from '../utils/eventFunctions'
 import { booking_events_url } from '../config/dataLinks' 
 import { localDate, getEvents } from '../utils/dataFormatter'
 import CheckoutForm from '../components/CheckoutForm'
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
+import { setClient } from '../actions/bookingCreator'
 
 const localizer = momentLocalizer(moment)
 
-const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient, client, artists, services, bookingEvent, setBookingEvent}) => {
+const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, artists, services, bookingEvent, setBookingEvent}) => {
+  const { apiToken } = useContext(BookingsStoreContext)
   const [events, setEvents] = useState([])
+  const [client, setClient] = useState({})
   /*
    * today is passed to date prop of DragAndDropCalendar which is used as current date to open the calendar.
    * We initialise today to 'today' in booking creation and the first event date in booking editing.
@@ -62,7 +66,8 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
         method: 'get',
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "no-cache, no-store, must-revalidate"
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Authorization": `Bearer ${apiToken}`
         },
         url: url
       }
@@ -96,10 +101,24 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, getClient,
   
         //Fetch the client in the background
         await getClient(bookingEvent.client_id)
+
+        const config = {
+          method: 'get',
+          headers: {
+            "Authorization": `Bearer ${apiToken}`
+          },          
+          url: `${clients_url}?id=${bookingEvent.client_id}`
+        }
+        const result = await axios(config)
+        setClient(result.data)
       }
       
     } catch (err) {
-      alert('No booking event found. The booking has probably been cancelled.')
+      if (err.response) {
+        console.log(err.response.data)
+        const message = err.response.data.error
+        alert(`${message} No booking event found. The booking has probably been cancelled.`)
+      }
     }
   }
 

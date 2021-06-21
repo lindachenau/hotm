@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -7,9 +7,10 @@ import DialogContentText from '@material-ui/core/DialogContentText'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
 import { clients_url } from '../config/dataLinks'
-import { sendVerification } from '../utils/misc'
+import { sendVerification, getClientByName } from '../utils/misc'
 import EmailVeriForm from './EmailVeriForm'
 import axios from 'axios'
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 
 const useStyles = makeStyles(() => ({
   container1: {
@@ -34,6 +35,7 @@ const useStyles = makeStyles(() => ({
 }))
 
 export default function ForgetPWForm({triggerOpen}) {
+  const { apiToken } = useContext(BookingsStoreContext)
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const [email, setEmail] = useState('')
@@ -77,7 +79,10 @@ export default function ForgetPWForm({triggerOpen}) {
   const handleResetPW = async () => {
     const config = {
       method: 'post',
-      headers: {"Content-Type": "application/json"},
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiToken}`
+      },
       url: clients_url,
       data: {
         client_id: userId,
@@ -100,16 +105,8 @@ export default function ForgetPWForm({triggerOpen}) {
 
   const handleSubmit = async () => {
     //Check if the user exists first
-    const config = {
-      method: 'get',
-      headers: { 
-        "Cache-Control": "no-cache, no-store, must-revalidate"
-      },
-      url: clients_url + '?name=' + email
-    }
-
     try {
-      let result = await axios(config)
+      let result = await getClientByName(apiToken, email)
       if (result.data.length !== 1) {
         alert('The email you entered does not exist in our user database.')
         return

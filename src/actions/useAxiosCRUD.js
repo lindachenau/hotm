@@ -95,7 +95,7 @@ const dataFetchReducer = (state, action) => {
   }
 }
 
-const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, bookingTrigger, storeEnabled, apiToken) => {
+const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, bookingTrigger, apiToken) => {
 
   const [state, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -107,9 +107,6 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
   })
 
   useEffect(() => {
-    if (!storeEnabled)
-      return
-
     const requestData = async () => {
       dispatch({ type: "FETCH_INIT" })
 
@@ -123,7 +120,8 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         method: 'get',
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "no-cache, no-store, must-revalidate"
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Authorization": `Bearer ${apiToken}`
         },
         url: url
       }
@@ -141,7 +139,8 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         method: 'get',
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "no-cache, no-store, must-revalidate"
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Authorization": `Bearer ${apiToken}`
         },
         url: `${url}?id=${id}`
       }
@@ -170,21 +169,21 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       dispatch({ type: "INPROGRESS_START" })
       try {
         const result = await axios(config)
-        const error = result.data.error
-        if (error) {
-          alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-          dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
-        }
-        else {
-          const bookingId = result.data.booking_id
-          dispatch({ type: "POST_SUCCESS" })
+        const bookingId = result.data.booking_id
+        dispatch({ type: "POST_SUCCESS" })
 
-          //Now charge
-          if (callMe)
-            callMe(bookingId)
-        }
+        //Now charge
+        if (callMe)
+          callMe(bookingId)
       } catch (err) {
-        alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+        if (err.response) {
+          const message = err.response.data.message.error_message
+          const errDefault = `${message}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
+          const errMessage = message.includes('Conflict booking time') ? 
+            'Sorry, your appointment time has been taken by someone else. Please go back to move your appointment to another time.' : errDefault
+          alert(errMessage)
+        }
+
         dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
       dispatch({ type: "INPROGRESS_END" })
@@ -206,22 +205,20 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
       dispatch({ type: "INPROGRESS_START" })
       try {
         const result = await axios(config)
-        const error = result.data.error
-        if (error) {
-          alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-          dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
-        }
-        else {
-          // Read back the data to get fields inserted by the backend. The updated data will be merged back to state.data so that users can see 
-          // booking cards when they are updated.
-          const payload = await readBack(url, data.booking_id)
-          dispatch({ type: "PUT_SUCCESS", payload: payload })
+        // Read back the data to get fields inserted by the backend. The updated data will be merged back to state.data so that users can see 
+        // booking cards when they are updated.
+        const payload = await readBack(url, data.booking_id)
+        dispatch({ type: "PUT_SUCCESS", payload: payload })
 
-          if (callMe)
-            callMe()
-        }
+        if (callMe)
+          callMe()
       } catch (err) {
-        alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+        if (err.response) {
+          const message = err.response.data.message.error_message
+          const errDefault = `${message}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
+          alert(errDefault)
+        }
+
         dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
       dispatch({ type: "INPROGRESS_END" })
@@ -247,19 +244,20 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         /*
         * No need to do anything if no error as data hasn't been written into local Booking Store yet.
         */ 
-        if (error) {
-          alert(`${error}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
-          dispatch({ type: "UPDATE_FAILURE", errorMessage: error })
-        } else {
-          dispatch({ type: "DELETE_SUCCESS", payload: {id: data.booking_id}})
-        }
+        dispatch({ type: "DELETE_SUCCESS", payload: {id: data.booking_id}})
       } catch (err) {
-        alert(`${err}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`)
+        if (err.response) {
+          const message = err.response.data.message.error_message
+          const errDefault = `${message}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
+          alert(errDefault)
+        }
+
         dispatch({ type: "UPDATE_FAILURE", errorMessage: err })
       }
       dispatch({ type: "INPROGRESS_END" })
     }
-    if (!state.isLoading && !state.isUpdating) {
+
+    if (!state.isLoading && !state.isUpdating && apiToken) {
       switch (method) {
         case 'get': {
           requestData()

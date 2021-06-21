@@ -26,12 +26,10 @@ const Routes = ({
   bookingType, 
   changeBookingStage, 
   resetBooking, 
-  enableStore, 
-  searchBooking, 
   priceFactors, 
   itemQty, 
-  loggedIn, 
-  isArtist, 
+  loggedIn,
+  isArtist,
   userEmail }) => {
   const { services, artistsFetched, servicesFetched, events, eventsFetched, adminBookings, adminBookingsFetched, bookingsData, artists } = 
     useContext(BookingsStoreContext)
@@ -70,9 +68,6 @@ const Routes = ({
             <Route exact path='/' render={() => 
               <Home 
                 theme={theme}
-                resetBooking={resetBooking}
-                enableStore={enableStore}
-                searchBooking={searchBooking}
                 artists={artists}/>}
             />
             <Route path='/any-therapist'>
@@ -188,7 +183,7 @@ const Routes = ({
             }                
             </Route>
             <Route exact path='/payment'>
-              <PaymentLink enableStore={enableStore}/>
+              <PaymentLink/>
             </Route>
             <Route exact path='/admin'>
               {isArtist ? 

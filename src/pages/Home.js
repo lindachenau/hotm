@@ -6,7 +6,7 @@ import AddArtists from '../components/AddArtists'
 import { Typography } from '@material-ui/core'
 import logo from '../images/HBLC-logo-600.png'
 
-const Home = ({ theme, resetBooking, enableStore, searchBooking, artists }) => {
+const Home = ({ theme, artists }) => {
   const [location, setLocation] =useState('')
   const [therapist, setTherapist] = useState(null)
   const anyTherapist = {
@@ -41,13 +41,6 @@ const Home = ({ theme, resetBooking, enableStore, searchBooking, artists }) => {
   }))
 
   const classes = useStyles()
-
-  useEffect(() => {
-    //Pre-fetch client booking events in the background
-    enableStore()
-    searchBooking()
-  // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [])
 
   useEffect(() => {
     if (therapist) {

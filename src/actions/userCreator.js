@@ -5,11 +5,14 @@ import { Error } from '@material-ui/icons'
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_OUT = 'SIGN_OUT'
 
-export const signinUser = (payload) => {
+export const signinUser = (apiToken, payload) => {
   return async function(dispatch) {
     try {
       const config = {
         method: 'get',
+        headers: {
+          "Authorization": `Bearer ${apiToken}`
+        },        
         url: `${clients_url}?id=${payload.id}`
       }
       const result = await axios(config)

@@ -1,4 +1,5 @@
-import { contact_phone, payment_link_sender, auto_cancellation_timer, sms_reminder_server, delete_sms_reminder, travel_time_url, email_verification_server,  } from '../config/dataLinks'
+import { contact_phone, payment_link_sender, auto_cancellation_timer, sms_reminder_server, delete_sms_reminder, 
+  travel_time_url, email_verification_server, clients_url } from '../config/dataLinks'
 import moment from 'moment'
 import axios from 'axios'
 import { localDate } from '../utils/dataFormatter'
@@ -186,12 +187,13 @@ export const removeReminders = async (bookingType, bookingId, eventList) => {
   }
 }
 
-export const travelTime = async (artistId, address, bookingValue) => {
+export const travelTime = async (apiToken, artistId, address, bookingValue) => {
   try {
     const config = {
       method: 'get',
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiToken}`
       },
       url: `${travel_time_url}?artist_id=${artistId}&event_location=${address}&total_amount=${bookingValue}`
     }
@@ -223,3 +225,20 @@ export const sendVerification = async (email, setKey) => {
   }
 }
 
+export const getClientByName = (apiToken, name) => {
+  const config = {
+    method: 'get',
+    headers: { 'Authorization': `Bearer ${apiToken}` },
+    url: `${clients_url}?name=${name}`
+  }
+  return axios(config)
+}
+
+export const getClientById = (apiToken, id) => {
+  const config = {
+    method: 'get',
+    headers: { 'Authorization': `Bearer ${apiToken}` },
+    url: `${clients_url}?id=${id}`
+  }
+  return axios(config)
+}

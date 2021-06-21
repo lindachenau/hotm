@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useContext } from 'react'
+import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 import { startDate, endDate } from '../utils/misc'
 import { mergeThenSort } from '../utils/eventFunctions'
 import { calendar_events_url } from '../config/dataLinks' 
@@ -20,6 +21,7 @@ const EventManager = ({
   triggerDeleteEvent,
   therapistBooking=false
 }) => {
+  const { apiToken } = useContext(BookingsStoreContext)
   
   useEffect(() => {
     const getOffDays = (start, end) => {
@@ -89,7 +91,12 @@ const EventManager = ({
     const fetchEventsViaBackend = async () => {
       try {
         const url = `${calendar_events_url}?artist_email=${calendarId}&start_date=${startDate(fromDate).substring(0, 10)}&end_date=${endDate(toDate).substring(0, 10)}`
-        const data = await fetch(url)
+        const data = await fetch(url, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${apiToken}`
+          }
+        })        
         const events = await data.json()
         const start = startDate(fromDate)
         const end = endDate(toDate)

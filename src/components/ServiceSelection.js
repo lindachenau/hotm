@@ -12,7 +12,6 @@ import {
 } from '@material-ui/pickers'
 
 import ServiceMenu from '../config/ServiceMenuContainer'
-
 import LocationSearchInput from './LocationSearchInput'
 import { validateClientBooking } from '../utils/misc'
 import { available_artists_url } from '../config/dataLinks'
@@ -37,19 +36,18 @@ function Info() {
 
 const ServiceSelection = ({ 
   theme,
-  userInfo,
   services,
   itemQty, 
   onSubmit, 
   pensionerRate, 
   bookingDate, 
-  bookingAddr, 
+  bookingAddr,
+  userInfo,
   submitBooking,
   getAvailArtist,
   changeSelectedArtist,
   artistBooking,
   bookingValue }) => {
-  
   const classes = useStyles()
   const items = services.items
   const [selectedDate, setSelectedDate] = useState(bookingDate)

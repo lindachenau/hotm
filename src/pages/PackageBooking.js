@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { Redirect, withRouter } from 'react-router-dom';
+import React, { useState, useEffect, useContext } from 'react'
+import { Redirect, withRouter } from 'react-router-dom'
 import TheCalendar from '../components/TheCalendar'
 import 'react-big-calendar/lib/sass/styles.scss'
 import '../components/CalendarToolbar.css'
@@ -46,7 +46,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 const PackageBooking = ({location, theme, adminBooking, artists, userEmail, artistSignedIn, addBooking, updateBooking}) => {
-  const { services, adminTasks } = useContext(BookingsStoreContext)
+  const { services, adminTasks, apiToken } = useContext(BookingsStoreContext)
   const classes = useStyles(theme)
   const [packageList, setPackageList] = useState([])
   const [artist, setArtist] = useState(null)
@@ -309,6 +309,7 @@ const PackageBooking = ({location, theme, adminBooking, artists, userEmail, arti
             />
             <div className={classes.padding}>
               <AddClient
+                apiToken={apiToken}
                 disabled={mode !== 'book'}
                 setClient={setClient}
                 client={client}

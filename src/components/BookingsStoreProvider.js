@@ -39,7 +39,7 @@ const initFilter = (fromDate, toDate) => {
   return `${bookings_url}?from_date=${moment(fromDate).format("YYYY-MM-DD")}&to_date=${moment(toDate).format("YYYY-MM-DD")}`
 }
 
-const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchArtists, fetchServices, fetchCorpCards, fetchAdminTasks, isArtist}) => {
+const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchArtists, fetchServices, fetchCorpCards, fetchAdminTasks, enableStore, searchBooking, isArtist}) => {
   const {servicesTrigger, artistsTrigger, cardRequestMethod, corpCardsTrigger, card, cardCallMe, adminTasksTrigger, taskRequestMethod, task, taskCallMe, 
     storeEnabled, bookingTrigger, bookingRequestMethod, bookingTypeName, data, callMe, checkout} = storeActivation
   const {fromDate, toDate, bookingType} = bookingFilter
@@ -61,10 +61,10 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   const [corpCardsObj, setCorpCardsObj] = useState({})
   const [corpCards, setCorpCards] = useState([])
   const [adminTasks, setAdminTasks] = useState([])
-  const [apiToken, setApiToken] = useState()
-
+  const [apiToken, setApiToken] = useState(null)
+  
   //Renew API access token every 23 hours
-  useEffect(() => {
+  useEffect(async() => {
     const getAPIToken = async() => {
       const config = {
         method: 'post',
@@ -95,7 +95,26 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  //Fetch services and artists every 60 minutes in case the data in the backend has changed
+  useEffect(() => {
+    // Enable the booking store after apiToken is fetched
+    if (apiToken)
+      enableStore()
+  }, [apiToken])
+
+  // Initialise services, artists, corpCards, adminTasks, bookings after apiToken is fetched
+  useEffect(() => {
+    // Only initialise once 
+    if (storeEnabled) {
+      fetchArtists()
+      fetchServices()
+      fetchCorpCards()
+      fetchAdminTasks()
+      //Pre-fetch client booking events in the background
+      searchBooking()
+    }
+  }, [storeEnabled])
+
+  //Fetch services, artists corpCards, adminTasks every 60 minutes in case the data in the backend has changed
   useEffect(() => {
     const handle = setInterval(() => {
       fetchArtists()
@@ -143,7 +162,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   useEffect(() => {
     if (adminTasksData.data.length !== 0) {
-        setAdminTasks(normaliseAdminTasks(adminTasksData.data))
+      setAdminTasks(normaliseAdminTasks(adminTasksData.data))
     }
   }, [adminTasksData.data])
 
@@ -171,7 +190,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [fromDate, toDate, bookingType, artistId, clientId, corporateId])
 
-  const artistsData = useAxiosFetch(artists_url, [], 'get', {}, null, artistsTrigger)
+  const artistsData = useAxiosFetch(artists_url, [], 'get', {}, null, artistsTrigger, apiToken)
 
   useEffect(() => {
     if (artistsData.data.length !== 0) {
@@ -182,7 +201,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, [artistsData.data])
 
-  let bookingsData = useAxiosCRUD(bookingUrl, {}, bookingRequestMethod, bookingTypeName, data, callMe, bookingTrigger, storeEnabled, apiToken)
+  let bookingsData = useAxiosCRUD(bookingUrl, {}, bookingRequestMethod, bookingTypeName, data, callMe, bookingTrigger, apiToken)
 
   //update client list whenever new bookings are loaded
   useEffect(() => {
@@ -217,6 +236,9 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
       Promise.allSettled(clientList.map(id => {
         const config = {
           method: 'get',
+          headers: {
+            "Authorization": `Bearer ${apiToken}`
+          },          
           url: `${clients_url}?id=${id}`
         }
         return axios(config)
@@ -296,7 +318,7 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
 
   return (
     <BookingsStoreContext.Provider value={{services, servicesFetched, corpCards, corpCardsObj, adminTasks, 
-      events, eventsFetched, adminBookings, adminBookingsFetched, artists, artistsFetched, bookingsData}}>
+      events, eventsFetched, adminBookings, adminBookingsFetched, artists, artistsFetched, bookingsData, apiToken}}>
       {children}
     </BookingsStoreContext.Provider>
   )

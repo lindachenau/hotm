@@ -1,4 +1,3 @@
-const miniOrangeAccessKey = process.env.REACT_APP_MINIORANGE_ACCESS_KEY
 /*
  * Hair Beauty Life Co Home page
  */
@@ -11,7 +10,7 @@ export const payment_link_base = process.env.REACT_APP_PAYMENT_LINK_BASE
 /*
  * The active custom booking api
  */
-const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v1.1`
+const HOTM_BOOKING_API = `${home_url}/hotm_booking/api/v1.2`
 export const services_url = `${HOTM_BOOKING_API}/services`
 export const artists_url = `${HOTM_BOOKING_API}/artists`
 export const bookings_url = `${HOTM_BOOKING_API}/bookings`
@@ -42,14 +41,6 @@ export const register_url = `${home_url}/api/user/register`
 export const update_user_meta_url = `${home_url}/api/user/update_user_meta_vars`
 export const auth_url = `${home_url}/api/auth/generate_auth_cookie`
 export const reset_pw_url = `${home_url}/api/user/retrieve_password/?user_login=`
-
-/*
- * miniOrange API Authentication => 
- * No longer used and replaced by clients_url 25/05/2021
- */
-export const user_url = `${home_url}/wp-json/wp/v2/users`
-// Client-ID : Client-Secret authentication
-export const access_token = miniOrangeAccessKey
 
 /*
  * Instagram root for artists

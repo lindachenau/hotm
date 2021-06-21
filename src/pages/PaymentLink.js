@@ -8,14 +8,13 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import { stripe_charge_server, bookings_url, admin_bookings_url } from '../config/dataLinks'
-import { sendReminders } from '../utils/misc'
+import { sendReminders, getClientById } from '../utils/misc'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 import logo from '../images/HBLC-logo-600.png'
+import { get } from 'object-path'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
-
-
 
 const useStyles = makeStyles(theme => ({
   container1: {
@@ -36,10 +35,10 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) {
+function PaymentLink ({ theme, updateBooking} ) {
  
   const classes = useStyles()
-  const { corpCardsObj } = useContext(BookingsStoreContext)
+  const { corpCardsObj, apiToken } = useContext(BookingsStoreContext)
   const [query] = useState(queryString.parse(useLocation().search))
   const [bookingData, setBookingData] = useState(null)
   const [amount, setAmount] = useState(0)
@@ -53,6 +52,7 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
   const [pay, setPay] = useState(false)
   const [donePay, setDonePay] = useState(false)
   const [bookingTime, setBookingTime] = useState([])
+  const [client, setClient] = useState({})
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -61,7 +61,8 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
         method: 'get',
         headers: {
           "Content-Type": "application/json",
-          "Cache-Control": "no-cache, no-store, must-revalidate"
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Authorization": `Bearer ${apiToken}`
         },
         url: `${url}?id=${query.booking_id}`
       }
@@ -83,12 +84,13 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
       }
     }
 
-    enableStore()
-    fetchBooking()
+    if (apiToken) {
+      fetchBooking()
+    }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
-  }, [])
-
-  useEffect(() => {
+  }, [apiToken])
+  
+  useEffect(async() => {
     if (bookingData) {
       const cId = query.booking_type === 'client' ? bookingData.client_id : bookingData.card_or_client_id
       const amount = query.payment_type === 'deposit' ? (bookingData.total_amount * query.percentage / 100).toFixed(2) : 
@@ -97,13 +99,15 @@ function PaymentLink ({ theme, enableStore, updateBooking, getClient, client} ) 
       setAmount(amount)
       setBookingTotal(bookingData.total_amount)
       if (query.booking_type === 'client') {
-        getClient(cId)
+        const res = await getClientById(apiToken, cId)
+        setClient(res.data)
         setBookingDate(bookingData.booking_date)
         setBookingTime([localDate(bookingData.booking_date, bookingData.booking_start_time)])
         setClientPay(true)
         setBookingType(BOOKING_TYPE.T)
       } else if (bookingData.booking_type === BOOKING_TYPE.P) {
-        getClient(cId)
+        const res = await getClientById(apiToken, cId)
+        setClient(res.data)
         setBookingDate(bookingData.event_list[0].booking_date)
         let bTimes = []
         for (const e of bookingData.event_list) {

@@ -42,7 +42,7 @@ export default function Filter({
   setCorporate,
   searchBooking}) {
 
-  const { corpCards } = useContext(BookingsStoreContext)
+  const { corpCards, apiToken } = useContext(BookingsStoreContext)
   const {fromDate, toDate, bookingType, artist, client, corporate} = bookingFilter
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
@@ -137,6 +137,7 @@ export default function Filter({
             />
             :
             <AddClient
+              apiToken={apiToken}
               setClient={setClient}
               client={client}
               label="Select client"

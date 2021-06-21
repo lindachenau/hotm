@@ -6,8 +6,8 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
 import { makeStyles } from '@material-ui/core/styles'
-import { register_nonce_url, register_url, update_user_meta_url, clients_url, access_token } from '../config/dataLinks'
-import { sendVerification } from '../utils/misc'
+import { register_nonce_url, register_url, update_user_meta_url } from '../config/dataLinks'
+import { sendVerification, getClientByName } from '../utils/misc'
 import axios from 'axios'
 import EmailVeriForm from './EmailVeriForm'
 import logo from '../images/HBLC-logo-600.png'
@@ -36,7 +36,7 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
-export default function RegisterForm({triggerOpen, signinUser}) {
+export default function RegisterForm({triggerOpen, signinUser, apiToken}) {
   const [open, setOpen] = useState(false)
   const didMountRef = useRef(false)
   const [username, setUsername] = useState('')
@@ -151,25 +151,13 @@ export default function RegisterForm({triggerOpen, signinUser}) {
   }
 
   const checkExistence = async () => {
-    const config1 = {
-      method: 'get',
-      headers: { 'Authorization': access_token },
-      url: `${clients_url}?name=${email}`
-    }
-
-    const users1 = await axios(config1)
+    const users1 = await getClientByName(apiToken, email)
     if (users1.data.length > 0) {
       alert("Email exists. Login or reset password.")
       return true
     } 
 
-    const config2 = {
-      method: 'get',
-      headers: { 'Authorization': access_token },
-      url: `${clients_url}?name=${username}`
-    }
-
-    const users2 = await axios(config2)
+    const users2 = await getClientByName(apiToken, username)
     if (users2.data.length > 0) {
       alert("Username exists. Please change to a different username.")
       return true
@@ -239,7 +227,7 @@ export default function RegisterForm({triggerOpen, signinUser}) {
     //write metadata
     try {
       const cookie = regResponse.data.cookie
-      const user_id = regResponse.data.user_id
+      const userId = regResponse.data.user_id
 
       let metaFormData = new FormData()
       metaFormData.set('cookie', cookie)
@@ -268,12 +256,12 @@ export default function RegisterForm({triggerOpen, signinUser}) {
       const payload = {
         firstName,
         lastName,
-        nickName: firstName,
         email: email,
-        id: user_id,
+        id: userId,
         loggedIn: true
       }
-      signinUser(payload)
+
+      signinUser(apiToken, payload)
       alert('You are now registered for Hair Beauty Life Co online booking!')
       setOpen(false)
     }

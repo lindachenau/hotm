@@ -41,12 +41,12 @@ function Payment (
     bookingInfo, 
     loggedIn, 
     priceFactors, 
-    bookingValue, 
+    bookingValue,
     userId, 
     userName,
     clientEmail,
     phone,
-    name,
+    name,    
     triggerSignin, 
     setTriggerSignin
   }) {

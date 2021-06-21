@@ -9,9 +9,6 @@ import {
   GET_AVAIL_ARTISTS,
   RECEIVE_AVAIL_ARTISTS,
   ERROR_AVAIL_ARTISTS,
-  FETCH_CLIENT,
-  RECEIVE_CLIENT,
-  ERROR_CLIENT,
   ENABLE_STORE,
   FETCH_SERVICES,
   FETCH_ARTISTS,
@@ -166,25 +163,6 @@ export function availArtists(state = initAvailArtists, action) {
     }
     case RESET_BOOKING: {
       return initAvailArtists
-    }
-    default:
-      return state
-  }
-}
-
-export function client(state = {}, action) {
-  switch (action.type) {
-    case FETCH_CLIENT: {
-      return {}
-    }
-    case RECEIVE_CLIENT: {
-      return Object.assign({}, state, action.payload)
-    }
-    case ERROR_CLIENT: {
-      return {}
-    }
-    case RESET_BOOKING: {
-      return {}
     }
     default:
       return state
