@@ -13,7 +13,7 @@ import { booking_events_url } from '../config/dataLinks'
 import { localDate, getEvents } from '../utils/dataFormatter'
 import CheckoutForm from '../components/CheckoutForm'
 import { BookingsStoreContext } from '../components/BookingsStoreProvider'
-import { setClient } from '../actions/bookingCreator'
+import { getClientById } from '../utils/misc'
 
 const localizer = momentLocalizer(moment)
 
@@ -98,19 +98,8 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, artists, s
         event.contact = ''
         setBookingEvent(event)
         setTriggerCheckoutForm(!triggerCheckoutForm)
-  
-        //Fetch the client in the background
-        await getClient(bookingEvent.client_id)
-
-        const config = {
-          method: 'get',
-          headers: {
-            "Authorization": `Bearer ${apiToken}`
-          },          
-          url: `${clients_url}?id=${bookingEvent.client_id}`
-        }
-        const result = await axios(config)
-        setClient(result.data)
+        const res = await getClientById(apiToken, bookingEvent.client_id)
+        setClient(res.data)
       }
       
     } catch (err) {

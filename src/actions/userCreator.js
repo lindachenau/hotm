@@ -1,6 +1,5 @@
 import { clients_url } from '../config/dataLinks'
 import axios from 'axios'
-import { Error } from '@material-ui/icons'
 
 export const SIGN_IN = 'SIGN_IN'
 export const SIGN_OUT = 'SIGN_OUT'

@@ -12,7 +12,6 @@ import { sendReminders, getClientById } from '../utils/misc'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
 import logo from '../images/HBLC-logo-600.png'
-import { get } from 'object-path'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
