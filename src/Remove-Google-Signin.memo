@@ -1,0 +1,6 @@
+Remove Google signin to avoid user hassle in browser configuration and security risk in sharing admin password among artists. Now Google calendar access is via backend. It is slower but the speed gain is not worth the user hassle.
+1. CalendarLoader.js which sets up gapi for Google signin popup is no longer referenced.
+2. import and component instantiation of CalendarLoader in Topbar.js are commented out.
+3. signin popup in userCreator.js is commented out.
+4. fetchEvents function and reference in EventManager.js are commented out.
+5. gapi signout in SignoutForm.js is commented out.

@@ -52,9 +52,9 @@ export default function SignoutForm({triggerOpen, signoutUser, resetBooking, nam
     setOpen(false)
     
     //Sign out artist from Google for Calendar access
-    if (window.gapi) {
-      window.gapi.auth2.getAuthInstance().signOut()
-    }
+    // if (window.gapi) {
+    //   window.gapi.auth2.getAuthInstance().signOut()
+    // }
   }
 
   return (
