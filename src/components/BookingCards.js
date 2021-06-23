@@ -1,6 +1,6 @@
 import React, { useState, useEffect }  from 'react'
 import moment from 'moment'
-import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog } from "react-icons/fa"
+import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaDollarSign, FaUserCog, FaTag } from "react-icons/fa"
 import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
@@ -57,7 +57,9 @@ function EventCard ({ event }) {
         <FaDollarSign/>
         <span>{ `${event.paidAmount}/${event.total} `}</span>
         <FaUserCog/>
-        <span>{ event.artists.map(artist => artist.name).join(', ')}</span>
+        <span>{ `${event.artists.map(artist => artist.name).join(', ')} `}</span>
+        <FaTag/>
+        <span>{ `${event.id } `}</span>
         {event.status === BOOKING_STATUS.COMPLETED ? <CheckCircleIcon color='primary'/> : null}
         {event.status === BOOKING_STATUS.DELETED ? <DeleteForeverIcon color='primary'/> : null}
         <ul>
@@ -85,7 +87,9 @@ function AdminBookingCard ({ booking }) {
         <br/>
         <span>{`Contact: ${booking.contact}`}</span>
         <br/>
-        <span>{`Total hours booked: ${booking.totalHours}`}</span>
+        <span>{`Total hours booked: ${booking.totalHours} `}</span>
+        <FaTag/>
+        <span>{ `${booking.id } `}</span>
         <br/>
         <span>{`Payment status: $${booking.paidAmount}/$${booking.total}`}</span>
         {booking.status === BOOKING_STATUS.COMPLETED ? <CheckCircleIcon color='primary'/> : null}
