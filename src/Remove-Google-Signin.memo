@@ -4,3 +4,4 @@ Remove Google signin to avoid user hassle in browser configuration and security 
 3. signin popup in userCreator.js is commented out.
 4. fetchEvents function and reference in EventManager.js are commented out.
 5. gapi signout in SignoutForm.js is commented out.
+6. artistSignedIn in Routes.js is now initialised to true. It was initialised to false and set to true in Topbar.js after Google signin is completed successfully.

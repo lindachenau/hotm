@@ -35,7 +35,7 @@ const Routes = ({
     useContext(BookingsStoreContext)
   const [bookingValue, setBookingValue] = useState(0)
   const [depositPayable, setDepositPayable] = useState(0)
-  const [artistSignedIn, setArtistSignedIn] = useState(false)
+  const [artistSignedIn, setArtistSignedIn] = useState(true)
   const [prevActiveStep, setPrevActiveStep] = useState(0)
   //Admin and therapist booking event for checkout pop-up in MyCalendar
   const [bookingEvent, setBookingEvent] = useState({adminBookings: false})
