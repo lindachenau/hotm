@@ -37,9 +37,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 20
   },
   logo: {
-    maxWidth: '40%',
-    width: 'auto',
-    height: 'auto',
+    width: 200,
+    height: 200,
     [theme.breakpoints.down('sm')]: {
       maxHeight: 120,
     }

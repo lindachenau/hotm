@@ -27,9 +27,8 @@ const Home = ({ theme, artists }) => {
       flexGrow: 1
     },
     logo: {
-      maxWidth: '40%',
-      width: 'auto',
-      height: 'auto',
+      width: 250,
+      height: 250,
       [theme.breakpoints.down('sm')]: {
         maxWidth: '50%',
         maxHeight: 180

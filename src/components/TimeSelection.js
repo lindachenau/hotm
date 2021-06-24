@@ -213,7 +213,7 @@ const TimeSelection = ({changeBookingStage, services, itemQty, pensionerRate, tr
                 <ListItemIcon>
                   <HelpIcon />
                 </ListItemIcon>
-                <ListItemText primary="If conflict, move the event by dragging or open the event edit box to change start time." />
+                <ListItemText primary="If this booking conflicts with an existing booking, move the event by dragging or open the event edit box by clicking to change the start time." />
             </ListItem>            
           </List>
           <div className={classes.flex}>
