@@ -40,7 +40,8 @@ const useStyles = makeStyles(theme => ({
     width: 200,
     height: 200,
     [theme.breakpoints.down('sm')]: {
-      maxHeight: 120,
+      width: 120,
+      height: 120
     }
   },
   progress: {

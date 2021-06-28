@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import Grid from '@material-ui/core/Grid'
+import CircularProgress from '@material-ui/core/CircularProgress'
 import { makeStyles } from '@material-ui/core/styles'
 import { register_nonce_url, register_url, update_user_meta_url } from '../config/dataLinks'
 import { sendVerification, getClientByName } from '../utils/misc'
@@ -30,9 +31,14 @@ const useStyles = makeStyles(theme => ({
     width: 200,
     height: 200,
     [theme.breakpoints.down('sm')]: {
-      maxHeight: 120,
+      width: 120,
+      height: 120
     }
-  }
+  },
+  progress: {
+    display: 'flex',
+    justifyContent: 'center'
+  }    
 }))
 
 export default function RegisterForm({triggerOpen, signinUser, apiToken}) {
@@ -54,6 +60,7 @@ export default function RegisterForm({triggerOpen, signinUser, apiToken}) {
   const [disableSubmit, setDisableSubmit] = useState(true)
   const [triggerEmailConfirm, setTriggerEmailConfirm] = useState(false)
   const [key, setKey] = useState()
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     if (username === '' || password === '' || confirmedPassword === '' || email === '' || firstName === '' || lastName === '' || phone === '')
@@ -213,13 +220,17 @@ export default function RegisterForm({triggerOpen, signinUser, apiToken}) {
         data: userFormData
       }
 
+      setIsLoading(true)
       regResponse = await axios(config)
+      
       if (regResponse && regResponse.data.status !== 'ok') {
+        setIsLoading(false)
         alert(regResponse.data.error)
         return
       }
     }
     catch (regErr) {
+      setIsLoading(false)
       alert(regErr)
     }
 
@@ -248,6 +259,7 @@ export default function RegisterForm({triggerOpen, signinUser, apiToken}) {
   
       let metaResponse = await axios(metaConfig)
       if (metaResponse && metaResponse.data.status !== 'ok') {
+        setIsLoading(false)
         alert(metaResponse.data.error)
         return
       }
@@ -261,10 +273,12 @@ export default function RegisterForm({triggerOpen, signinUser, apiToken}) {
       }
 
       signinUser(apiToken, payload)
+      setIsLoading(false)
       alert('You are now registered for Hair Beauty Life Co online booking!')
       setOpen(false)
     }
     catch (metaErr) {
+      setIsLoading(false)
       alert(metaErr)
     }
   }
@@ -428,11 +442,17 @@ export default function RegisterForm({triggerOpen, signinUser, apiToken}) {
             </Grid>  
           </Grid>
         </DialogContent>
-        <DialogActions className={classes.button1}>
-          <Button variant="contained" onClick={handleSubmit} color="secondary" fullWidth disabled={disableSubmit}>
-            Submit
-          </Button>
-        </DialogActions>
+        {isLoading ?
+          <div className={classes.progress}>
+            <CircularProgress color='primary' />
+          </div>
+          :
+          <DialogActions className={classes.button1}>
+            <Button variant="contained" onClick={handleSubmit} color="secondary" fullWidth disabled={disableSubmit}>
+              Submit
+            </Button>
+          </DialogActions>
+        }
       </Dialog>
       <EmailVeriForm email={email} handleConfirm={handleConfirm} triggerOpen={triggerEmailConfirm}/>
     </>

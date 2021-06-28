@@ -7,7 +7,6 @@ import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
-import EventNoteIcon from '@material-ui/icons/EventNote'
 import { makeStyles } from '@material-ui/core/styles'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import IconButton from '@material-ui/core/IconButton'
@@ -202,7 +201,7 @@ export default function CheckoutForm({
       <Dialog fullWidth open={open} onBackdropClick={() => setOpen(false)}>
         <div className={classes.container}>
           <div className={classes.grow} />
-          <EventNoteIcon color='primary' fontSize='large'/>
+          <h3>{ `Booking ID: ${event.id}` }</h3>
           <div className={classes.grow} />
         </div>
         {adminBooking ? <AdminEventCard event={event}/> : <TherapistEventCard event={event}/>}

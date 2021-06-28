@@ -56,38 +56,39 @@ const EventManager = ({
     }
 
     // Fetch events directly from Google for faster response
-    // const fetchEvents = async () => {
-    //   try {
-    //     const start = startDate(fromDate)
-    //     const end = endDate(toDate)
-    //     const events = await window.gapi.client.calendar.events.list({
-    //       'calendarId': calendarId,
-    //       'timeMin': start,
-    //       'timeMax': end,
-    //       'showDeleted': false,
-    //       'singleEvents': true,
-    //       'orderBy': 'startTime'
-    //     })
+    const fetchEvents = async () => {
+      try {
+        const start = startDate(fromDate)
+        const end = endDate(toDate)
+        const events = await window.gapi.client.calendar.events.list({
+          'calendarId': calendarId,
+          'timeMin': start,
+          'timeMax': end,
+          'showDeleted': false,
+          'singleEvents': true,
+          'orderBy': 'startTime'
+        })
 
-    //     const artEvents = events.result.items.map((item) => {
-    //       return {
-    //         id: item.id,
-    //         start: new Date(item.start.dateTime),
-    //         end: new Date(item.end.dateTime),
-    //         artistName: artist ? artist.name : '',
-    //         artistId: artist ? artist.id : '',
-    //         address: item.location ? item.location : '',
-    //         type: item.summary === 'HBLC Booking' ? 'hotm' : 'private'
-    //       }
-    //     })
-    //     const offDays = getOffDays(start, end)
-    //     setEvents(mergeThenSort(artEvents, offDays))
-    //   } catch (err) {
-    //     const errMessage = err.result.error.message
-    //     alert(`Event fetch error: ${errMessage}`)
-    //     console.log('Event fetch error: ', errMessage)
-    //   }
-    // }
+        const artEvents = events.result.items.map((item) => {
+          return {
+            bookingId: item.summary.slice(12),
+            id: item.id,
+            start: new Date(item.start.dateTime),
+            end: new Date(item.end.dateTime),
+            artistName: artist ? artist.name : '',
+            artistId: artist ? artist.id : '',
+            address: item.location ? item.location : '',
+            type: item.summary.includes('HBLC Booking') ? 'hotm' : 'private'
+          }
+        })
+        const offDays = getOffDays(start, end)
+        setEvents(mergeThenSort(artEvents, offDays))
+      } catch (err) {
+        const errMessage = err.result.error.message
+        alert(`Event fetch error: ${errMessage}`)
+        console.log('Event fetch error: ', errMessage)
+      }
+    }
 
     const fetchEventsViaBackend = async () => {
       try {
@@ -104,13 +105,14 @@ const EventManager = ({
 
         const artEvents = events.map((item) => {
           return {
+            bookingId: item.summary.slice(12),
             id: item.gcal_event_id.slice(0, 26),
             start: new Date(item.start_time),
             end: new Date(item.end_time),
             artistName: artist ? artist.name : '',
             artistId: artist ? artist.id : '',
             address: item.location ? item.location : '',
-            type: item.summary === 'HBLC Booking' ? 'hotm' : 'private'
+            type: item.summary.includes('HBLC Booking') ? 'hotm' : 'private'
           }
         })
         const offDays = getOffDays(start, end)
@@ -122,9 +124,9 @@ const EventManager = ({
     
     if (calendarId && fromDate && toDate) {
       //Artist is signed in to Google Calendar & with a valid calendar
-      // if (artistSignedIn)
-      //   fetchEvents()
-      // else
+      if (artistSignedIn)
+        fetchEvents()
+      else
         fetchEventsViaBackend()
     }
       

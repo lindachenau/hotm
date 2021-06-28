@@ -29,7 +29,7 @@ import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone'
 import SigninForm from '../config/SigninFormContainer'
 import SignoutForm from '../config/SignoutFormContainer'
 import Filter from '../config/FilterContainer'
-// import CalendarLoader from '../components/CalendarLoader'
+import CalendarLoader from '../components/CalendarLoader'
 import { hblc_url } from '../config/dataLinks'
 import logo from '../images/HBLC-logo-192.png'
 
@@ -265,7 +265,7 @@ function Topbar ({location, bookingValue, loggedIn, isArtist, artists, setArtist
         <SignoutForm triggerOpen={triggerSignout} /> 
         <SigninForm triggerOpen={triggerSignin} initOpen={false} />
         <Filter triggerOpen={triggerFilter} artists={artists} /> 
-        {/* <CalendarLoader setIsSignIn={setArtistSignedIn} /> */}
+        <CalendarLoader setIsSignIn={setArtistSignedIn} />
       </AppBar>
     </div>
   )

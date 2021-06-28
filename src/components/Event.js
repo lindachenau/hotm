@@ -1,6 +1,6 @@
 import React from 'react'
 import moment from 'moment'
-import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaUserCog, FaCog, FaClock } from "react-icons/fa"
+import { FaUserAlt, FaMapMarkerAlt, FaPhoneSquare, FaUserCog, FaCog, FaClock, FaTag } from "react-icons/fa"
 
 export function MonthEvent ({ event }) {
   return (
@@ -17,6 +17,10 @@ export function WeekEvent ({ event }) {
       {event.bookingTime &&
       <>
         <FaClock/><span>{ ` ${moment(event.bookingTime).format('LT')} ` }</span>
+      </>}
+      {event.bookingId &&
+      <>
+        <FaTag/><span>{ ` ${event.bookingId}  ` }</span>
       </>}
       {event.address &&
       <>
@@ -43,6 +47,10 @@ export function DayEvent ({ event }) {
       {event.bookingTime &&
       <>
         <FaClock/><span>{ ` ${moment(event.bookingTime).format('LT')} ` }</span>
+      </>}
+      {event.bookingId &&
+      <>
+        <FaTag/><span>{ ` ${event.bookingId}  ` }</span>
       </>}
       {event.address &&
       <>

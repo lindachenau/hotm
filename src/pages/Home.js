@@ -30,8 +30,8 @@ const Home = ({ theme, artists }) => {
       width: 250,
       height: 250,
       [theme.breakpoints.down('sm')]: {
-        maxWidth: '50%',
-        maxHeight: 180
+        width: 180,
+        height: 180,
       }
     },
     title: {

@@ -23,16 +23,16 @@ export const signinUser = (apiToken, payload) => {
       const role = user.capability ? user.capability : ""
       const isArtist = role.includes('staff_members')
 
-      // if (isArtist) {
-      //   //Sign in artist to Google for Calendar access
-      //   if (window.gapi) {
-      //     // if (!window.gapi.auth2.getAuthInstance().isSignedIn.get())
-      //     window.gapi.auth2.getAuthInstance().signIn()
-      //   }
-      //   else {
-      //     console.log("Error: gapi not loaded")
-      //   }
-      // }        
+      if (isArtist) {
+        //Sign in artist to Google for Calendar access
+        if (window.gapi) {
+          // if (!window.gapi.auth2.getAuthInstance().isSignedIn.get())
+          window.gapi.auth2.getAuthInstance().signIn()
+        }
+        else {
+          console.log("Error: gapi not loaded")
+        }
+      }        
 
       dispatch({
         type: SIGN_IN,
