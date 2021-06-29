@@ -4,7 +4,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import Container from '@material-ui/core/Container'
 import AddArtists from '../components/AddArtists'
 import { Typography } from '@material-ui/core'
-import logo from '../images/HBLC-logo-600.png'
+import logo from '../images/HBLC-logo-540.png'
 
 const Home = ({ theme, artists }) => {
   const [location, setLocation] =useState('')

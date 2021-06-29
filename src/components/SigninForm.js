@@ -11,7 +11,7 @@ import { auth_url } from '../config/dataLinks'
 import axios from 'axios'
 import ForgetPWForm from './ForgetPWForm'
 import RegisterForm from './RegisterForm'
-import logo from '../images/HBLC-logo-600.png'
+import logo from '../images/HBLC-logo-540.png'
 import { BookingsStoreContext } from '../components/BookingsStoreProvider'
 
 const useStyles = makeStyles(theme => ({

@@ -11,7 +11,7 @@ import { register_nonce_url, register_url, update_user_meta_url } from '../confi
 import { sendVerification, getClientByName } from '../utils/misc'
 import axios from 'axios'
 import EmailVeriForm from './EmailVeriForm'
-import logo from '../images/HBLC-logo-600.png'
+import logo from '../images/HBLC-logo-540.png'
 
 const useStyles = makeStyles(theme => ({
   container1: {

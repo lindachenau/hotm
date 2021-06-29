@@ -11,7 +11,7 @@ import { stripe_charge_server, bookings_url, admin_bookings_url } from '../confi
 import { sendReminders, getClientById } from '../utils/misc'
 import { BOOKING_TYPE, PUT_OPERATION } from '../actions/bookingCreator'
 import { localDate } from '../utils/dataFormatter'
-import logo from '../images/HBLC-logo-600.png'
+import logo from '../images/HBLC-logo-540.png'
 
 const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY
 
@@ -25,11 +25,11 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1
   },
   logo: {
-    maxWidth: '40%',
-    width: 'auto',
-    height: 'auto',
+    width: 250,
+    height: 250,
     [theme.breakpoints.down('sm')]: {
-      maxHeight: 120,
+      width: 180,
+      height: 180,
     }
   }
 }))
