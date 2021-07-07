@@ -211,7 +211,7 @@ export default function CheckoutForm({
               fullWidth
               margin="normal"
               id="time-picker-start"
-              label={checkedOut ? "Service started at" : "Select service start time"}
+              label={checkedOut ? "Service started at" : "Set actual service start time"}
               disabled={checkedOut}
               value={actualStart}
               minutesStep={15}
@@ -224,7 +224,7 @@ export default function CheckoutForm({
               fullWidth
               margin="normal"
               id="time-picker-end"
-              label={checkedOut ? "Service ended at" : "Select service end time"}
+              label={checkedOut ? "Service ended at" : "Set actual service end time"}
               disabled={checkedOut}
               value={actualEnd}
               minutesStep={15}
