@@ -78,7 +78,7 @@ export default function EventForm({
       if (estimatedDuration)
         setDuration(estimatedDuration)
       else
-        setDuration((draftEvent.end.getTime() - draftEvent.start.getTime()) / 60000)
+        setDuration((draftEvent.end.getTime() - draftEvent.bookingTime.getTime()) / 60000)
 
       if (draftEvent.bookingTime)
         setSelectedDate(draftEvent.bookingTime)
