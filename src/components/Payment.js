@@ -80,7 +80,8 @@ function Payment (
       //Store payment id for refund
       const {id, status} = await response.json()
       
-      if (status === 'succeeded') {
+      //live card returns status: paid and test card returns status: succeeded
+      if (id && (status === 'succeeded' || status === 'paid')) {
         alert("Booking successful!")
         const bookingData = {
           booking_id: bookingId,
