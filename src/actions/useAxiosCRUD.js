@@ -18,7 +18,8 @@ const convertArrayToObject = (array, key) => {
 }
 
 const markBookingDeleted = (bookings, id) => {
-  bookings[id].deleted = true
+  if (id)
+    bookings[id].deleted = true
   return bookings
 }
 
@@ -214,7 +215,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
           callMe()
       } catch (err) {
         if (err.response) {
-          const message = err.response.data?.message?.error_message
+          const message = err.response.data?.error
           const errDefault = `${message}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
           alert(errDefault)
         }
@@ -242,12 +243,17 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         const result = await axios(config)
         const error = result.data.error
         /*
-        * No need to do anything if no error as data hasn't been written into local Booking Store yet.
-        */ 
-        dispatch({ type: "DELETE_SUCCESS", payload: {id: data.booking_id}})
+        * No need to do anything for just booked booking (payment declined) if no error as data hasn't been written into local Booking Store yet.
+        */
+        let idToDelete 
+        if (data.notify_list === 'none') //Payment declined
+          idToDelete = null
+        else
+          idToDelete = data.booking_id
+        dispatch({ type: "DELETE_SUCCESS", payload: {id: idToDelete}})
       } catch (err) {
         if (err.response) {
-          const message = err.response.data?.message?.error_message
+          const message = err.response.data?.error
           const errDefault = `${message}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
           alert(errDefault)
         }

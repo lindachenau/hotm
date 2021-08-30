@@ -5,8 +5,11 @@ import Autocomplete from '@material-ui/lab/Autocomplete'
 export default function AddArtists({tags, setTags, multiArtists, clearable, disabled=false, artists, label}) {
 
   const artistOptions = Object.values(artists).sort((a, b) => {
-    let artists1 = a.state.toUpperCase() + a.name + a.email
-    let artists2 = b.state.toUpperCase() + b.name + b.email
+    // Lyndle doesn't want to display email
+    // let artists1 = a.state.toUpperCase() + a.name + a.email
+    // let artists2 = b.state.toUpperCase() + b.name + b.email
+    let artists1 = a.state.toUpperCase() + a.name
+    let artists2 = b.state.toUpperCase() + b.name
     if (artists1 < artists2)
       return -1
     else if (artists1 > artists2)
@@ -20,8 +23,10 @@ export default function AddArtists({tags, setTags, multiArtists, clearable, disa
   }
 
   const dropdownDisplay = (option) => {
-    const ext = option.email ?  ` - ${option.email}` : ''
-    return `${option.name}${ext}`
+    // Lyndle doesn't want to display email
+    // const ext = option.email ?  ` - ${option.email}` : ''
+    // return `${option.name}${ext}`
+    return option.name
   }
 
   return (

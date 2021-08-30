@@ -203,9 +203,9 @@ function Confirmation ({
         <div className={classes.acknowledge}>
           <Checkbox checked={checkedParking} onChange={handleParking} value="checkedTerm" className={classes.inline} color="primary"/>
           <Typography variant="body2" align="left" color="textPrimary">
-            Customers are required to pay parking charges incurred while artists attend your booking. 
-            The incurred parking charges will be added onto the final invoice. Parking instructions can be provided 
-            inside the "Additional instructions" box in the "Pay deposit" step.
+            Please note, if parking costs are incurred during the duration of your booking, the parking fees will be 
+            added to your final invoice. Parking instructions can be provided inside the  "Additional instructions" 
+            box in the "Pay deposit" step.            
           </Typography>
         </div>
       </Paper>

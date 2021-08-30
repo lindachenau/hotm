@@ -97,7 +97,10 @@ function Payment (
       }
       else {
         alert("Your card was declined.")
-        const payload = { 'booking_id': bookingId }
+        const payload = {
+          'booking_id': bookingId,
+          'notify_list': 'none'
+        }
         cancelBooking(payload, BOOKING_TYPE.T)
       }
     }
