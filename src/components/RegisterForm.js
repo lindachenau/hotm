@@ -422,7 +422,7 @@ export default function RegisterForm({triggerOpen, signinUser, apiToken}) {
             <Grid item xs={6}>
               <TextField
                 margin="dense"
-                label="state abbr."
+                label="state"
                 type="text"
                 fullWidth
                 defaultValue={stateAbbr}
