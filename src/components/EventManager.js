@@ -98,7 +98,7 @@ const EventManager = ({
           headers: {
             "Authorization": `Bearer ${apiToken}`
           }
-        })        
+        })
         const events = await data.json()
         const start = startDate(fromDate)
         const end = endDate(toDate)

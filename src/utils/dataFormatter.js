@@ -217,7 +217,7 @@ export function getEvents(bookings, artists, clients, servicesMenu)
       status = BOOKING_STATUS.DELETED
     else if ((booking.total_amount - booking.paid_amount) < 0.01)
       status = BOOKING_STATUS.COMPLETED
-    else if (booking.status === 'checkout')
+    else if (booking.status === 'checkout' || booking.status === 'xero')
       status = BOOKING_STATUS.CHECKEDOUT
 
     //artist exists

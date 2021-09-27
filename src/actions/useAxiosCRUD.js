@@ -178,7 +178,7 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
           callMe(bookingId)
       } catch (err) {
         if (err.response) {
-          const message = err.response.data?.error
+          const message = err.response.data?.error ? err.response.data?.error : "Something went wrong."
           const errDefault = `${message} ${data.payment_amount ? "Your card is NOT charged." : ''}`
           const errMessage = message.includes('Conflict booking time') ? 
             'Sorry, your appointment time has been taken by someone else. Please go back to move your appointment to another time.' : errDefault
@@ -215,8 +215,8 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
           callMe()
       } catch (err) {
         if (err.response) {
-          const message = err.response.data?.error
-          const errDefault = `${message}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
+          const message = err.response.data?.error ? err.response.data?.error : "Something went wrong."
+          const errDefault = `${message} ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
           alert(errDefault)
         }
 
@@ -253,8 +253,8 @@ const useAxiosCRUD = (url, initialData, method, bookingTypeName, data, callMe, b
         dispatch({ type: "DELETE_SUCCESS", payload: {id: idToDelete}})
       } catch (err) {
         if (err.response) {
-          const message = err.response.data?.error
-          const errDefault = `${message}. ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
+          const message = err.response.data?.error ? err.response.data?.error : "Something went wrong."
+          const errDefault = `${message} ${data.payment_amount ? "Your card is NOT charged." : ''} Please call ${contact_phone} to resolve this issue.`
           alert(errDefault)
         }
 
