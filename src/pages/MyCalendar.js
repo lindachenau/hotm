@@ -86,8 +86,8 @@ const MyCalendar = ({theme, userEmail, artistSignedIn, updateBooking, artists, s
           contact: bookingEvent.contact,
           comment: bookingEvent.comment,
           status: bookingEvent.status,
-          actualStart: bookingEvent.status === 'checkout' ? localDate(bookingEvent.booking_date, bookingEvent.actual_start_time) : null,
-          actualEnd: bookingEvent.status === 'checkout' ? localDate(bookingEvent.booking_date, bookingEvent.actual_end_time) : null
+          actualStart: (bookingEvent.status === 'checkout' || bookingEvent.status === 'xero') ? localDate(bookingEvent.booking_date, bookingEvent.actual_start_time) : null,
+          actualEnd: (bookingEvent.status === 'checkout' || bookingEvent.status === 'xero') ? localDate(bookingEvent.booking_date, bookingEvent.actual_end_time) : null
         })
         setTriggerCheckoutForm(!triggerCheckoutForm)
       } else {
