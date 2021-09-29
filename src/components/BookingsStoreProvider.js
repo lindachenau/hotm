@@ -71,8 +71,8 @@ const BookingsStoreProvider = ({children, storeActivation, bookingFilter, fetchA
         headers: {"Content-Type": "application/json"},
         url: api_token_login,
         data: {
-          "email" : process.env.REACT_APP_API_TOKEN_EMAIL,
-          "password" : process.env.REACT_APP_API_TOKEN_PASSWORD
+          // "email" : process.env.REACT_APP_API_TOKEN_EMAIL,
+          // "password" : process.env.REACT_APP_API_TOKEN_PASSWORD
         }          
       }
 
