@@ -21,6 +21,7 @@ export const available_artists_url = `${HOTM_BOOKING_API}/get_available_artists.
 export const calendar_events_url = `${HOTM_BOOKING_API}/calendar_events`
 export const booking_events_url = `${HOTM_BOOKING_API}/booking_events`
 export const clients_url = `${HOTM_BOOKING_API}/clients`
+export const reset_password_url = `${HOTM_BOOKING_API}/reset_psw.php`
 export const travel_time_url = `${HOTM_BOOKING_API}/travel_time`
 export const api_token_login = `${HOTM_BOOKING_API}/login`
 

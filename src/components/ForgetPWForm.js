@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import TextField from '@material-ui/core/TextField'
 import { makeStyles } from '@material-ui/core/styles'
-import { clients_url } from '../config/dataLinks'
+import { reset_password_url } from '../config/dataLinks'
 import { sendVerification, getClientByName } from '../utils/misc'
 import EmailVeriForm from './EmailVeriForm'
 import axios from 'axios'
@@ -83,7 +83,7 @@ export default function ForgetPWForm({triggerOpen}) {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${apiToken}`
       },
-      url: clients_url,
+      url: reset_password_url,
       data: {
         client_id: userId,
         password: password
