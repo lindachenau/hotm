@@ -21,7 +21,7 @@ export const signinUser = (apiToken, payload) => {
       * clients API fetches this meta_key explicitly. wp88_capabilities instead of wp_capabilities.
       */
       const role = user.capability ? user.capability : ""
-      const isArtist = role.includes('staff_members')
+      const isArtist = role.includes('staff_members') || role.includes('administrator')
 
       if (isArtist) {
         //Sign in artist to Google for Calendar access
